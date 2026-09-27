@@ -37,6 +37,17 @@ This changes the 5.5.10 default, which still retains runtime calc. Verify that t
 
 Automatic mode only replaces calc expressions that fully reduce to an rpx length, including safe aliases and inline literals. It leaves plain var references and unrelated units unchanged. Explicit booleans, variable lists and option objects keep their existing meaning; nested `cssOptions.cssCalc` takes precedence.
 
+**The default does not make both rpx and px spacing static.** The following table uses ordinary `@theme` declarations, Tailwind CSS 4 targeting WeChat, and a complete Vite style context without known overrides. No additional unit conversions or custom plugin rewrites are enabled. Formatting differences are omitted:
+
+| Theme configuration        | `cssOptions.cssCalc` | `mt-2`                                 | `gap-2`                         |
+| -------------------------- | -------------------- | -------------------------------------- | ------------------------------- |
+| `--spacing: 1rpx`          | Omitted or `'auto'`  | `margin-top: 2rpx`                     | `gap: 2rpx`                     |
+| `--spacing: 1px`           | Omitted or `'auto'`  | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+| `--spacing: 1px`           | `true`               | `margin-top: 2px`                      | `gap: 2px`                      |
+| `--spacing: 1rpx` or `1px` | `false`              | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+
+`true` can also evaluate other eligible units. `false` disables this plugin's calculation; it does not stop other plugins from expanding variables or rewriting expressions. Local or conditional overrides and incomplete context also preserve rpx variable expressions. See the dynamic variable examples below for runtime updates.
+
 Vite evaluates after author plugins and before unit conversion. Mini-program hosts can load page or component styles together without CSS import edges, so automatic mode conservatively includes every CSS asset in the current bundle. Conflicting values prevent automatic evaluation even when those assets are actually isolated. Explicit configuration keeps its existing entry and import scopes. Local or conditional overrides, conflicting sources, unresolved or cyclic dependencies and property registrations prevent variable evaluation. Missing imported assets make the scope incomplete. Adapters without complete scope metadata only simplify literals. Watch changes restore original expressions before reassessing safety.
 
 :::warning Opt out for runtime themes
@@ -132,6 +143,81 @@ For fixed sizes that need accurate `calc` arithmetic, prefer `px` or a final len
 You can also use arbitrary values such as `w-[32rpx]` and `p-[4rpx]`, checking that the final WXSS contains the corresponding direct lengths. For example, fixed pixel spacing can use `@theme { --spacing: 1px; }`; check that the final WXSS retains `px` rather than converting it back through `px2rpx`. This changes the design to a fixed pixel scale instead of scaling with the window width as `rpx` does. Do not preconvert rpx to px using one device's ratio or add empirical correction factors.
 
 If pages, components, or theme switches override `--spacing` at runtime, precomputation changes that behavior: a generated `width: 32rpx` no longer responds to `--spacing` updates. Inlining a fixed value through `@theme inline` also removes the runtime reference to that variable. Apply this strategy only to variables fixed at build time. For dynamic sizes, consider calculating the final length at runtime and updating the style instead of multiplying a very small rpx base in WXSS.
+
+### Update px spacing dynamically
+
+This uni-app Vue example updates an ordinary `@theme` variable through inline styles. Automatic mode itself does not freeze px variables. The explicit `cssCalc: false` keeps runtime calculations, while `px2rpx: false` retains fixed pixel units. Do not add other unit conversion rules that turn these px values back into rpx.
+
+```ts title="Plugin options in vite.config.ts"
+WeappTailwindcss({
+  cssEntries: ['./src/tailwind.css'],
+  cssOptions: {
+    cssCalc: false,
+    px2rpx: false,
+  },
+})
+```
+
+```css title="src/tailwind.css"
+@import 'tailwindcss';
+
+@theme {
+  --spacing: 4px;
+}
+```
+
+```vue title="Page component"
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const spacing = ref(4)
+</script>
+
+<template>
+  <view :style="{ '--spacing': `${spacing}px` }">
+    <view class="mt-2 flex gap-2">
+      <view>A</view>
+      <view>B</view>
+    </view>
+    <button @click="spacing = spacing === 4 ? 8 : 4">
+      Toggle spacing
+    </button>
+  </view>
+</template>
+```
+
+`mt-2` and `gap-2` retain their references to `--spacing`. Switching the base from `4px` to `8px` changes both lengths from `8px` to `16px`. The variable applies to the styled node and descendants that inherit it. Use ordinary `@theme`, not `@theme inline` with a fixed value: changing `--spacing` at runtime cannot update values already inlined into utilities.
+
+### Provide final rpx lengths dynamically
+
+For sizes that scale with the window width, keep the plugin configuration and Tailwind entry above, calculate the final rpx lengths in JS, and reference the resulting CSS variables directly:
+
+```vue title="Page component"
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const spacing = ref(1)
+</script>
+
+<template>
+  <view>
+    <view
+      class="w-[var(--box-width)] p-[var(--box-padding)]"
+      :style="{
+        '--box-width': `${spacing * 32}rpx`,
+        '--box-padding': `${spacing * 4}rpx`,
+      }"
+    >
+      Dynamic sizes
+    </view>
+    <button @click="spacing = spacing === 1 ? 3 : 1">
+      Toggle sizes
+    </button>
+  </view>
+</template>
+```
+
+The utilities use `width: var(--box-width)` and `padding: var(--box-padding)` directly. With a base of `1`, the variables hold `32rpx` and `4rpx`; switching to `3` produces `96rpx` and `12rpx`. WeChat converts only the final lengths, without multiplying a small rpx base in CSS. Setting `cssCalc: false` alone while retaining `calc(var(--spacing) * N)` can still expose WeChat's runtime rpx calculation differences.
 
 ## Validation scope
 

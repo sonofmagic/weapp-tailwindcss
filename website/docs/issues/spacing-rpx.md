@@ -43,6 +43,17 @@ Tailwind CSS 4 允许在 `@theme` 中设置 `--spacing: 1rpx`，但微信小程�
 
 自动模式只接受可完全归约为 rpx 长度的 calc，包括安全别名及 `@theme inline` 产生的字面量。它不会展开普通 `var()`，不会顺便计算 px、rem、百分比或混合单位。已有 `true`、变量白名单和对象配置仍按显式选择执行；嵌套 `cssOptions.cssCalc` 优先于顶层兼容字段。
 
+**默认不会同时把 rpx 和 px 间距都固定化。** 下表使用普通 `@theme`，目标为微信小程序、Tailwind CSS 4，Vite 已取得完整样式上下文且变量无已知覆盖；未额外开启单位转换或自定义插件改写。表中展示最终声明，忽略格式化差异：
+
+| 主题配置 | `cssOptions.cssCalc` | `mt-2` | `gap-2` |
+| --- | --- | --- | --- |
+| `--spacing: 1rpx` | 未配置或 `'auto'` | `margin-top: 2rpx` | `gap: 2rpx` |
+| `--spacing: 1px` | 未配置或 `'auto'` | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+| `--spacing: 1px` | `true` | `margin-top: 2px` | `gap: 2px` |
+| `--spacing: 1rpx` 或 `1px` | `false` | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+
+`true` 也可以计算其他符合条件的单位；`false` 关闭本插件的计算，并不阻止其他插件展开变量或改写表达式。若存在局部覆盖、条件覆盖或不完整上下文，rpx 变量也会保留表达式。需要运行时更新时，参见下方动态变量示例。
+
 Vite 在作者 PostCSS 插件完成后，根据产物图收集样式，再计算、转换单位。小程序宿主可以共同加载没有 CSS 导入边的页面或组件样式，因此自动模式保守纳入同轮全部 CSS 资产；即使实际互相隔离，冲突值也会阻止自动计算。显式配置继续使用既有入口及导入作用域。局部覆盖、条件规则、多来源冲突、循环、未知依赖和 `@property` 会阻止变量静态化。导入样式不在产物图内时，不把上下文当成完整；其他尚未提供完整作用域的适配器只化简字面量，不凭单文件冻结变量。主题、候选、导入或作者 CSS 改变后，watch 会从原始表达式重新判断。
 
 :::warning 动态主题必须显式退出
@@ -140,6 +151,81 @@ WeappTailwindcss({
 也可以使用 `w-[32rpx]`、`p-[4rpx]` 等任意值，并检查最终 WXSS 是否输出相应的直接长度。例如固定像素间距可以设置 `@theme { --spacing: 1px; }`，并检查最终 WXSS 中仍保留 `px`，没有被 `px2rpx` 转回 `rpx`。这会改成固定像素尺度，不再随窗口宽度按 `rpx` 缩放。不要按某台设备的比例把 `rpx` 预转为 `px`，也不要添加经验补偿系数。
 
 如果需要在页面、组件或主题切换时覆盖 `--spacing`，静态化会改变行为：已经生成的 `width: 32rpx` 不会再随 `--spacing` 更新。将固定值通过 `@theme inline` 内联也会失去对该变量的运行时引用。只对构建期固定的变量启用这种策略；动态场景可以改为运行时计算最终尺寸并更新样式，避免继续放大一个很小的 rpx 基数。
+
+### 动态修改 px spacing
+
+下面的 uni-app Vue 示例通过内联样式更新普通 `@theme` 变量。`'auto'` 本身不会固定化 px 变量；这里显式设置 `cssCalc: false`，明确保留运行时计算，同时关闭 `px2rpx`，保持固定像素单位。不要额外配置把 px 转回 rpx 的单位转换规则。
+
+```ts title="vite.config.ts 中的插件配置"
+WeappTailwindcss({
+  cssEntries: ['./src/tailwind.css'],
+  cssOptions: {
+    cssCalc: false,
+    px2rpx: false,
+  },
+})
+```
+
+```css title="src/tailwind.css"
+@import 'tailwindcss';
+
+@theme {
+  --spacing: 4px;
+}
+```
+
+```vue title="页面组件"
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const spacing = ref(4)
+</script>
+
+<template>
+  <view :style="{ '--spacing': `${spacing}px` }">
+    <view class="mt-2 flex gap-2">
+      <view>A</view>
+      <view>B</view>
+    </view>
+    <button @click="spacing = spacing === 4 ? 8 : 4">
+      切换间距
+    </button>
+  </view>
+</template>
+```
+
+`mt-2` 和 `gap-2` 保留对 `--spacing` 的引用，间距随基数从 `4px` 切换为 `8px` 而从 `8px` 变为 `16px`。变量作用于绑定节点及继承它的后代。这里应使用普通 `@theme`，不要改成把固定值内联到工具类的 `@theme inline`，否则运行时修改 `--spacing` 不会影响已内联的值。
+
+### 动态提供最终 rpx 长度
+
+需要随窗口宽度缩放时，可以沿用上面的插件配置和 Tailwind 入口，在 JS 中计算最终 rpx 长度，再交给 CSS 变量直接使用：
+
+```vue title="页面组件"
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const spacing = ref(1)
+</script>
+
+<template>
+  <view>
+    <view
+      class="w-[var(--box-width)] p-[var(--box-padding)]"
+      :style="{
+        '--box-width': `${spacing * 32}rpx`,
+        '--box-padding': `${spacing * 4}rpx`,
+      }"
+    >
+      动态尺寸
+    </view>
+    <button @click="spacing = spacing === 1 ? 3 : 1">
+      切换尺寸
+    </button>
+  </view>
+</template>
+```
+
+工具类直接使用 `width: var(--box-width)` 和 `padding: var(--box-padding)`。基数为 `1` 时，变量值为 `32rpx`、`4rpx`；切换为 `3` 后变为 `96rpx`、`12rpx`。微信只需换算最终长度，无需在 CSS 中对小 rpx 基数做乘法。单纯设置 `cssCalc: false` 并继续使用 `calc(var(--spacing) * N)`，仍可能遇到微信运行时的 rpx 计算偏差。
 
 ## 验证范围
 

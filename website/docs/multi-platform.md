@@ -229,6 +229,17 @@ WeappTailwindcss({
 
 自动模式不展开普通 var，也不计算无关单位。已知覆盖和不完整作用域会保留变量表达式；需要未来 JS 或内联样式动态修改主题时，请显式设置 `cssOptions: { cssCalc: false }`。兼容边界和诊断见[微信 rpx 计算说明](./issues/spacing-rpx.md)。
 
+默认模式只针对固定 rpx，不会同时把 px 变量固定化。以下对照使用普通 `@theme`，限定微信 + Tailwind CSS 4、完整 Vite 样式上下文、无已知覆盖，且没有额外单位转换或自定义插件改写：
+
+| 主题配置 | `cssOptions.cssCalc` | `mt-2` | `gap-2` |
+| --- | --- | --- | --- |
+| `--spacing: 1rpx` | 未配置或 `'auto'` | `margin-top: 2rpx` | `gap: 2rpx` |
+| `--spacing: 1px` | 未配置或 `'auto'` | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+| `--spacing: 1px` | `true` | `margin-top: 2px` | `gap: 2px` |
+| `--spacing: 1rpx` 或 `1px` | `false` | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+
+`false` 仅关闭本插件的计算，其他插件仍可能改写表达式。动态 px spacing 可以通过 Vue 的 `style` 绑定修改；动态 rpx 尺寸建议由 JS 算出最终长度，再通过普通 `var()` 使用。完整 uni-app 示例见[固定尺寸与运行时主题如何选择](./issues/spacing-rpx.md#固定尺寸与运行时主题如何选择)。
+
 `cssCalc: true` 只对能够证明固定的变量计算 `calc()`，默认用静态结果替换原表达式。例如 Tailwind 生成的无条件根主题：
 
 ```css
