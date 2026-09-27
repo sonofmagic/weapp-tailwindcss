@@ -43,10 +43,8 @@ export interface PreflightContentUsage {
 
 // 判断当前规则是否仅包含 before/after 的变量声明，用于标记变量作用域
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
-  if (isOnlyBeforeAndAfterPseudoElement(node)) {
-    return hasTwVars(node, count)
-  }
-  return false
+  // 普通声明不可能成为变量作用域，先检查声明再承担选择器 AST 的解析成本。
+  return hasTwVars(node, count) && isOnlyBeforeAndAfterPseudoElement(node)
 }
 
 // Tailwind backdrop 相关规则也需要被视为变量作用域
@@ -95,13 +93,13 @@ function injectPreflightDeclarations(node: Rule, options: IStyleHandlerOptions, 
   contentUsage?.invalidate()
 }
 
-function hasClassSelector(node: Rule) {
-  return node.selectors.some(selector => selector.includes('.'))
+function hasClassSelector(selectors: string[]) {
+  return selectors.some(selector => selector.includes('.'))
 }
 
-function isRootThemeScopeRule(node: Rule) {
-  return node.selectors.length > 0
-    && node.selectors.every(selector => selector === ':root' || selector === ':host' || DEFAULT_ROOT_SELECTORS.includes(selector as typeof DEFAULT_ROOT_SELECTORS[number]))
+function isRootThemeScopeRule(selectors: string[]) {
+  return selectors.length > 0
+    && selectors.every(selector => selector === ':root' || selector === ':host' || DEFAULT_ROOT_SELECTORS.includes(selector as typeof DEFAULT_ROOT_SELECTORS[number]))
 }
 
 // 根据配置补全变量作用域的选择器（例如 * 或 :not(not)）
@@ -162,9 +160,11 @@ export function commonChunkPreflight(
     : Array.isArray(rootOption)
       ? rootOption.filter(Boolean)
       : [rootOption]
-  const hasHostSelector = node.selectors.some(selector => selector.includes(':host'))
-  const hasRootPseudoSelector = node.selectors.some(selector => selector.includes(':root'))
-  const hasAllDefaultRootSelectors = DEFAULT_ROOT_SELECTORS.every(selector => node.selectors.includes(selector))
+  // PostCSS 的 selectors getter 每次都会重新拆分字符串；仅在本次选择器变更后刷新。
+  let selectors = node.selectors
+  const hasHostSelector = selectors.some(selector => selector.includes(':host'))
+  const hasRootPseudoSelector = selectors.some(selector => selector.includes(':root'))
+  const hasAllDefaultRootSelectors = DEFAULT_ROOT_SELECTORS.every(selector => selectors.includes(selector))
   if (
     !hasHostSelector
     && !rootSelectors.includes(':host')
@@ -181,10 +181,11 @@ export function commonChunkPreflight(
       phase: 'pre',
       reason: 'append-host-selector',
     })
+    selectors = node.selectors
   }
   // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
-  if (isTailwindcss4 && (!hasClassSelector(node) || isRootThemeScopeRule(node))) {
+  if (isTailwindcss4 && (!hasClassSelector(selectors) || isRootThemeScopeRule(selectors))) {
     const rootUsesContentVariable = contentUsage?.read()
       ?? usesTailwindcssV4ContentVariable(node.root())
     if (!rootUsesContentVariable) {
@@ -194,12 +195,12 @@ export function commonChunkPreflight(
   // 变量注入和 preflight
   if (
     testIfVariablesScope(node)
-    || (uniAppXEnabled && node.selectors.includes('*') && hasTwVars(node, 2))
+    || (uniAppXEnabled && selectors.includes('*') && hasTwVars(node, 2))
   ) {
     ctx?.markVariablesScope(node)
     assignRuleSelectors(node, uniAppXEnabled
       ? resolveUniAppXVariableScopeSelectors(options)
-      : remakeCssVarSelector(node.selectors, options), {
+      : remakeCssVarSelector(selectors, options), {
       phase: 'pre',
       reason: 'rewrite-variable-scope',
     })

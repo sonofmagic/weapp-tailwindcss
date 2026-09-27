@@ -3,6 +3,8 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1214
 baseline: 7fa8c3ac8243e6468a407622ea173c86a3a51ed4
 regressions:
+  - packages/postcss/test/handler.cache.test.ts
+  - packages/postcss/test/mp.test.ts
   - packages/weapp-tailwindcss/test/context/style-options-snapshot.test.ts
   - packages/postcss/test/calc-auto.test.ts
   - packages/weapp-tailwindcss/test/bundlers/vite-auto-rpx-calc.test.ts
@@ -97,6 +99,18 @@ aca7b4297的第二轮CI只有uni-app插件构建中位数触发性能门禁：18
 新增getter回归证明resolveStyleOptionsFromContext在一次调用中读取cssOptions达20次；Vite代理的每次读取都可能重新解析样式阶段并构造选项。现同次解析先读取一次嵌套配置，再复用该快照；下一次调用仍重新读取，原位修改继续生效，不引入跨轮静态配置缓存。回归在修改前因20次读取失败，修改后通过。
 
 保留原head和修改后的两组本地三次构建、三轮watch样本。修改后的同组基线/修复插件构建中位数1368/1314ms，整体构建4522.2/4340.0ms，HMR714.9/656.3ms，峰值RSS1296.0/1281.1MB。环境波动仍可能影响计时，不把不同轮次直接相减，也不修改CI阈值；以新head的CI复验作最终判断。记录为style-removal/perf-uni-current-head.json与perf-uni-single-read.json。
+
+## 合成性能门禁的有界复测与热点修正
+
+55d84483f 的 uni-app 性能分片通过。合成门禁 run 36331282584 首次只有 content-5000 中位数 585.18ms 超过 582ms。相同 SHA 仅重跑失败 job 一次，content-5000 降至 456.18ms，但 main-1000 与 structured-2000 的 p95 分别为 158.64/360.51ms，超过 155/336ms。两次报告均保留，不把失败简单归因为环境噪声，也不继续盲目重跑。
+
+CPU 采样发现 handler 提前创建无信号管线，随后内容探测又创建另一条管线；preflight 的 PostCSS selectors getter 对普通规则重复拆分 6 次，变量作用域检测也在没有足够 Tailwind 变量声明时解析选择器。现在首次处理按实际信号创建管线，同次 preflight 复用选择器数组（添加 host 后刷新），先检查声明数量再解析变量作用域。不共享跨请求可变状态，不裁剪 preset-env 或兼容插件。
+
+handler.cache 与 mp 的两条计数回归在修改前失败、修改后通过。`CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run --update=none`：1173 通过、3 条既有跳过；主包 style、vite-auto-rpx-calc、style-options-snapshot、v4-style-context 四文件 105 条通过。PostCSS 构建及声明生成通过，ESLint 源码 0 错误，测试文件按仓库配置忽略。
+
+`pnpm exec node benchmark/performance/scripts/cli.mjs --guard --suite postcss --runs 3 --warmups 2 --out-dir e2e/.artifacts/style-removal/synthetic-optimized-guard` 在本机 Node24/M4 Max 通过，12 个用例输出哈希全部与 CI 相同。九组 fresh 用例覆盖 main/content/structured 的 1000/2000/5000 规模，另含三个缓存命中规模。修改前后 CPU profile 均保留；本机样本存在波动，不用单次计时宣称固定优化百分比，也不能替代 Linux/Node22 CI。
+
+相同独立基线 7fa8c3ac8 的真实 uni-app 微信对照运行 3 次 build、3 轮 watch：插件构建中位数 1389→1287ms，整体构建 4509.3→4234.6ms，HMR 662.2→658.2ms。入口为 `pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file e2e/.artifacts/style-removal/perf-versions.json --only demo-uni-app-vite-tailwindcss-v4__mp-weixin --build-runs 3 --hmr-runs 3 --timeout 180000 --poll-interval 30 --out e2e/.artifacts/style-removal/perf-uni-lazy-preflight.json`。此轮未修改 demo 或 static 基线；完整语义快照均以不更新模式验证。未运行全仓或全端测试。
 
 ## 规则评估
 
