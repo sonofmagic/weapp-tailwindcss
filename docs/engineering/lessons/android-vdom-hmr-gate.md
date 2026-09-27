@@ -52,6 +52,8 @@ regressions:
 
 该结论仅针对已验证版本的 Android VDOM 保存行为，不外推到 iOS、Harmony、Vapor 或其它工具链版本。预检通过只证明环境可运行，不证明编译器支持纯 HMR。
 
+后续用户授权跳过 iOS 并免除本轮新预检；Harmony 无插件对照与 H5/跨端截图结果见 [Harmony 与 H5 续验记录](harmony-h5-acceptance.md)。Harmony 和跨端视觉仍有失败，不扩大本页的 Android 例外。
+
 ## 规则评估
 
 保留原有生命周期门槛。另将已实际验证的后台应用内 computer use 入口写入多端手册：用户正在使用 Chrome 时可完成取证且不抢占其窗口，仍要求截图、输入、点击、回执和 verify 全部通过。
