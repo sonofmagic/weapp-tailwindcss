@@ -3,6 +3,7 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1214
 baseline: 7fa8c3ac8243e6468a407622ea173c86a3a51ed4
 regressions:
+  - packages/weapp-tailwindcss/test/context/style-options-snapshot.test.ts
   - packages/postcss/test/calc-auto.test.ts
   - packages/weapp-tailwindcss/test/bundlers/vite-auto-rpx-calc.test.ts
   - e2e/issue-1214-rpx-calc.test.ts
@@ -88,6 +89,14 @@ Portable枚举任务在既有浏览器就绪回归中失败：requestfinished可
 Taro static 另发现原单位声明残留：已有--spacing:8rpx时，postcss-plugin-shared@1.1.6 的替换模式因目标值存在而直接return，留下后面的.25rem。上游仓库为https://github.com/icelib/postcss-plugins，查询时最新仍为1.1.6，未找到对应duplicate/replace Issue。临时补丁只让replace:false时跳过重复插入，replace:true始终完成当前声明替换；转换后仅清理相邻同属性/同值/同优先级声明，保留中间覆盖与显式保留模式。
 
 补丁为patches/postcss-plugin-shared@1.1.6.patch，记录在pnpm配置和锁文件中；只采用pnpm生成的patch hash与引用，未纳入patch-commit顺带解析出的无关依赖升级。单位插件链强制打包进PostCSS的ESM/CJS产物并附带MIT许可，构建后拦截四个单位依赖的外部模块解析，分别加载ESM/CJS入口，单位替换均通过；消费者不需要安装仓库patch。Taro的6条static用例以原有快照不更新通过，没有接受rem残留。后续上游发布包含此修复的正式版本后，应升级、复验unit-duplicate-replacement及真实Taro静态产物，再删除补丁及锁文件登记。
+
+## 当前配置快照的重复读取
+
+aca7b4297的第二轮CI只有uni-app插件构建中位数触发性能门禁：1886→2008ms（6.47%），整体构建及HMR时延、内存门禁未触发失败。原始报告保存在style-removal/ci2-uni-artifact/。
+
+新增getter回归证明resolveStyleOptionsFromContext在一次调用中读取cssOptions达20次；Vite代理的每次读取都可能重新解析样式阶段并构造选项。现同次解析先读取一次嵌套配置，再复用该快照；下一次调用仍重新读取，原位修改继续生效，不引入跨轮静态配置缓存。回归在修改前因20次读取失败，修改后通过。
+
+保留原head和修改后的两组本地三次构建、三轮watch样本。修改后的同组基线/修复插件构建中位数1368/1314ms，整体构建4522.2/4340.0ms，HMR714.9/656.3ms，峰值RSS1296.0/1281.1MB。环境波动仍可能影响计时，不把不同轮次直接相减，也不修改CI阈值；以新head的CI复验作最终判断。记录为style-removal/perf-uni-current-head.json与perf-uni-single-read.json。
 
 ## 规则评估
 
