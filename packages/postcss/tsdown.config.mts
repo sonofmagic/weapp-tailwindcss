@@ -22,7 +22,7 @@ export const postcssColorDependencies = [
   '@csstools/color-helpers',
 ]
 
-// 单位换算修复必须随发布产物交付，不能依赖消费者安装本仓库的 pnpm patch。
+// 将已验证的单位换算依赖链随 ESM/CJS 产物交付，保持两种入口的转换行为一致。
 export const postcssBundledDependencies = [
   ...postcssColorDependencies,
   'postcss-rule-unit-converter',

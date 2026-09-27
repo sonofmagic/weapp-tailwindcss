@@ -384,11 +384,11 @@ catalogs:
       version: 8.5.28
   postcssCompat:
     postcss-pxtrans:
-      specifier: ^1.0.5
-      version: 1.0.5
+      specifier: ^1.0.6
+      version: 1.0.6
     postcss-rule-unit-converter:
-      specifier: ^0.2.4
-      version: 0.2.4
+      specifier: ^0.2.5
+      version: 0.2.5
     postcss-scss:
       specifier: ^4.0.9
       version: 4.0.9
@@ -397,8 +397,8 @@ catalogs:
       version: 4.2.0
   postcssRem:
     postcss-rem-to-responsive-pixel:
-      specifier: ^7.0.6
-      version: 7.0.6
+      specifier: ^7.0.7
+      version: 7.0.7
   postcssRpx:
     postcss-rpx-transform:
       specifier: ^1.0.1
@@ -784,7 +784,6 @@ pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
 
 patchedDependencies:
   '@mpxjs/vue-cli-plugin-mpx@2.2.30': a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb
-  postcss-plugin-shared@1.1.6: 7915129e69a3cad022915c8ee691f45bdeca991c42a0315c3d740eb929a803b5
   rollup@3.30.0: a1307a0b75d70a7a360597a68d55f01be7e85b84677b0ba1cb82c430f8b28ffc
   rollup@4.63.0: 4f732dcaad5986ffbe82caa0236c5ece50738873705cb399aa2f0a4dd15ed375
   rollup@4.63.1: c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0
@@ -1617,7 +1616,7 @@ importers:
         version: 4.2.1(postcss@8.5.28)
       postcss-rem-to-responsive-pixel:
         specifier: catalog:postcssRem
-        version: 7.0.6(postcss@8.5.28)
+        version: 7.0.7(postcss@8.5.28)
       postcss-rpx-transform:
         specifier: catalog:postcssRpx
         version: 1.0.1
@@ -4900,13 +4899,13 @@ importers:
         version: 11.5.4(postcss@8.5.28)
       postcss-pxtrans:
         specifier: catalog:postcssCompat
-        version: 1.0.5(postcss@8.5.28)
+        version: 1.0.6(postcss@8.5.28)
       postcss-rem-to-responsive-pixel:
         specifier: catalog:postcssRem
-        version: 7.0.6(postcss@8.5.28)
+        version: 7.0.7(postcss@8.5.28)
       postcss-rule-unit-converter:
         specifier: catalog:postcssCompat
-        version: 0.2.4(postcss@8.5.28)
+        version: 0.2.5(postcss@8.5.28)
       postcss-scss:
         specifier: catalog:postcssCompat
         version: 4.0.9(postcss@8.5.28)
@@ -29901,8 +29900,8 @@ packages:
     peerDependencies:
       postcss: ^8
 
-  postcss-plugin-shared@1.1.6:
-    resolution: {integrity: sha512-ARv37oi6XN6FK15wgZanNH4/FfSqEEQ1BmdxkdBhKrddJnPO71MxN3SKI52qlvpmCQLmSV/QE7lE4K2hf+ncVQ==}
+  postcss-plugin-shared@1.1.7:
+    resolution: {integrity: sha512-wEuspBSYjjoWjN54ZINSTXCUBz03S/ZRRler10kgeGMYDklXQvU4htEvALTA/9h1gDS1KgJKF89Su4CROwF7bA==}
     peerDependencies:
       postcss: ^8
 
@@ -29942,8 +29941,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-pxtrans@1.0.5:
-    resolution: {integrity: sha512-Gf4ZIcLBrJNEMHdsxDcWVC0C9kfqzWZ3C9fPKOCD9cbHMU8pLpNpPBrz1BtbsSYomtRdfZcB4+KtDSAgibJWSw==}
+  postcss-pxtrans@1.0.6:
+    resolution: {integrity: sha512-YvL5spjE3dFEj4mhgmq3Si0s+/ZnnCTQPZ88ShXUUYHtOzl1lEAYWMjiOPbNfQME3t0WINQpV1cck6xVSWdmog==}
     peerDependencies:
       postcss: ^8
 
@@ -30007,8 +30006,8 @@ packages:
     peerDependencies:
       postcss: ^8.5.26
 
-  postcss-rem-to-responsive-pixel@7.0.6:
-    resolution: {integrity: sha512-ZYw6hcXuZ+gG1pDcbVYMKX4bHMn9qeXPJvHIPWZsOaoID1wO3vxABuBPdxpLrBoJ23dxGHTAJM9ZmyYbT9pkjg==}
+  postcss-rem-to-responsive-pixel@7.0.7:
+    resolution: {integrity: sha512-BmW/Y+ffp51u6wxa1Z9RXdTwaP5lj8AyhqVCvaHqv6B0tVBtH/vR4AyboyhsVue7H2L4mhuXlB7kSVhfWnzzFA==}
     engines: {node: '>=16.6.0'}
     peerDependencies:
       postcss: ^8
@@ -30030,8 +30029,8 @@ packages:
   postcss-rpx-transform@1.0.1:
     resolution: {integrity: sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==}
 
-  postcss-rule-unit-converter@0.2.4:
-    resolution: {integrity: sha512-ZFflPiUAR9OALCaC1lB+JkxhDM5SgrSvdE3L8U0YDyZl6s3Qvw8sLuiAF/b0YC6LPf+WqC/iGWkAz7w3Ncf4XA==}
+  postcss-rule-unit-converter@0.2.5:
+    resolution: {integrity: sha512-0Qb/DuGbhk+gifkNqDxzGfkdGugIgiqR4opLjzWx68qLi8XAVi64SxtHbUhlN6lNtYnrXlArVqEcEEdRnXbQJA==}
     peerDependencies:
       postcss: ^8
 
@@ -70937,7 +70936,7 @@ snapshots:
     dependencies:
       postcss: 8.5.28
 
-  postcss-plugin-shared@1.1.6(patch_hash=7915129e69a3cad022915c8ee691f45bdeca991c42a0315c3d740eb929a803b5)(postcss@8.5.28):
+  postcss-plugin-shared@1.1.7(postcss@8.5.28):
     dependencies:
       defu: 6.1.7
       postcss: 8.5.28
@@ -71194,11 +71193,11 @@ snapshots:
       postcss: 8.5.28
       postcss-selector-parser: 7.1.6
 
-  postcss-pxtrans@1.0.5(postcss@8.5.28):
+  postcss-pxtrans@1.0.6(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-plugin-shared: 1.1.6(patch_hash=7915129e69a3cad022915c8ee691f45bdeca991c42a0315c3d740eb929a803b5)(postcss@8.5.28)
-      postcss-rule-unit-converter: 0.2.4(postcss@8.5.28)
+      postcss-plugin-shared: 1.1.7(postcss@8.5.28)
+      postcss-rule-unit-converter: 0.2.5(postcss@8.5.28)
 
   postcss-pxtransform@4.2.1(postcss@8.5.28):
     dependencies:
@@ -71253,11 +71252,11 @@ snapshots:
       postcss: 8.5.28
       postcss-value-parser: 4.2.0
 
-  postcss-rem-to-responsive-pixel@7.0.6(postcss@8.5.28):
+  postcss-rem-to-responsive-pixel@7.0.7(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-plugin-shared: 1.1.6(patch_hash=7915129e69a3cad022915c8ee691f45bdeca991c42a0315c3d740eb929a803b5)(postcss@8.5.28)
-      postcss-rule-unit-converter: 0.2.4(postcss@8.5.28)
+      postcss-plugin-shared: 1.1.7(postcss@8.5.28)
+      postcss-rule-unit-converter: 0.2.5(postcss@8.5.28)
 
   postcss-replace-overflow-wrap@4.0.0(postcss@8.5.28):
     dependencies:
@@ -71273,10 +71272,10 @@ snapshots:
 
   postcss-rpx-transform@1.0.1: {}
 
-  postcss-rule-unit-converter@0.2.4(postcss@8.5.28):
+  postcss-rule-unit-converter@0.2.5(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-plugin-shared: 1.1.6(patch_hash=7915129e69a3cad022915c8ee691f45bdeca991c42a0315c3d740eb929a803b5)(postcss@8.5.28)
+      postcss-plugin-shared: 1.1.7(postcss@8.5.28)
 
   postcss-safe-parser@7.0.1(postcss@8.5.28):
     dependencies:

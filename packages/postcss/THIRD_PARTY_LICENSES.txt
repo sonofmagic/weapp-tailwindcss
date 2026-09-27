@@ -1,6 +1,6 @@
 Bundled unit conversion utilities: https://github.com/icelib/postcss-plugins
 
-postcss-plugin-shared 1.1.6
+postcss-plugin-shared 1.1.7
 
 MIT License
 
@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-postcss-rule-unit-converter 0.2.4
+postcss-rule-unit-converter 0.2.5
 
 MIT License
 
@@ -50,7 +50,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-postcss-rem-to-responsive-pixel 7.0.6
+postcss-rem-to-responsive-pixel 7.0.7
 
 MIT License
 
@@ -75,7 +75,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-postcss-pxtrans 1.0.5
+postcss-pxtrans 1.0.6
 
 MIT License
 

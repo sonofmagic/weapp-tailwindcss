@@ -112,6 +112,16 @@ handler.cache 与 mp 的两条计数回归在修改前失败、修改后通过�
 
 相同独立基线 7fa8c3ac8 的真实 uni-app 微信对照运行 3 次 build、3 轮 watch：插件构建中位数 1389→1287ms，整体构建 4509.3→4234.6ms，HMR 662.2→658.2ms。入口为 `pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file e2e/.artifacts/style-removal/perf-versions.json --only demo-uni-app-vite-tailwindcss-v4__mp-weixin --build-runs 3 --hmr-runs 3 --timeout 180000 --poll-interval 30 --out e2e/.artifacts/style-removal/perf-uni-lazy-preflight.json`。此轮未修改 demo 或 static 基线；完整语义快照均以不更新模式验证。未运行全仓或全端测试。
 
+## 上游正式发布后的依赖替换
+
+上游 [PR #49](https://github.com/icelib/postcss-plugins/pull/49) 已合并，提交为44745013546c09932c5779855225433dd7383f10；[Release run 36337974656](https://github.com/icelib/postcss-plugins/actions/runs/36337974656) 发布 postcss-plugin-shared 1.1.7、postcss-rule-unit-converter 0.2.5、postcss-pxtrans 1.0.6、postcss-rem-to-responsive-pixel 7.0.7。下游同步升级三个直接依赖的 catalog 范围，移除1.1.6补丁文件和 patchedDependencies 登记，保留原回归、打包策略并更新许可证版本。
+
+从 npm registry 获取四个发布包并核对 SHA-512 integrity；共享包的 ESM/CJS 均包含 `!replace && skipDuplicate` 修复。完整元数据和解包内容保存在style-removal/npm-published-units/。最初 pnpm 查询 rem 版本仍返回旧元数据，随后原始版本端点与发布日志确认7.0.7；两轮依赖解析遇到 registry 长时间等待后终止。最终按这四个已验证包的版本、integrity 和原有依赖关系限定更新锁文件，未更新其他依赖；`pnpm install --frozen-lockfile --prefer-offline` 通过，只替换4个包。实际依赖树中三条单位转换链均使用未打补丁的共享包1.1.7。
+
+本轮 PostCSS 112文件、1173测试通过，3条既有跳过；主包相关4文件105测试通过。PostCSS构建和声明生成通过。阻断四个单位依赖的外部解析后，当前ESM/CJS产物的原位替换、显式保留模式和不同优先级回归均通过，证明不依赖旧补丁或消费者外部单位实现。新包许可证正文与随包许可通知一致。命令与日志保存在style-removal/upstream-*.log，产物复验脚本为style-removal/verify-published-units.mjs。
+
+真实 static 复验使用 `CI=1 pnpm exec vitest run --config e2e/vitest.e2e.config.ts e2e/taro-vite-react-tailwindcss-v4.test.ts e2e/issue-1214-rpx-calc.test.ts e2e/issue-1241.test.ts --update=none`，并通过 E2E_ISSUE_1241_DEPENDENCIES 复用已核对版本的框架依赖。三个项目共36条测试通过（18/12/6），没有更新任何快照，Taro输出及默认/显式calc、多入口和作者覆盖行为与既有基线一致。架构、规则、change intent检查通过，ESLint源码0错误；Markdown按仓库配置忽略。本轮验证限于依赖替换的定向测试和构建，不新增真机、Skyline或全端验收结论。
+
 ## 规则评估
 
 不新增AGENTS规则。现有AST所有权、构建图与生命周期、不能以单文件猜测全局作用域、真实产物及static基线要求足以约束本次修复。需要保留的教训是：没有导入边不代表宿主不会共同加载，默认适配必须比显式用户选择更保守。
