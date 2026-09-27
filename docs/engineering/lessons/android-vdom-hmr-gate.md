@@ -35,6 +35,8 @@ regressions:
 
 本机选中的工具链是 Xcode 27.0（27A266a），`Contents/Developer/Applications` 不存在；安装目录及系统索引均未找到 `Simulator.app`。Xcode 包含 `Contents/Applications/DeviceHub.app`（`com.apple.dt.Devices`），但 HBuilderX 的启动实现仍明确使用旧应用名，公开 CLI 参数没有替代应用路径选项。读取 DeviceHub 界面超时，未将它假定为可直接替换的兼容入口。Rosetta 阻塞已解除，当前需要解决 HBuilderX 与所选 Xcode 的模拟器应用启动兼容性，不能用 `simctl` 设备已启动或编译成功代替运行时证据。
 
+后续核对 [Apple Device Hub 官方文档](https://developer.apple.com/documentation/xcode/managing-your-simulated-and-physical-devices-in-device-hub) 和 [Xcode 27 发布说明](https://developer.apple.com/documentation/xcode-release-notes/xcode-27-release-notes) 后，纠正“可能缺少 Simulator 安装组件”的判断：Xcode 27 的模拟器管理与显示入口是 Device Hub，文档明确说明运行模拟器时由 Device Hub 打开窗口。本机已安装该应用，模拟器运行时及 simctl 也可用。因此这里是 HBuilderX 仍调用旧应用名的兼容问题，不应据此要求重装 Xcode 或重复下载 iOS runtime。更换启动入口后仍需实际验证 HBuilderX 完整运行链路，不能直接将当前阻塞标为通过。
+
 本轮仅安装了已授权的 Rosetta，没有重装/降级 Xcode，也没有改写 HBuilderX。测试进程已停止、临时源码标记已按原始内容核对恢复。安装记录、编译成功日志和新的启动错误保存在同轮 `rosetta-install.txt`、`ios-simulator-block/`；Harmony 与最终跨端比较仍未调度。
 
 ## 验证
