@@ -261,7 +261,7 @@ describe('bundlers/vite remembered css replay root shell', () => {
         ],
       }) }),
     }))
-    expect(createScopedGeneratorRuntime).toHaveBeenCalledWith('merged.wxss', expect.anything(), expect.any(Set), ownedSources[1]!.rawSource, ownedSources[1]!.sourceFile)
+    expect(createScopedGeneratorRuntime).toHaveBeenCalledWith('merged.wxss', expect.anything(), expect.any(Set), ownedSources[1]!.rawSource, ownedSources[1]!.sourceFile, true)
     expect(await replayOwned()).toBe(0)
     swapped = true
     expect(await replayOwned()).toBe(1)

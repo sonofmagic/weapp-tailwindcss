@@ -5,6 +5,7 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { expect, it } from 'vitest'
 import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
 import { wechatVersion } from '../scripts/e2e-preflight/probes/wechat-version'
+import { resolveWechatAppId } from '../scripts/wechat-app-id'
 import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { measure, setLayout } from './issue-1241/layout'
 import { build, createProject, evidence } from './issue-1241/project'
@@ -16,7 +17,7 @@ it.runIf(process.env.E2E_IDE === '1')('Issue 1241 微信 DevTools 双入口尺�
   if (!cliPath) {
     throw new Error('请指定本轮微信 DevTools 官方 CLI')
   }
-  const project = await createProject('ide', { secondTheme: '1rpx' })
+  const project = await createProject('ide', { secondTheme: '1rpx', wechatAppId: resolveWechatAppId() })
   const launcher = new Launcher()
   let miniProgram: Awaited<ReturnType<typeof launcher.launch>> | undefined
   const results = []

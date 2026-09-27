@@ -246,3 +246,4 @@ uni-input:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
 }
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */

@@ -1,10 +1,11 @@
+import type { FrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
-import { runFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
+import { withFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
 import { installFrameworkIdeRuntimeErrorCollector } from './frameworkIdeRuntimeErrors'
 import { FRAMEWORK_SUPPORT_CASES } from './frameworkSupportMatrix'
 import { resolveFrameworkSupportPaths } from './frameworkSupportPaths'
@@ -110,14 +111,7 @@ async function withStageTimeout<T>(stage: string, task: Promise<T>, stageTimeout
   }
 }
 
-async function main() {
-  if (process.env['E2E_IDE_BUILD'] === '1') {
-    const { ensureProjectBuilt } = await import('./projectBuild')
-    await ensureProjectBuilt(root, {
-      patchTailwind: supportEntry.tailwindcss !== 'v4',
-    })
-  }
-
+async function runProbe(hotUpdate?: FrameworkIdeHotUpdateProbe) {
   const pageUrl = await ensureMiniProgramEntry()
   const automator = new Launcher()
   const launchProjectPath = projectPath
@@ -139,9 +133,7 @@ async function main() {
       throw new Error(`Failed to resolve current page for ${supportCaseName}`)
     }
 
-    if (shouldRunHotUpdateProbe()) {
-      await runFrameworkIdeHotUpdateProbe(supportEntry, miniProgram, page, pageUrl, launchProjectPath, runtimeErrors)
-    }
+    await hotUpdate?.(miniProgram, page, pageUrl, launchProjectPath, runtimeErrors)
     await runtimeErrors.assertNoErrors('probe complete')
   }
   finally {
@@ -151,6 +143,22 @@ async function main() {
     finally {
       await restoreProjectConfig()
     }
+  }
+}
+
+async function main() {
+  if (process.env['E2E_IDE_BUILD'] === '1') {
+    const { ensureProjectBuilt } = await import('./projectBuild')
+    await ensureProjectBuilt(root, {
+      patchTailwind: supportEntry.tailwindcss !== 'v4',
+    })
+  }
+
+  if (shouldRunHotUpdateProbe()) {
+    await withFrameworkIdeHotUpdateProbe(supportEntry, runProbe)
+  }
+  else {
+    await runProbe()
   }
 }
 

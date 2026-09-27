@@ -72,6 +72,13 @@ describe('架构检查器', () => {
     const { root } = await fixture({ 'a.ts': "import './missing'" })
     expect(auditArchitecture(root).errors.join('\n')).toContain('无法解析本地依赖')
   })
+  it('忽略源码目录中的依赖缓存', async () => {
+    const { root, packageRoot } = await fixture({ 'a.ts': 'export const value = 1' })
+    const generated = path.join(packageRoot, 'src', 'node_modules', '.cache', 'jiti', 'generated.cjs')
+    await mkdir(path.dirname(generated), { recursive: true })
+    await writeFile(generated, 'require("../../dark-mode.cjs")')
+    expect(auditArchitecture(root).errors).toEqual([])
+  })
   it('拒绝通过生产源码范围外的本地模块绕过检查', async () => {
     const { root, packageRoot } = await fixture({ 'core/entry.ts': "import '../../bridge'" })
     await writeFile(path.join(packageRoot, 'bridge.ts'), "export * from './src/bundlers/adapter'")

@@ -962,14 +962,18 @@ function normalizeCalcWrapperValues(root: postcss.Root) {
 function dedupeExactDeclarations(root: postcss.Root) {
   root.walkRules((rule) => {
     const seen = new Set<string>()
-    rule.walkDecls((decl) => {
+    // 保留最后一次声明，且不跨越嵌套规则或条件边界改变层叠顺序。
+    for (const decl of [...rule.nodes].reverse()) {
+      if (decl.type !== 'decl') {
+        continue
+      }
       const key = `${decl.prop}\0${decl.value}\0${decl.important ? '1' : '0'}`
       if (seen.has(key)) {
         decl.remove()
-        return
+        continue
       }
       seen.add(key)
-    })
+    }
   })
 }
 

@@ -13602,6 +13602,7 @@ ${utilities}
       },
     }
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(generateMock).toHaveBeenCalledTimes(1)
 
     runtimeSet.clear()
     runtimeSet.add('text-[123rpx]')
@@ -13617,7 +13618,7 @@ ${utilities}
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
-    expect(generateMock).toHaveBeenCalledTimes(3)
+    expect(generateMock).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime-linked toutiao ttss when only ttml changes', async () => {
@@ -13679,6 +13680,7 @@ ${utilities}
       },
     }
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(generateMock).toHaveBeenCalledTimes(1)
 
     runtimeSet.clear()
     runtimeSet.add('text-[123rpx]')
@@ -13694,7 +13696,7 @@ ${utilities}
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
-    expect(generateMock).toHaveBeenCalledTimes(3)
+    expect(generateMock).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
   it('replays remembered vite pipeline css when source rolls back without css bundle asset', async () => {

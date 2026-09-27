@@ -21,6 +21,9 @@ export function sourceFiles(root: string): string[] {
     return []
   }
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.isDirectory() && entry.name === 'node_modules') {
+      return []
+    }
     const file = path.join(root, entry.name)
     return entry.isDirectory() ? sourceFiles(file) : /\.[cm]?[jt]sx?$/.test(file) ? [file] : []
   })

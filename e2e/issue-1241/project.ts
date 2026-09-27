@@ -10,6 +10,7 @@ import { resolveStylesheetImport } from './stylesheet-path'
 import { dependencies, save } from './support'
 
 export interface Options {
+  wechatAppId?: string
   spacing?: string
   calc?: 'nested' | 'top' | 'boolean' | 'off' | 'default'
   inline?: boolean
@@ -82,7 +83,7 @@ export async function createProject(name: string, options: Options = {}) {
     'src/main.ts': main,
     'src/App.vue': '<script>export default {}</script>',
     'src/pages.json': JSON.stringify({ pages: [{ path: 'pages/index' }] }),
-    'src/manifest.json': JSON.stringify({ 'name': 'published-issues', 'appid': '', 'versionName': '1.0.0', 'mp-weixin': { appid: 'touristappid', setting: { urlCheck: false } } }),
+    'src/manifest.json': JSON.stringify({ 'name': 'published-issues', 'appid': '', 'versionName': '1.0.0', 'mp-weixin': { appid: options.wechatAppId ?? 'touristappid', setting: { urlCheck: false } } }),
     'src/tailwind.css': themeSource(options),
     'src/pages/index.vue': pageSource(name),
     ...(options.author ? { 'src/author.css': options.author } : {}),

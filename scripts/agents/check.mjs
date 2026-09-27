@@ -7,7 +7,7 @@ import { parse } from 'yaml'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const read = file => readFileSync(file, 'utf8')
-const nativeCommands = new Set(['install', 'exec', 'pack', 'publish'])
+const nativeCommands = new Set(['install', 'exec', 'pack', 'publish', 'change'])
 
 export function localLinks(markdown) {
   // 规则文档约定使用行内 Markdown 链接；代码块中的示例不是引用。
@@ -34,14 +34,15 @@ export function validateCommand(command, cwd, manifests) {
   if (!manifest) {
     return [`无法确定命令 cwd：${command}`]
   }
-  if (parts[index] === 'run') {
+  const scriptOnly = parts[index] === 'run'
+  if (scriptOnly) {
     index++
   }
   const name = parts[index]
-  if (!name || (!nativeCommands.has(name) && !Object.hasOwn(manifest.scripts ?? {}, name))) {
+  if (!name || (!Object.hasOwn(manifest.scripts ?? {}, name) && (scriptOnly || !nativeCommands.has(name)))) {
     return [`脚本不存在或缺少 exec：${manifest.name} / ${command}`]
   }
-  if (name === 'exec' && parts[index + 1] === 'vitest') {
+  if (!scriptOnly && name === 'exec' && parts[index + 1] === 'vitest') {
     return parts.slice(index + 2)
       .filter(part => /\.test\.[cm]?[jt]s$/.test(part))
       .filter(part => !existsSync(path.resolve(manifest.dir, part)))

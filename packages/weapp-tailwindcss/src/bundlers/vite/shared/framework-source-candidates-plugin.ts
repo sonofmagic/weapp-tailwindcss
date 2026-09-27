@@ -13,7 +13,7 @@ import { cleanUrl, isCSSRequest } from '../utils'
 import { readViteHmrSource } from './hmr-source'
 
 export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
-  const watchedSourceFiles = new Set<string>()
+  let previousBuildConsumedTailwindCss = false
   const shouldSkipSourceCandidateState = () => options.shouldSkipSourceCandidateState?.() === true
   const hasDifferentHotModules = (left: ModuleNode[], right: ModuleNode[]) => left.length !== right.length
     || left.some((mod, index) => mod !== right[index])
@@ -324,19 +324,42 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
         return
       }
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })
-      // 文件型 @source 可以不在模块图中；监听扫描层已确认的文件，交由 watchChange 更新候选。
-      for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
-        if (watchedSourceFiles.has(file)) {
-          continue
+      // 已确认的消费图在下一轮开始时补回扫描监听，覆盖框架绕过缓存模块钩子的增量路径。
+      if (previousBuildConsumedTailwindCss) {
+        for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
+          this.addWatchFile(file)
         }
-        this.addWatchFile?.(file)
-        watchedSourceFiles.add(file)
       }
+    },
+    async moduleParsed(module) {
+      if (shouldSkipSourceCandidateState()) {
+        return
+      }
+      // 仅让实际消费 Tailwind CSS 的构建图监听候选；uni-app 的空 nvue 图不能抢先触发设备同步。
+      const roots = options.tailwindRootCssModuleIds as Set<string> | undefined
+      if (roots?.has(module.id)) {
+        await options.prepareTailwindGeneration()
+        // 在 Rollup 3 允许登记依赖的阶段，刷新 transform 后可能改变的来源范围。
+        for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
+          this.addWatchFile(file)
+        }
+      }
+    },
+    async shouldTransformCachedModule(module) {
+      if (!shouldSkipSourceCandidateState() && options.tailwindRootCssModuleIds?.has(module.id)) {
+        await options.prepareTailwindGeneration()
+        for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
+          this.addWatchFile(file)
+        }
+      }
+      return null
     },
     async generateBundle(...args: any[]) {
       if (shouldSkipSourceCandidateState()) {
         return
       }
+      const roots = options.tailwindRootCssModuleIds as Set<string> | undefined
+      previousBuildConsumedTailwindCss = Boolean(roots && [...roots].some(id => this.getModuleInfo?.(id) != null))
       return options.preGenerateBundleHook?.apply(this, args)
     },
   }
