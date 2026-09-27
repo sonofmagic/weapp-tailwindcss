@@ -52,16 +52,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   // 首次处理拿到内容信号后再创建管线，避免提前构建一条不会使用的完整管线。
 
   /** CSS 处理结果 LRU 缓存 */
-  const resultCache = new LRUCache<string, PostcssResult>({ max: CSS_RESULT_CACHE_MAX })
-
-  /** 检测是否配置了用户 postcss 插件（如 tailwindcss），有用户插件时不做内容探测 */
-  const hasUserPlugins = Boolean(
-    cachedOptions.postcssOptions?.plugins
-    && (Array.isArray(cachedOptions.postcssOptions.plugins)
-      ? cachedOptions.postcssOptions.plugins.length > 0
-      : typeof cachedOptions.postcssOptions.plugins === 'object'
-        && Object.keys(cachedOptions.postcssOptions.plugins).length > 0),
-  )
+  const resultCache = new LRUCache<string, { source: string, options: string, result: PostcssResult }>({ max: CSS_RESULT_CACHE_MAX })
 
   function cloneResult(result: PostcssResult): PostcssResult {
     if (!result.root || typeof result.root.clone !== 'function') {
@@ -79,6 +70,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     opt?: Partial<IStyleHandlerOptions>,
   ) {
     const resolvedOptions = resolver.resolve(opt)
+    const plugins = resolvedOptions.postcssOptions?.plugins
+    const hasUserPlugins = Boolean(plugins && Object.keys(plugins).length > 0)
+    // 用户插件可能读取外部状态；Root 还携带来源与位置信息，不能只按字符串复用。
+    const cacheable = !hasUserPlugins && root === undefined
     const normalizedRawSource = normalizeCssLineComments(rawSource)
     // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
     // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
@@ -112,10 +107,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     const contentHash = simpleHash(source)
     const cacheKey = `${optsFp}|${signalKey}|${contentHash}`
 
-    const cachedResult = resultCache.get(cacheKey)
-    if (cachedResult) {
+    const cached = cacheable ? resultCache.get(cacheKey) : undefined
+    if (cached?.source === rawSource && cached.options === optsFp) {
       void resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: 0, cache: { hit: true, key: cacheKey } })
-      return Promise.resolve(cloneOutput ? cloneResult(cachedResult) : cachedResult)
+      return Promise.resolve(cloneOutput ? cloneResult(cached.result) : cached.result)
     }
 
     const processor = processorCache.getProcessor(resolvedOptions, signal)
@@ -162,7 +157,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
         }
       }
       // 缓存最终结果
-      resultCache.set(cacheKey, finalResult)
+      if (cacheable) {
+        // 短哈希仅用于索引，命中还须核对保护占位前的完整输入及配置。
+        resultCache.set(cacheKey, { source: rawSource, options: optsFp, result: finalResult })
+      }
       await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey } })
       return cloneOutput ? cloneResult(finalResult) : finalResult
     }).catch(async (error) => {
