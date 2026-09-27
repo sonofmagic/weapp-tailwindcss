@@ -31,6 +31,12 @@ regressions:
 
 第 20 阶段 iOS 尚未进入页面运行，HBuilderX 提示 App 真机运行插件包含 Intel 程序、需要 Rosetta 2。系统安装记录不存在，`arch -x86_64 /usr/bin/true` 返回 `Bad CPU type in executable`，确认当前机器缺少该运行条件。原始日志和只读系统检查保存在同轮 `ios-rosetta-block/`。停止本任务进程、恢复源码后等待用户处理系统组件安装；iOS、Harmony 和最终跨端比较仍未完成。此阻塞不属于已经授权的 Android 重启例外。
 
+用户随后授权安装 Rosetta 2 并接受 Apple 许可，安装成功，x86_64 执行返回 0。新预检 `0af5b60a-88ff-4cac-9b5d-c9ede9400beb` 全部通过后，从 iOS 阶段续跑：两组普通 uni-app 的产物/传输检查通过，uni-app x VDOM 也编译成功，但运行器调用 `open -a Simulator` 失败，原始错误为 `Unable to find application named 'Simulator'`。
+
+本机选中的工具链是 Xcode 27.0（27A266a），`Contents/Developer/Applications` 不存在；安装目录及系统索引均未找到 `Simulator.app`。Xcode 包含 `Contents/Applications/DeviceHub.app`（`com.apple.dt.Devices`），但 HBuilderX 的启动实现仍明确使用旧应用名，公开 CLI 参数没有替代应用路径选项。读取 DeviceHub 界面超时，未将它假定为可直接替换的兼容入口。Rosetta 阻塞已解除，当前需要解决 HBuilderX 与所选 Xcode 的模拟器应用启动兼容性，不能用 `simctl` 设备已启动或编译成功代替运行时证据。
+
+本轮仅安装了已授权的 Rosetta，没有重装/降级 Xcode，也没有改写 HBuilderX。测试进程已停止、临时源码标记已按原始内容核对恢复。安装记录、编译成功日志和新的启动错误保存在同轮 `rosetta-install.txt`、`ios-simulator-block/`；Harmony 与最终跨端比较仍未调度。
+
 ## 验证
 
 - 完整运行 `d1983685-5a8c-4e0f-a851-7769ac35cf82`：6470 项单测通过、43 项既有跳过；699 项 static 通过、35 项按专项开关跳过；52 项多平台产物通过，质量门禁通过。微信视觉中一次 DevTools 连接/reLaunch 超时阻断，官方 CLI 定向诊断恢复后没有改变源码。
