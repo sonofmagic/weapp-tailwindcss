@@ -836,7 +836,7 @@ describe('uni-app-x vite plugins', () => {
     transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
 
     await nvuePlugin!.buildStart?.()
-    expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
+    expect(ensureRuntimeClassSet).toHaveBeenCalledWith()
 
     const transformResult = await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/foo.uvue')
     expect(transformUVueMock).toHaveBeenCalledWith(
@@ -854,11 +854,11 @@ describe('uni-app-x vite plugins', () => {
     expect(transformResult).toEqual({ code: 'transformed', map: null })
 
     await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/foo.uvue' } as HmrContext)
-    expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
+    expect(ensureRuntimeClassSet).toHaveBeenCalledWith()
 
     currentConfig = { command: 'build', build: { watch: true } } as ResolvedConfig
     await nvuePlugin!.watchChange?.('/foo.uvue?vue&type=template')
-    expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
+    expect(ensureRuntimeClassSet).toHaveBeenCalledWith()
   })
 
   it('reloads a native app when a uvue hot update expands the runtime class set', async () => {
@@ -1180,7 +1180,7 @@ describe('uni-app-x vite plugins', () => {
     const modules = await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, context)
 
     expect(modules).toEqual([pageModule, styleModule])
-    expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
+    expect(ensureRuntimeClassSet).toHaveBeenCalledWith()
     expect(invalidateModule).toHaveBeenCalledWith(styleModule)
     expect(send).not.toHaveBeenCalled()
     expect(webCssEntryDiagnostics.requestCheck).toHaveBeenCalledTimes(1)

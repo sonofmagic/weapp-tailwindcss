@@ -4,6 +4,8 @@ import type {
   TailwindV4ResolvedSource,
   TailwindV4SourcePattern,
 } from './types.ts'
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -27,7 +29,27 @@ interface TailwindV4NodeModule {
 }
 
 const nodeModulePromiseCache = new Map<string, Promise<TailwindV4NodeModule>>()
-const designSystemPromiseCache = new Map<string, Promise<TailwindV4DesignSystem>>()
+interface DesignSystemCacheEntry {
+  promise: Promise<TailwindV4DesignSystem>
+  dependencies: Set<string>
+  fingerprint?: string
+}
+
+const designSystemPromiseCache = new Map<string, DesignSystemCacheEntry>()
+
+function fingerprintDesignDependencies(files: Iterable<string>) {
+  const hash = createHash('sha256')
+  for (const file of [...files].sort()) {
+    hash.update(file)
+    try {
+      hash.update(readFileSync(file))
+    }
+    catch {
+      hash.update('missing')
+    }
+  }
+  return hash.digest('hex')
+}
 
 function unique(values: Iterable<string>) {
   return Array.from(new Set(Array.from(values).filter(Boolean).map(value => path.resolve(value))))
@@ -133,7 +155,7 @@ export function getTailwindV4DesignSystemCacheKey(source: Pick<TailwindV4Resolve
   return createDesignSystemCacheKey(source.css, [source.base, ...source.baseFallbacks])
 }
 
-async function createTailwindV4DesignSystem(source: TailwindV4ResolvedSource): Promise<TailwindV4DesignSystem> {
+async function createTailwindV4DesignSystem(source: TailwindV4ResolvedSource, onDependency?: (file: string) => void): Promise<TailwindV4DesignSystem> {
   const bases = unique([source.base, ...source.baseFallbacks])
   if (bases.length === 0) {
     throw new Error('No base directories provided for Tailwind CSS v4 design system.')
@@ -144,7 +166,7 @@ async function createTailwindV4DesignSystem(source: TailwindV4ResolvedSource): P
   for (const base of bases) {
     try {
       const prepared = prepareGenerationModuleRequests(source.css, base)
-      return await withGenerationModuleCache(node, () => node.__unstable__loadDesignSystem(prepared.css, { base }), prepared.files)
+      return await withGenerationModuleCache(node, () => node.__unstable__loadDesignSystem(prepared.css, { base }), prepared.files, onDependency)
     }
     catch (error) {
       lastError = error
@@ -165,17 +187,21 @@ export async function loadTailwindV4DesignSystem(
     return createTailwindV4DesignSystem(source)
   }
 
-  const cacheKey = getTailwindV4DesignSystemCacheKey(source)
+  const cacheKey = JSON.stringify([source.projectRoot, getTailwindV4DesignSystemCacheKey(source)])
   const cached = designSystemPromiseCache.get(cacheKey)
-  if (cached) {
-    return cached
+  if (cached && (cached.fingerprint === undefined || cached.fingerprint === fingerprintDesignDependencies(cached.dependencies))) {
+    return cached.promise
   }
 
-  const promise = createTailwindV4DesignSystem(source)
-
-  designSystemPromiseCache.set(cacheKey, promise)
-  promise.catch(() => {
-    if (designSystemPromiseCache.get(cacheKey) === promise) {
+  const dependencies = new Set(source.dependencies)
+  const promise = createTailwindV4DesignSystem(source, file => dependencies.add(file))
+  const entry: DesignSystemCacheEntry = { promise, dependencies }
+  designSystemPromiseCache.set(cacheKey, entry)
+  // 记录实际加载的模块依赖，配置的间接依赖变化也必须使 design system 失效。
+  void promise.then(() => {
+    entry.fingerprint = fingerprintDesignDependencies(dependencies)
+  }, () => {
+    if (designSystemPromiseCache.get(cacheKey) === entry) {
       designSystemPromiseCache.delete(cacheKey)
     }
   })

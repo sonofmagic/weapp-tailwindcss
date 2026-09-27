@@ -120,7 +120,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     const nvueTransform = getTransformHandler(nvuePlugin)
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(transformUVueMock).toHaveBeenCalledWith(
       'console.log("x")',
@@ -147,7 +147,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
@@ -620,7 +620,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     }
   }, TEST_TIMEOUT_MS)
 
-  it('forces runtime refresh for every uni-app-x transform when serving', async () => {
+  it('refreshes changed SFCs through the early HMR lifecycle and reuses unchanged transforms', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
@@ -675,17 +675,24 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
+      const invalidationPlugin = plugins!.find(plugin => plugin.name === 'weapp-tailwindcss:runtime-invalidation')!
+      if (config.command === 'serve') {
+        await getHotUpdateHandler(invalidationPlugin).call({}, { file: 'Component.uvue' })
+      }
+      else {
+        await (invalidationPlugin.watchChange as any).call({}, 'Component.uvue')
+      }
       const secondResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#234567]"/></template>',
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     }
     finally {
@@ -750,17 +757,24 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
+      const invalidationPlugin = plugins!.find(plugin => plugin.name === 'weapp-tailwindcss:runtime-invalidation')!
+      if (config.command === 'serve') {
+        await getHotUpdateHandler(invalidationPlugin).call({}, { file: 'Component.uvue' })
+      }
+      else {
+        await (invalidationPlugin.watchChange as any).call({}, 'Component.uvue')
+      }
       const secondResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#345678]"/></template>',
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     }
     finally {
@@ -817,6 +831,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       },
       ws: { send: vi.fn() },
     }
+    await getHotUpdateHandler(plugins!.find(plugin => plugin.name === 'weapp-tailwindcss:runtime-invalidation')!).call({}, { file: '/src/pages/foo.uvue' })
     await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/src/pages/foo.uvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
@@ -824,6 +839,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
+    await getHotUpdateHandler(plugins!.find(plugin => plugin.name === 'weapp-tailwindcss:runtime-invalidation')!).call({}, { file: '/src/pages/foo.nvue' })
     await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/src/pages/foo.nvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
@@ -835,7 +851,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('refreshes runtime class set on .uvue/.nvue watch changes in build watch mode', async () => {
+  it('defers watch invalidations until the next build baseline', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
@@ -872,25 +888,18 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     runtimeIndex = 1
     currentContext.tailwindRuntime.extract.mockClear()
-    currentContext.tailwindRuntime.getClassSetSync.mockClear()
-    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.uvue')
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
-
-    currentContext.tailwindRuntime.extract.mockClear()
-    currentContext.tailwindRuntime.getClassSetSync.mockClear()
-    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.nvue')
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
-
-    currentContext.tailwindRuntime.extract.mockClear()
-    currentContext.tailwindRuntime.getClassSetSync.mockClear()
-    await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.vue')
+    const invalidationPlugin = plugins!.find(plugin => plugin.name === 'weapp-tailwindcss:runtime-invalidation')!
+    for (const file of ['/src/pages/foo.uvue', '/src/pages/foo.nvue', '/src/shared/classes.ts']) {
+      await (invalidationPlugin.watchChange as any).call({}, file)
+    }
     expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
-    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
+    await (nvuePlugin.buildStart as any).call(nvuePlugin)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', 'App.uvue')
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
-  it('forces runtime refresh for uni-app-x transform even for non-watch build runs', async () => {
+  it('keeps the build baseline stable across unchanged SFC transforms', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
@@ -928,16 +937,18 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
-    runtimeIndex = 1
     await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template></template>', 'App.uvue')
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(transformUVueMock).toHaveBeenCalledWith(
       '<template></template>',
       'App.uvue',
       currentContext.jsHandler,
-      runtimeSets[1],
+      expect.any(Set),
       expect.objectContaining({ native: true }),
     )
+    const transformedRuntime = transformUVueMock.mock.calls.at(-1)![3] as Set<string>
+    expect(transformedRuntime.has('text-[#aaaaaa]')).toBe(true)
+    expect(transformedRuntime.has('text-[#bbbbbb]')).toBe(false)
   }, TEST_TIMEOUT_MS)
 })

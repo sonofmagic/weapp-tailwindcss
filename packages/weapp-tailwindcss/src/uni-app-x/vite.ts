@@ -305,12 +305,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     harmonyApply.rememberSource(code, id, true)
     const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
     const enablePageLocalStyle = shouldEnablePageLocalStyleForFile(id)
-    const resolvedConfig = getResolvedConfig()
-    const shouldForceRefresh = resolvedConfig?.command === 'serve' || resolvedConfig?.command === 'build'
-    const moduleGraphCandidates = enableComponentLocalStyle || enablePageLocalStyle
-      ? await registerModuleGraphCandidates?.(id, code)
-      : undefined
-    const runtimeSet = await ensureRuntimeClassSet(shouldForceRefresh)
+    const moduleGraphCandidates = await registerModuleGraphCandidates?.(id, code)
+    const runtimeSet = await ensureRuntimeClassSet()
     const currentRuntimeSet: Set<string> = moduleGraphCandidates?.size
       ? new Set([...runtimeSet, ...moduleGraphCandidates])
       : runtimeSet
@@ -352,11 +348,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     const file = cleanUrl(id)
     const pending = transformSfc(code, id, context)
     pendingSfcTransforms.set(file, pending)
-    void pending.finally(() => {
+    const cleanup = () => {
       if (pendingSfcTransforms.get(file) === pending) {
         pendingSfcTransforms.delete(file)
       }
-    })
+    }
+    void pending.then(cleanup, cleanup)
     return pending
   }
 
@@ -401,20 +398,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         }
         return webLocalStyle.handleHotUpdate(ctx) ?? nativeHmrReloader.handleHotUpdate(ctx)
       },
-    },
-    async watchChange(id) {
-      if (!isEnabled()) {
-        return
-      }
-      const resolvedConfig = getResolvedConfig()
-      if (resolvedConfig?.command !== 'build' || !resolvedConfig.build?.watch) {
-        return
-      }
-      if (!UVUE_NVUE_QUERY_RE.test(id)) {
-        return
-      }
-      // 针对 `vite build --watch` 的增量构建刷新运行时类集
-      await ensureRuntimeClassSet(true)
     },
     buildEnd() {
       if (isWebGeneratorTarget()) {
