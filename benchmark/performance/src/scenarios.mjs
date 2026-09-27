@@ -3,13 +3,11 @@ import { createHash } from 'node:crypto'
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { cn } from '@weapp-tailwindcss/cn'
 import { extractValidCandidates } from '@weapp-tailwindcss/engine'
-import { twMerge } from '@weapp-tailwindcss/merge'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
-import { createRpxLengthTransform, resolveTransformers, wrapRuntimeAggregator } from '@weapp-tailwindcss/runtime'
 import { build } from 'esbuild'
 import { createContext } from 'weapp-tailwindcss/core'
+import { makeRuntimeCase } from './runtime.mjs'
 
 function resultOf(value) {
   const output = typeof value === 'string' ? value : value?.css ?? value?.code ?? JSON.stringify(value)
@@ -47,18 +45,6 @@ function coreJs(size) {
 }
 
 let sharedContext
-const runtimeTransformers = resolveTransformers()
-const runtimeRpxTransform = createRpxLengthTransform()
-
-function createRuntimeBenchmarkSubject() {
-  return wrapRuntimeAggregator(
-    twMerge,
-    runtimeTransformers,
-    runtimeRpxTransform.prepareValue,
-    runtimeRpxTransform.restoreValue,
-  )
-}
-
 function getSharedContext() {
   sharedContext ??= createContext()
   return sharedContext
@@ -205,30 +191,6 @@ function makeBundlerCase(size) {
           platform: 'neutral',
         })
         return Buffer.concat(result.outputFiles.map(file => file.contents)).toString('utf8')
-      }
-    },
-  }
-}
-
-function makeRuntimeCase(kind, size, mode = 'steady') {
-  const id = `runtime-${kind}-${mode === 'steady' ? '' : `${mode}-`}${size}`
-  const values = Array.from({ length: size }, (_, index) => `u-${index}`)
-  return {
-    id,
-    group: 'runtime',
-    complexityGroup: `runtime-${kind}-${mode}`,
-    size,
-    fresh: mode === 'cold',
-    async create() {
-      let subject = kind === 'cn' ? cn : twMerge
-      if (mode === 'cold' || mode === 'cache-miss') {
-        subject = createRuntimeBenchmarkSubject()
-      }
-      return () => {
-        if (mode === 'cache-miss') {
-          subject = createRuntimeBenchmarkSubject()
-        }
-        return subject(values, values.toReversed())
       }
     },
   }
