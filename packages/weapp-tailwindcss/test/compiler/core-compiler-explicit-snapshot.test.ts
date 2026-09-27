@@ -29,3 +29,45 @@ describe('createCompiler explicit snapshot mode', () => {
   })
 })
 
+describe('snapshot JavaScript candidate authority', () => {
+  it('transforms exact generated candidates without utility-prefix hints', async () => {
+    const { createCompiler } = await import('@/core')
+    const compiler = createCompiler()
+    try {
+      const snapshot = compiler.createSnapshot({ classSet: ['before:content-["x"]', 'custom:utility'], id: 'host', revision: 1 })
+      const source = `const value = 'before:content-["x"] custom:utility absent:utility'`
+      const result = await compiler.transformJavaScript(source, snapshot)
+      expect(result.code).toBe(`const value = 'before_ccontent-_b_qx_q_B custom_cutility absent:utility'`)
+    }
+    finally {
+      await compiler.dispose()
+    }
+  })
+
+  it('preserves protocol-relative URLs alongside exact slash candidates', async () => {
+    const { createCompiler } = await import('@/core')
+    const compiler = createCompiler()
+    try {
+      const snapshot = compiler.createSnapshot({ classSet: ['//cdn.example.com/app.js', 'w-[1/2]'], id: 'host', revision: 1 })
+      const result = await compiler.transformJavaScript('const value = \'//cdn.example.com/app.js w-[1/2]\'', snapshot)
+      expect(result.code).toBe('const value = \'//cdn.example.com/app.js w-_b1_f2_B\'')
+    }
+    finally {
+      await compiler.dispose()
+    }
+  })
+})
+
+it.each(['\n', '\r'])('preserves decoded line endings inside exact JS candidates: %j', async (ending) => {
+  const { createCompiler } = await import('@/core')
+  const compiler = createCompiler()
+  try {
+    const candidate = `before:content-['x${ending}y']`
+    const snapshot = compiler.createSnapshot({ classSet: [candidate], id: 'host', revision: 1 })
+    const result = await compiler.transformJavaScript(`const value = ${JSON.stringify(candidate)}`, snapshot)
+    expect(result.code).toBe(`const value = ${JSON.stringify(`before_ccontent-_b_ax${ending}y_a_B`)}`)
+  }
+  finally {
+    await compiler.dispose()
+  }
+})
