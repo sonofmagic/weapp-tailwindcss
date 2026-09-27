@@ -67,7 +67,7 @@ static更新限定上述Issue用例加-u；新增7份默认主题基线和独立
 
 自动模式把通过分析的rpx主题视为固定。未来JS或内联样式覆盖无法静态预测，动态主题必须显式cssOptions.cssCalc:false。此取舍已在实现前确认，并写入中英文文档与诊断。关闭后仍存在微信自身的运行时单位计算限制。
 
-额外watch实验删除整个Vue style块时，旧pages/index.wxss残留，导致与干净构建不一致。移除weapp-tailwindcss并移除Tailwind入口后的独立uni-app5.15对照仍得到同样结果：删除前后均保留.scope{--spacing:3rpx}。原始记录为sfc-delete-control.json/.log与page-scope-before.log、host-scope-static-update.log。该上游样式模块删除问题未在本次修复；正式新增watch回归明确保留非空style模块，仅增加和删除主题覆盖声明，不把整块删除算作通过。
+额外watch实验删除整个Vue style块时，旧pages/index.wxss残留，导致与干净构建不一致。移除weapp-tailwindcss并移除Tailwind入口后的独立uni-app5.15对照仍得到同样结果：删除前后均保留.scope{--spacing:3rpx}。原始记录为sfc-delete-control.json/.log与page-scope-before.log、host-scope-static-update.log。首次提交仅验证保留非空style模块时的覆盖增删，未修复整块删除。随后用户要求继续修复，现已在本库的 uni-app watch 适配中补齐空资产写入，回归恢复整块删除并增加重新添加、空style场景；完整根因和后续验收见 [样式输出清理记录](./uni-app-empty-style-output.md)。上述失败与无插件对照保留，不能将本库适配描述为上游编译器独立使用时也已修复。
 
 一次IDE复验在前两种基数通过后收到SIGTERM（退出143）；中断报告不算完整通过，随后串行定向复验已完整通过，见上方最终记录。没有推断未经证实的进程终止原因。
 

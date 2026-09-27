@@ -58,6 +58,7 @@ import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteTailwindV4CssDependencies } from '../source-scan'
 import { cleanUrl, isCSSRequest, isHTMLRequest, resolveViteCssPipelineRequestFile, slash } from '../utils'
+import { wrapViteCssPostOutput } from '../watch-css-output'
 import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } from '../watch-css-post'
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
@@ -436,7 +437,8 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
   const installFrameworkWatchCssCacheAdapter = async (config: ResolvedConfig) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return
-    } const wrapped = wrapViteCssPostTransform(config, async (css, id) => {
+    } wrapViteCssPostOutput(config)
+    const wrapped = wrapViteCssPostTransform(config, async (css, id) => {
       if (!isCSSRequest(id)) {
         return css
       } if (hasBundlerGeneratedCssMarker(css)) {
