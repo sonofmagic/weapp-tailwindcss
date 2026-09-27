@@ -7,6 +7,7 @@ import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import { analyzeTailwindV4EntrySource } from '@weapp-tailwindcss/postcss/transform'
 import fg from 'fast-glob'
+import { LRUCache } from 'lru-cache'
 import { loadConfig } from 'tailwindcss-config'
 import {
   FULL_SOURCE_SCAN_PATTERN,
@@ -19,8 +20,8 @@ import { readStaticConfigContent } from './static-config-content'
 
 const SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
 const TAILWIND_CSS_ENTRY_PATTERN = '**/*.css'
-const tailwindV4CssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
-const tailwindConfigCssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
+const tailwindV4CssEntriesCache = new LRUCache<string, Promise<ResolvedTailwindV4CssEntries | undefined>>({ max: 128 })
+const tailwindConfigCssEntriesCache = new LRUCache<string, Promise<ResolvedTailwindV4CssEntries | undefined>>({ max: 128 })
 
 interface ConfigDependencySignature {
   file: string
@@ -268,7 +269,9 @@ export async function resolveTailwindV4EntriesFromCssCached(css: string, base: s
     return cached
   }
   const task = resolveTailwindV4EntriesFromAnalysis(analysis, base).catch((error) => {
-    tailwindV4CssEntriesCache.delete(cacheKey)
+    if (tailwindV4CssEntriesCache.peek(cacheKey) === task) {
+      tailwindV4CssEntriesCache.delete(cacheKey)
+    }
     throw error
   })
   tailwindV4CssEntriesCache.set(cacheKey, task)
@@ -303,6 +306,11 @@ export async function resolveTailwindConfigEntriesFromCssCached(css: string, bas
       },
       dependencies: resolved.dependencies,
     }
+  }).catch((error) => {
+    if (tailwindConfigCssEntriesCache.peek(cacheKey) === task) {
+      tailwindConfigCssEntriesCache.delete(cacheKey)
+    }
+    throw error
   })
   tailwindConfigCssEntriesCache.set(cacheKey, task)
   return task

@@ -2,6 +2,7 @@ import type { ProcessOptions, Processor } from 'postcss'
 import type { FeatureSignal } from './content-probe'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IStyleHandlerOptions } from './types'
+import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
 import { signalToCacheKey } from './content-probe'
 import { fingerprintOptions, fingerprintStyleOptions } from './fingerprint'
@@ -47,9 +48,9 @@ function getSimpleProcessOptionsCacheKey(options: Record<string, unknown>) {
 }
 
 export class StyleProcessorCache {
-  private readonly pipelineCacheByKey = new Map<string, StyleProcessingPipeline>()
+  private readonly pipelineCacheByKey = new LRUCache<string, StyleProcessingPipeline>({ max: 64 })
   private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, cacheKey?: string | undefined }>()
-  private readonly processorCacheByKey = new Map<string, Processor>()
+  private readonly processorCacheByKey = new LRUCache<string, Processor>({ max: 64 })
 
   private createProcessorCacheKey(options: IStyleHandlerOptions) {
     const from = options.postcssOptions?.options?.from

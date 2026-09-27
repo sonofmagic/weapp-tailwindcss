@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { LRUCache } from 'lru-cache'
 import { fingerprintOptions, fingerprintStyleOptions } from './fingerprint'
 
 const SIMPLE_OVERRIDE_UNSET = '__unset__'
@@ -226,7 +227,7 @@ export interface OptionsResolver {
 
 export function createOptionsResolver(baseOptions: IStyleHandlerOptions): OptionsResolver {
   const normalizedBaseOptions = normalizeCssOptions(baseOptions)
-  const cacheByKey = new Map<string, { options: IStyleHandlerOptions, fingerprint: string }>()
+  const cacheByKey = new LRUCache<string, { options: IStyleHandlerOptions, fingerprint: string }>({ max: 256 })
 
   const resolve = (overrides?: Partial<IStyleHandlerOptions>) => {
     if (!overrides) {
