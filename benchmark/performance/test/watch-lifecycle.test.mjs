@@ -9,10 +9,10 @@ describe('真实 watcher 基准契约', () => {
       kind,
       size: 3,
       warmups: 0,
-      runs: 2,
+      runs: 3,
     })
-    expect(report.samples).toHaveLength(2)
-    expect(report.samples[0].outputHash).toBe(report.samples[1].outputHash)
-    expect(report.time.count).toBe(2)
+    expect(report.samples).toHaveLength(3)
+    expect(new Set(report.samples.map(sample => sample.outputHash)).size).toBe(1)
+    expect(report.time.count).toBe(3)
   }, 30000)
 })

@@ -10,7 +10,7 @@ import { summarize } from './stats.mjs'
 /** 复用真实编译契约的双 CSS 入口，整个样本序列保留同一 watcher。 */
 export async function measureWatchLifecycle({ sourceRoot, kind, size, warmups, runs }) {
   const require = createRequire(path.join(sourceRoot, 'package.json'))
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-watch-perf-'))
+  const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-watch-perf-')))
   const output = path.join(root, 'dist')
   let close = async () => {}
   let completed = 0

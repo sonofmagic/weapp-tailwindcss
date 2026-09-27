@@ -30,11 +30,11 @@ export function makeRuntimeCase(kind, size, mode = 'steady') {
         if (mode === 'hot-churn') {
           for (let index = 0; index < size; index++) {
             subject(`cold-${iteration++}`)
-            subject(values)
+            subject('p-2 p-4 text-red-500 text-[12rpx]')
           }
         }
         // 被后续 p-4 覆盖的输入每次变化，缓存 miss 仍保持最终输出哈希稳定。
-        const prefix = mode === 'cache-miss' ? `p-[${iteration++}px]` : mode === 'custom-map' ? 'AT' : ''
+        const prefix = mode === 'cache-miss' ? `p-[${iteration++}px]` : mode === 'custom-map' ? `AT p-[${iteration++}px]` : ''
         return subject(prefix, values)
       }
     },
