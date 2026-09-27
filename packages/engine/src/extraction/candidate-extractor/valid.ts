@@ -1,12 +1,13 @@
 import type { SourceEntry } from '@tailwindcss/oxide'
 import type { BareArbitraryValueOptions } from '../../v4/bare-arbitrary-values.ts'
+import type { TailwindV4DesignSystem } from '../../v4/types.ts'
 import process from 'node:process'
 import { resolveBareArbitraryValueCandidate } from '../../v4/bare-arbitrary-values.ts'
 import { extractTailwindV4InlineSourceCandidates, resolveValidTailwindV4Candidates } from '../../v4/candidates.ts'
-import { getTailwindV4DesignSystemCacheKey, loadTailwindV4DesignSystem } from '../../v4/node-adapter.ts'
+import { loadTailwindV4DesignSystem } from '../../v4/node-adapter.ts'
 import { extractRawCandidates } from './raw.ts'
 
-const designSystemCandidateCache = new Map<string, Map<string, boolean>>()
+const designSystemCandidateCache = new WeakMap<TailwindV4DesignSystem, Map<string, Map<string, boolean>>>()
 
 export interface ExtractValidCandidatesOption {
   sources?: SourceEntry[]
@@ -18,13 +19,12 @@ export interface ExtractValidCandidatesOption {
 }
 
 function createCandidateCacheKey(
-  designSystemKey: string,
   options: Pick<ExtractValidCandidatesOption, 'bareArbitraryValues'>,
 ) {
   if (options.bareArbitraryValues == null || options.bareArbitraryValues === false) {
-    return designSystemKey
+    return 'default'
   }
-  return `${designSystemKey}:bare-arbitrary:${JSON.stringify(options.bareArbitraryValues)}`
+  return `bare-arbitrary:${JSON.stringify(options.bareArbitraryValues)}`
 }
 
 export async function extractValidCandidates(options?: ExtractValidCandidatesOption) {
@@ -53,11 +53,12 @@ export async function extractValidCandidates(options?: ExtractValidCandidatesOpt
     css,
     dependencies: [],
   }
-  const designSystemKey = getTailwindV4DesignSystemCacheKey(source)
   const designSystem = await loadTailwindV4DesignSystem(source)
-  const candidateCacheKey = createCandidateCacheKey(designSystemKey, providedOptions)
-  const candidateCache = designSystemCandidateCache.get(candidateCacheKey) ?? new Map<string, boolean>()
-  designSystemCandidateCache.set(candidateCacheKey, candidateCache)
+  const candidateCacheKey = createCandidateCacheKey(providedOptions)
+  const caches = designSystemCandidateCache.get(designSystem) ?? new Map<string, Map<string, boolean>>()
+  designSystemCandidateCache.set(designSystem, caches)
+  const candidateCache = caches.get(candidateCacheKey) ?? new Map<string, boolean>()
+  caches.set(candidateCacheKey, candidateCache)
 
   const candidates = await extractRawCandidates(
     sources,

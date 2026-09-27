@@ -21,7 +21,7 @@ export function createUniAppXNativeHmrReloader(
   }
 
   async function refreshBaseline() {
-    return remember(await options.ensureRuntimeClassSet(true))
+    return remember(await options.ensureRuntimeClassSet())
   }
 
   async function handleHotUpdate(ctx: HmrContext) {
@@ -29,7 +29,7 @@ export function createUniAppXNativeHmrReloader(
       return
     }
     await options.syncSourceCandidates?.(ctx)
-    const currentRuntimeClassSet = await options.ensureRuntimeClassSet(true)
+    const currentRuntimeClassSet = await options.ensureRuntimeClassSet()
     const hasRuntimeClassChange = previousRuntimeClassSet !== undefined
       && (
         currentRuntimeClassSet.size !== previousRuntimeClassSet.size
