@@ -245,12 +245,17 @@ export function createOptionsResolver(baseOptions: IStyleHandlerOptions): Option
       return cached.options
     }
 
+    const normalizedOverrides = normalizeCssOptions({ ...overrides }, true)
+    // 调用阶段新引入 cssOptions 时，也须把基线默认值镜像到同一层，避免 undefined 清空安全 preset。
+    const base = normalizedOverrides.cssOptions === undefined
+      ? normalizedBaseOptions
+      : normalizeCssOptions(normalizedBaseOptions, true)
     const merged = defuOverrideArray<
       IStyleHandlerOptions,
       Partial<IStyleHandlerOptions>[]
     >(
-      normalizeCssOptions({ ...overrides }, true) as IStyleHandlerOptions,
-      normalizedBaseOptions,
+      normalizedOverrides as IStyleHandlerOptions,
+      base,
     )
     const normalized = normalizeCssOptions(merged)
     cacheByKey.set(key, { options: normalized, fingerprint: fingerprintStyleOptions(normalized) })

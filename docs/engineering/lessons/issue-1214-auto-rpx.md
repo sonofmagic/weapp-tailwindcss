@@ -73,6 +73,22 @@ static更新限定上述Issue用例加-u；新增7份默认主题基线和独立
 
 微信Android/iOS真机、Skyline、Windows原生构建及全仓/全端全面工作流未验收。包构建声明生成通过不等于PostCSS全源码严格类型检查；本轮严格源码检查针对主包。未发布npm，也不将本地修复作为关闭Issue的发布版证据。
 
+## PR #1247 首轮 CI 跟进
+
+首轮head为90ca8c541。PR Gate的两个单测失败分别是默认选项快照仍写cssCalc:false，以及框架工厂超过500行。前者只更新该字段为undefined并不更新复验；后者把watch CSS适配入口拆成独立模块，不放宽行数门槛。
+
+Portable枚举任务在既有浏览器就绪回归中失败：requestfinished可能先于async脚本执行和console事件到达。就绪探针现在等待当前文档load，随后在同一轮核对文档版本、本地模块集合和开发传输连接；不使用会被后台fetch阻塞的networkidle，也不增加固定等待。已有5个真实浏览器场景和完整demo matrix测试用于回归。
+
+性能门禁测得uni-app和Taro Vite退化。CPU采样显示配置代理的普通读取也在复制并解析完整配置；现仅对延后字段解析，平台fallback直接传给解析器，不复制整个上下文。最终资产按原文、单位选项、完整上下文中的rpx变量和输出身份复用结果，配置及覆盖变化仍失效。
+
+进一步核对真实CSS发现Taro主样式从约301KB增至490KB。根因是调用阶段首次引入嵌套cssOptions时，undefined或部分preset覆盖了顶层安全默认值，意外启用全局CSS变量fallback展开。新增call-options-defaults回归在旧实现中2条均失败；现在把调用基线默认值镜像到同一层再合并，保留用户显式开启变量展开的配置。修复后PostCSS111文件、1169测试通过，3条既有跳过。
+
+使用独立7fa8c3ac8基线工作树、相同框架和3次构建/3轮watch对照，保留每次样本和CPUprofile，没有反复重跑直到偶然通过，也没有放宽CI阈值。uni-app优化首轮构建中位数3897.6→3835.4ms；Taro最终对照11291.6→11449.8ms，插件构建2415→2412ms，HMR1541.7→1573.4ms，插件HMR816→841ms，均低于5%门槛。Taro产物恢复到约301KB。原始记录为style-removal/perf-uni-optimized.json、perf-taro-context-fixed.json以及cpu-taro/；中间仍退化的两组Taro样本也保留。
+
+Taro static 另发现原单位声明残留：已有--spacing:8rpx时，postcss-plugin-shared@1.1.6 的替换模式因目标值存在而直接return，留下后面的.25rem。上游仓库为https://github.com/icelib/postcss-plugins，查询时最新仍为1.1.6，未找到对应duplicate/replace Issue。临时补丁只让replace:false时跳过重复插入，replace:true始终完成当前声明替换；转换后仅清理相邻同属性/同值/同优先级声明，保留中间覆盖与显式保留模式。
+
+补丁为patches/postcss-plugin-shared@1.1.6.patch，记录在pnpm配置和锁文件中；只采用pnpm生成的patch hash与引用，未纳入patch-commit顺带解析出的无关依赖升级。单位插件链强制打包进PostCSS的ESM/CJS产物并附带MIT许可，构建后拦截四个单位依赖的外部模块解析，分别加载ESM/CJS入口，单位替换均通过；消费者不需要安装仓库patch。Taro的6条static用例以原有快照不更新通过，没有接受rem残留。后续上游发布包含此修复的正式版本后，应升级、复验unit-duplicate-replacement及真实Taro静态产物，再删除补丁及锁文件登记。
+
 ## 规则评估
 
 不新增AGENTS规则。现有AST所有权、构建图与生命周期、不能以单文件猜测全局作用域、真实产物及static基线要求足以约束本次修复。需要保留的教训是：没有导入边不代表宿主不会共同加载，默认适配必须比显式用户选择更保守。

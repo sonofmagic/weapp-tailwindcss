@@ -17,17 +17,19 @@ export function normalizeStyleHandlerMajorVersion(majorVersion: number | undefin
 export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
   tailwindcssMajorVersion: number | undefined = ctx.tailwindRuntime?.majorVersion,
+  platformFallback?: string,
 ): ResolvedStyleOptions {
+  const configuredPlatform = ctx.cssOptions?.platform ?? ctx.platform ?? platformFallback
   const resolvedUniAppXOptions = resolveUniAppXOptions(ctx.uniAppX)
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(ctx.generator, {
     appType: ctx.appType,
-    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    platform: configuredPlatform,
     tailwindcssMajorVersion,
     uniAppX: resolvedUniAppXOptions,
   })
   const branch = resolveGeneratorRuntimeBranch(generatorOptions, {
     appType: ctx.appType,
-    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    platform: configuredPlatform,
     tailwindcssMajorVersion,
     uniAppX: resolvedUniAppXOptions,
   })
@@ -36,7 +38,7 @@ export function resolveStyleOptionsFromContext(
   const rem2rpx = branch.isWeb && shouldUseUniAppWebRpxCompatibility(ctx.appType)
     ? false
     : configuredRem2rpx
-  const platform = branch.platform ?? ctx.cssOptions?.platform ?? ctx.platform
+  const platform = branch.platform ?? configuredPlatform
   const majorVersion = normalizeStyleHandlerMajorVersion(tailwindcssMajorVersion)
   const configuredCalc = ctx.cssOptions?.cssCalc ?? ctx.cssCalc
   const autoCalc = !branch.isWeb && isWechatAutoCssCalc({ platform, majorVersion, uniAppX: branch.isNativeApp })

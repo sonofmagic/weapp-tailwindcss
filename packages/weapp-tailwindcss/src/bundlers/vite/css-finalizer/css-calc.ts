@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { CssFinalizerContext } from './options'
 import path from 'node:path'
-import { analyzeCssCalcContext, applyConfiguredCssCalc, applyConfiguredCssUnits } from '@weapp-tailwindcss/postcss/transform'
+import { analyzeCssCalcContext, applyConfiguredCssCalc, applyConfiguredCssUnits, fingerprintStyleOptions } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { collectCssCalcScopes } from './css-scope-graph'
@@ -10,6 +10,7 @@ interface FinalizedCss {
   asset: OutputAsset
   original: string
   final: string
+  autoSignature?: string | undefined
 }
 
 const previousAssets = new WeakMap<CssFinalizerContext, Map<string, FinalizedCss>>()
@@ -71,8 +72,29 @@ export async function finalizeCssCalc(bundle: OutputBundle, context: CssFinalize
   const autoValues = autoContext !== undefined && unresolvedSources.size === 0
     ? analyzeCssCalcContext(autoContext).customPropertyValues
     : undefined
+  const outDir = context.getResolvedConfig?.()?.build?.outDir
+  const root = context.getResolvedConfig?.()?.root
+  const autoSignature = autoScope
+    ? JSON.stringify([
+        fingerprintStyleOptions(options),
+        convertUnits,
+        root,
+        outDir,
+        unresolvedSources.size === 0,
+        [...autoValues ?? []].filter(([, value]) => /rpx/i.test(value)),
+      ])
+    : undefined
   for (const [file, asset] of assets) {
     const original = sources.get(file)!
+    const prior = previous.get(file)
+    if (autoSignature !== undefined && prior?.original === original && prior.autoSignature === autoSignature) {
+      asset.source = prior.final
+      next.set(file, { ...prior, asset })
+      if (original !== prior.final) {
+        context.opts.onUpdate(asset.fileName || file, original, prior.final)
+      }
+      continue
+    }
     const scope = autoScope ?? [...(scopes.get(file) ?? [file])]
     const contextCss = autoContext ?? readContext(scope)
     const calculated = await applyConfiguredCssCalc(original, {
@@ -83,15 +105,13 @@ export async function finalizeCssCalc(bundle: OutputBundle, context: CssFinalize
         ? unresolvedSources.size === 0
         : scope.every(sourceFile => !unresolvedSources.has(sourceFile)),
     })
-    const outDir = context.getResolvedConfig?.()?.build?.outDir
-    const root = context.getResolvedConfig?.()?.root
     const css = convertUnits && deferredOptions
       ? await applyConfiguredCssUnits(calculated, {
           ...options,
           postcssOptions: { options: { from: path.resolve(root ?? '.', outDir ?? '.', file) } },
         })
       : calculated
-    next.set(file, { asset, original, final: css })
+    next.set(file, { asset, original, final: css, autoSignature })
     if (css !== original) {
       asset.source = css
       // 不把作用域求值后的结果写回生成缓存，下一轮作者 CSS 可能改变安全性。

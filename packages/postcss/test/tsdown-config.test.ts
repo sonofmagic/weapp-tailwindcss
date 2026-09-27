@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { describe, expect, it } from 'vitest'
 import {
   createPostcssTsdownConfigs,
-  postcssColorDependencies,
+  postcssBundledDependencies,
   postcssEsmOnlyDependencies,
 } from '../tsdown.config.mts'
 
@@ -29,8 +29,9 @@ describe('postcss tsdown config', () => {
     expect(matchesDependency(postcssEsmOnlyDependencies, '@csstools/css-color-parser')).toBe(false)
     expect(matchesDependency(postcssEsmOnlyDependencies, 'postcss-preset-env')).toBe(true)
     expect(matchesDependency(postcssEsmOnlyDependencies, 'postcss-rule-unit-converter')).toBe(false)
-    expect(cjs.deps?.alwaysBundle).toBe(postcssColorDependencies)
-    expect(esm.deps?.alwaysBundle).toBe(postcssColorDependencies)
+    expect(cjs.deps?.alwaysBundle).toBe(postcssBundledDependencies)
+    expect(esm.deps?.alwaysBundle).toBe(postcssBundledDependencies)
+    expect(matchesDependency(postcssBundledDependencies, 'postcss-plugin-shared')).toBe(true)
   })
 
   it('emits .js/.cjs and disables clean while watching', () => {

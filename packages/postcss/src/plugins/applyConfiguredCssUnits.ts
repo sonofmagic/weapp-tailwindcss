@@ -1,6 +1,7 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { postcss } from '../postcss-runtime'
+import { removeAdjacentDuplicateDeclarations } from './getCustomPropertyCleaner'
 import { getPxTransformPlugin } from './getPxTransformPlugin'
 import { getRemTransformPlugin } from './getRemTransformPlugin'
 import { getUnitConversionPlugin } from './getUnitConversionPlugin'
@@ -31,5 +32,5 @@ export async function applyConfiguredCssUnits(css: string, options: ApplyConfigu
     return css
   }
   const result = await postcss(plugins).process(css, { from: options.postcssOptions?.options?.from })
-  return result.css
+  return removeAdjacentDuplicateDeclarations(result.root) ? result.root.toString() : result.css
 }

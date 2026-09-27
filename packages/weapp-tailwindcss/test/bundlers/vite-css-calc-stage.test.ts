@@ -14,6 +14,22 @@ function options() {
 }
 
 describe('Vite 构建 calc 阶段', () => {
+  it('读取无关选项不触发样式阶段解析，真正的样式读取仍使用当前配置', () => {
+    const original = options()
+    original.cssCalc = undefined
+    original.cssOptions = undefined
+    const platform = vi.fn(() => 'mp-weixin')
+    const stage = createViteCssCalcStage(original, () => true, platform)
+    for (let index = 0; index < 100; index++) {
+      expect(stage.options.tailwindRuntime).toBe(original.tailwindRuntime)
+      expect(stage.options.generator).toBe(original.generator)
+    }
+    expect(platform).not.toHaveBeenCalled()
+    expect(stage.options.cssCalc).toBe(false)
+    expect(platform).toHaveBeenCalled()
+    original.cssCalc = false
+    expect(stage.shouldDefer()).toBe(false)
+  })
   it('同时隔离生成器配置和已捕获配置的处理器，不修改原选项', async () => {
     const original = options()
     const stage = createViteCssCalcStage(original, () => true)

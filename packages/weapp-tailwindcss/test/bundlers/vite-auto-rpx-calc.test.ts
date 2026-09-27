@@ -73,6 +73,20 @@ it('watch 切换自动、关闭及显式模式时不遗留静态资产', async (
   expect(bundle['theme.css'].source).toContain('width:32rpx')
 })
 
+it('复用最终产物时，单位配置原位改变仍重新计算', async () => {
+  const { original, context } = fixture()
+  const rule = { from: 'rpx', to: 'px', factor: 0.5 }
+  original.unitConversion = { rules: [rule] }
+  const bundle = { 'theme.css': asset('theme.css', 'page{--spacing:1rpx}.w{width:calc(var(--spacing)*32)}') }
+  await finalizeCssCalc(bundle, context, true)
+  expect(bundle['theme.css'].source).toContain('width:16px')
+  await finalizeCssCalc(bundle, context, true)
+  expect(bundle['theme.css'].source).toContain('width:16px')
+  rule.factor = 0.25
+  await finalizeCssCalc(bundle, context, true)
+  expect(bundle['theme.css'].source).toContain('width:8px')
+})
+
 it('宿主加载的独立样式也阻止自动冻结，不依赖输出名称', async () => {
   const { context } = fixture()
   const bundle = {

@@ -33,7 +33,7 @@ import { resolvePackageDir } from '@/utils/resolve-package'
 import { normalizeMiniProgramGeneratorCssSource } from '../../../generation/output-import-shell'
 import { generateTailwindV4Css } from '../../../generation/service'
 import { annotateCssSourceTrace, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
-import { createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
+import { createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { frameworkViteCapabilityProfile } from '../capability-profile'
@@ -58,8 +58,7 @@ import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteTailwindV4CssDependencies } from '../source-scan'
 import { cleanUrl, isCSSRequest, isHTMLRequest, resolveViteCssPipelineRequestFile, slash } from '../utils'
-import { wrapViteCssPostOutput } from '../watch-css-output'
-import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } from '../watch-css-post'
+import { shouldAdaptFrameworkWatchCssBeforeCache } from '../watch-css-post'
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 import { createConfiguredCssEntryDiagnostics } from './configured-css-entry-observer'
@@ -75,6 +74,7 @@ import { collectConfiguredCssEntries, isInternalUserDefinedOptions, isNuxtPageHo
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
+import { createFrameworkWatchCssCacheAdapter } from './framework-watch-css-adapter'
 import { createGenericWebProductionBundleHooks, createGenericWebProductionSourceCandidatesApply, shouldSkipGenericWebProductionSourceCandidates } from './generic-web-production-fast-path'
 
 const debug = createDebug()
@@ -434,21 +434,13 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
     } await sourceScanSession.sync()
   }
   const extraPlugins = capability.frameworkExtras ? frameworkBranch.createExtraPlugins?.({ cssPreflight: (opts as InternalUserDefinedOptions).cssPreflight, cssPreflightRange: (opts as InternalUserDefinedOptions).cssPreflightRange, customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, hmrCssModuleVersions, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles, webCssEntryDiagnostics }) ?? [] : []
-  const installFrameworkWatchCssCacheAdapter = async (config: ResolvedConfig) => {
-    if (!shouldAdaptFrameworkWatchCss()) {
-      return
-    } wrapViteCssPostOutput(config)
-    const wrapped = wrapViteCssPostTransform(config, async (css, id) => {
-      if (!isCSSRequest(id)) {
-        return css
-      } if (hasBundlerGeneratedCssMarker(css)) {
-        debug('preserve adapted generated css before uni-app watch cache: %s', id)
-        return css
-      } const file = cleanUrl(id); const styleRequest = isSfcStyleSourceFile(file) ? resolveSfcStyleRequestFromKnownSource(file, cssMemory.getKnownSfcSource(file), css, id) : id; const transformedCss = (await styleHandler(css, transformCssHandlerOptions.getCssHandlerOptions(styleRequest))).css; debug('adapt css before uni-app watch cache: %s inputRaw=%s outputRaw=%s', id, css.includes('\\[') || css.includes('\\:'), transformedCss.includes('\\[') || transformedCss.includes('\\:')); return transformedCss
-    }); if (wrapped) {
-      debug('adapt uni-app watch css before vite:css-post cache')
-    }
-  }
+  const installFrameworkWatchCssCacheAdapter = createFrameworkWatchCssCacheAdapter({
+    shouldAdapt: shouldAdaptFrameworkWatchCss,
+    getKnownSfcSource: cssMemory.getKnownSfcSource,
+    getCssHandlerOptions: transformCssHandlerOptions.getCssHandlerOptions,
+    styleHandler,
+    debug,
+  })
   /* eslint-disable antfu/consistent-list-newline */
   const sourceCandidatesPlugin = createFrameworkSourceCandidatesPlugin({
     cssMemory, hasUserCssLayerBlocks, hmrCandidateState, hmrCssModuleVersions, hmrTimingRecorder, invalidateRecordedGeneratorCandidates,

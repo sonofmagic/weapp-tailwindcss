@@ -44,6 +44,10 @@ export function getAutoCalcPlugin(options: IStyleHandlerOptions): Plugin | null 
             references.set(raw, value)
           }
         }
+        if (references.size === 0 && !/rpx/i.test(expression)) {
+          cache.set(expression, expression)
+          return expression
+        }
         const declaration = postcss.decl({ prop: 'width', value: expression })
         const temporary = postcss.root({ nodes: [declaration] })
         const plugin = postcssCalc({
@@ -59,6 +63,9 @@ export function getAutoCalcPlugin(options: IStyleHandlerOptions): Plugin | null 
         return result
       }
       for (const [name, value] of contextValues ?? []) {
+        if (!/rpx/i.test(value)) {
+          continue
+        }
         // 安全分析已展开别名依赖；自动白名单仍只接受 rpx 长度，不选择标量或其他单位。
         const resolved = /calc\(/i.test(value) ? reduce(value) : value
         if (isRpxLength(resolved)) {

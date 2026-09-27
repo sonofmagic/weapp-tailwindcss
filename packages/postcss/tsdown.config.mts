@@ -22,6 +22,15 @@ export const postcssColorDependencies = [
   '@csstools/color-helpers',
 ]
 
+// 单位换算修复必须随发布产物交付，不能依赖消费者安装本仓库的 pnpm patch。
+export const postcssBundledDependencies = [
+  ...postcssColorDependencies,
+  'postcss-rule-unit-converter',
+  'postcss-rem-to-responsive-pixel',
+  'postcss-pxtrans',
+  'postcss-plugin-shared',
+]
+
 const sharedOptions = {
   entry: ['src/index.ts', 'src/syntax.ts', 'src/transform.ts', 'src/plugin.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts', 'src/native.ts', 'src/experimental/lightningcss/index.ts'],
   shims: true,
@@ -46,7 +55,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
-        alwaysBundle: postcssColorDependencies,
+        alwaysBundle: postcssBundledDependencies,
         onlyBundle: false,
       },
     },
@@ -59,7 +68,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
-        alwaysBundle: postcssColorDependencies,
+        alwaysBundle: postcssBundledDependencies,
         onlyBundle: false,
       },
     },
@@ -71,7 +80,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
-        alwaysBundle: postcssColorDependencies,
+        alwaysBundle: postcssBundledDependencies,
         onlyBundle: false,
       },
     },
