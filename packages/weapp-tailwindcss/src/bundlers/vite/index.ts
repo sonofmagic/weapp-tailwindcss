@@ -21,7 +21,7 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 export type { WeappTailwindcssVitePlugin } from './shared/create-framework-plugins'
 
 type HookName = 'config' | 'configResolved' | 'buildStart' | 'buildEnd' | 'resolveId' | 'load' | 'transform'
-  | 'configureServer' | 'handleHotUpdate' | 'watchChange' | 'generateBundle' | 'writeBundle' | 'closeBundle'
+  | 'configureServer' | 'handleHotUpdate' | 'watchChange' | 'generateBundle' | 'writeBundle' | 'closeBundle' | 'closeWatcher' | 'moduleParsed' | 'shouldTransformCachedModule'
 
 const hookNames: HookName[] = [
   'config',
@@ -37,6 +37,9 @@ const hookNames: HookName[] = [
   'generateBundle',
   'writeBundle',
   'closeBundle',
+  'closeWatcher',
+  'moduleParsed',
+  'shouldTransformCachedModule',
 ]
 
 function platformFamily(platform: string | undefined): ViteCapabilityProfile['platformFamily'] {

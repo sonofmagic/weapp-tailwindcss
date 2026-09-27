@@ -303,6 +303,12 @@ export function createViteCssMemory(options: {
   }
 
   return {
+    dispose() {
+      rememberedCssSources.clear()
+      rememberedCssSignatureByFile.clear()
+      knownCssSources.clear()
+      knownSfcSources.clear()
+    },
     getKnownSfcSource,
     getKnownCssSource,
     getRememberedCssSignature: (file: string) => rememberedCssSignatureByFile.get(normalizeOutputPathKey(file)),

@@ -13,6 +13,9 @@ import { cleanUrl, isCSSRequest } from '../utils'
 import { readViteHmrSource } from './hmr-source'
 
 export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
+  let sourceRevision = 0
+  let buildRevision = 0
+  let completedRevision = 0
   let previousBuildConsumedTailwindCss = false
   const shouldSkipSourceCandidateState = () => options.shouldSkipSourceCandidateState?.() === true
   const hasDifferentHotModules = (left: ModuleNode[], right: ModuleNode[]) => left.length !== right.length
@@ -114,6 +117,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
     async watchChange(id, change) {
       if (shouldSkipSourceCandidateState()) {
         return
+      }
+      if (options.shouldOwnTailwindGeneration && (isSourceCandidateRequest(id) || options.sourceScanSession.isDependency(id))) {
+        sourceRevision++
       }
       recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(id))]))
       await options.hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
@@ -320,6 +326,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       options.hmrCssModuleVersions?.clear()
     },
     async buildStart() {
+      buildRevision = sourceRevision
       if (shouldSkipSourceCandidateState()) {
         return
       }
@@ -351,8 +358,17 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
         for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
           this.addWatchFile(file)
         }
+        // 来源依赖可能不在 CSS 的 import 图中；revision 改变时让 Rollup 重新执行入口 transform。
+        if (buildRevision !== completedRevision) {
+          return true
+        }
       }
       return null
+    },
+    buildEnd(error) {
+      if (!error) {
+        completedRevision = buildRevision
+      }
     },
     async generateBundle(...args: any[]) {
       if (shouldSkipSourceCandidateState()) {

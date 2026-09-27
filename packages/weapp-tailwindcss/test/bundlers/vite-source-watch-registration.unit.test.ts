@@ -1,8 +1,38 @@
 import type { NormalizedInputOptions, PluginContext } from 'rollup'
 import { describe, expect, it } from 'vitest'
 import { createFrameworkSourceCandidatesPlugin } from '@/bundlers/vite/shared/framework-source-candidates-plugin'
+import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 
 describe('Vite 文件型 source 的监听生命周期', () => {
+  it('来源 revision 改变时重转 CSS 入口，失败后仍可重试且不影响其他模块', async () => {
+    const runtimeState = createCompilerRuntimeState({ tailwindRuntime: {} as any, refreshTailwindcssRuntime: async () => ({} as any) })
+    const plugin = createFrameworkSourceCandidatesPlugin({
+      shouldOwnTailwindGeneration: true,
+      runtimeState,
+      invalidateRecordedGeneratorCandidates: () => {},
+      prepareTailwindGeneration: async () => {},
+      hmrTimingRecorder: { measure: async (_name: string, task: () => Promise<void>) => task() },
+      sourceScanSession: { isDependency: () => false, queueChangedFile: () => {}, flushChangedFiles: async () => new Map(), getWatchFiles: () => [] },
+      tailwindRootCssModuleIds: new Set(['virtual:tailwind-entry']),
+    })
+    const invoke = (name: keyof typeof plugin, ...args: any[]) => {
+      const hook = plugin[name] as any
+      return (typeof hook === 'function' ? hook : hook.handler).call({ addWatchFile: () => {} }, ...args)
+    }
+    await invoke('buildStart')
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBeNull()
+    await invoke('watchChange', '/project/content.html', { event: 'update' })
+    await invoke('buildStart')
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(true)
+    expect(await invoke('shouldTransformCachedModule', { id: 'unrelated.js' })).toBeNull()
+    await invoke('buildEnd', new Error('failed'))
+    await invoke('buildStart')
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(true)
+    await invoke('buildEnd')
+    await invoke('buildStart')
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBeNull()
+    runtimeState.dispose()
+  })
   it.each([
     '/project/source.vue',
     String.raw`C:\project\source.vue`,
