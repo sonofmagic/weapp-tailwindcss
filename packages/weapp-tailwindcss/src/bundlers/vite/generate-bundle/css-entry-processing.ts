@@ -1,6 +1,7 @@
 import type { RememberedCssSource } from './types'
 import { readDeferredCssSourceMarkers } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
+import { prepareFrameworkRootStyle, preserveFrameworkRootImportShell } from './framework-root-style'
 import { createScopedGeneratorCandidateSignatureForSources, createScopedGeneratorSourceData } from './scoped-generator-sources'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
@@ -92,7 +93,6 @@ export async function processViteCssBundleEntry(options: any) {
     resolveConfiguredRootCssSourceStyle,
     resolveCssAssetIdentity,
     resolveCssAssetOutputPlan,
-    resolveFrameworkRootImportShellPlan,
     resolveMatchedCssSourceOutputFile,
     resolveReplayCssOutputFile,
     resolveViteCssCompositionPlan,
@@ -144,31 +144,27 @@ export async function processViteCssBundleEntry(options: any) {
   const currentRawSourceHasExplicitScanContext = rawSource.includes('@source') || rawSource.includes('@config')
   const cssPipelineContext2 = { ...createInitialCssPipelineContext(file), bundle }
   const rootImportShellOutputFile = resolveReplayCssOutputFile(outDir, originalSource.fileName || file)
-  const rootImportShellPlan = resolveFrameworkRootImportShellPlan({
+  const { rootImportShellPlan, canClaimConfiguredOutput } = prepareFrameworkRootStyle({
+    ...options,
     assetSourceFile,
-    configuredTargetFiles: getConfiguredTailwindV4CssSourceEntries().map((entry: { file: string }) => resolveMatchedCssSourceOutputFile(entry.file)),
-    file,
-    isMainChunk: opts.mainCssChunkMatcher(rootImportShellOutputFile, opts.appType),
     isWebGeneratorTarget,
-    matchesCss: opts.cssMatcher(rootImportShellOutputFile) || opts.cssMatcher(file),
-    processedTargetFiles: [...getViteProcessedCssAssetResults?.() ?? []].flatMap(([, record]) => {
-      if (typeof record === 'string' || record.injectIntoMain !== true || !record.outputFile) {
-        return []
-      }
-      return [resolveViteCssPipelineOutputFile(record.outputFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)]
-    }),
-    rawSource,
-    rememberedTarget: frameworkRootImportShellTargetByFile.get(rootImportShellOutputFile),
     rootImportShellOutputFile,
-    shouldKeep: () => context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({ ...cssPipelineContext2, css: rawSource, file: rootImportShellOutputFile }),
-    shouldMoveToOrigin: () => context.cssPipelineStrategy?.shouldMoveRootMiniProgramStyleToImportShellOrigin?.({ ...cssPipelineContext2, file: rootImportShellOutputFile }),
+    rawSource,
+    cssPipelineStrategy: context.cssPipelineStrategy,
+    pipelineContext: cssPipelineContext2,
+    resolveProcessedOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles),
   })
-  const rememberedFrameworkRootImportTarget = rootImportShellPlan.reusableTarget
-  if (rootImportShellPlan.targetToRemember) {
-    frameworkRootImportShellTargetByFile.set(rootImportShellOutputFile, rootImportShellPlan.targetToRemember)
-    if (!rootImportShellPlan.isCurrentImportShell) {
-      debug('css remember framework root generated target: %s -> %s', rootImportShellOutputFile, rootImportShellPlan.targetToRemember)
-    }
+  if (rootImportShellPlan.isCurrentImportShell && preserveFrameworkRootImportShell({
+    ...options,
+    assetSourceFile,
+    cssPipelineStrategy: context.cssPipelineStrategy,
+    outputFile: rootImportShellOutputFile,
+    pipelineContext: cssPipelineContext2,
+    rootImportShellPlan,
+    source: rawSource,
+    viteProcessedCssAsset: false,
+  })) {
+    return
   }
   const cssAssetOutputPlan = resolveCssAssetOutputPlan({
     assetSourceFile,
@@ -185,7 +181,7 @@ export async function processViteCssBundleEntry(options: any) {
     pipelineContext: cssPipelineContext2,
     resolveOutputFileFromMatchedCssSource: resolveMatchedCssSourceOutputFile,
     rootImportShellOutputFile,
-    rootImportShellTarget: rememberedFrameworkRootImportTarget,
+    rootImportShellTarget: rootImportShellPlan.isCurrentImportShell ? rootImportShellPlan.targetToRemember : rootImportShellPlan.reusableTarget,
     shouldPreserveAppCssExtension,
     shouldReuseRootImportShell: () => shouldKeepRootMiniProgramStyleAsImportShell(context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
       ...cssPipelineContext2,
@@ -243,9 +239,11 @@ export async function processViteCssBundleEntry(options: any) {
     debug('css skip web target: %s', outputFile)
     return
   }
-  const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
-  const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
-  const configuredTailwindV4CssSourceEntries = getConfiguredTailwindV4CssSourceEntries()
+  const alreadyProcessedCssAsset = viteProcessedCssAsset || isCssAssetProcessed?.(originalSource, file) === true
+  const configuredTailwindV4CssSourceEntries = getConfiguredTailwindV4CssSourceEntries().filter((entry: { file: string }) => {
+    const target = resolveMatchedCssSourceOutputFile(entry.file)
+    return canClaimConfiguredOutput(target) && (!rootImportShellPlan.isCurrentImportShell || target === rootImportShellPlan.targetToRemember)
+  })
   const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
   const isCurrentRootMiniProgramStyleOutput = opts.cssMatcher(outputFile)
     && isMiniProgramStyleOutputFile(outputFile)
@@ -284,6 +282,9 @@ export async function processViteCssBundleEntry(options: any) {
     sourceRoot: opts.tailwindcssBasedir,
     temporaryOutput: isTemporaryCssAssetFile(outputFile),
   })
+  if (rootImportShellPlan.isCurrentImportShell && !cssSourcePlan.hasUsableTailwindSource) {
+    return
+  }
   outputFile = cssSourcePlan.outputFile
   activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
   let outputCssHandlerOptions = getCssHandlerOptions(outputFile)

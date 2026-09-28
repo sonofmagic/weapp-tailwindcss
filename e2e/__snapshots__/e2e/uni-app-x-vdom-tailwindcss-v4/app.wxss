@@ -1,4 +1,3 @@
-@import './uvue.wxss';
 @import '/uvue.wxss';
 view,
 text,

@@ -191,6 +191,28 @@ describe('vite source output relations', () => {
     }
   })
 
+  it.each(['/workspace/theme.css', 'C:\\workspace\\theme.css', 'theme.css'])('keeps re-owned outputs omitted by a nested bundle (%s)', (sourceFile) => {
+    const owner = createViteSourceOutputRelationOwner()
+    const consumers = [owner.createRemovalConsumer(), owner.createRemovalConsumer()]
+    owner.recordOwnedOutput(sourceFile, 'theme.acss')
+    owner.recordOwnedOutput(sourceFile, 'obsolete.acss')
+    owner.observeSource(sourceFile)
+    owner.recordOwnedOutput(sourceFile, 'theme.acss')
+    for (const consumer of consumers) {
+      expect(consumer.consume([])).toEqual(['obsolete.acss'])
+    }
+    owner.removeSource(sourceFile)
+    owner.observeSource(sourceFile)
+    owner.recordOwnedOutput(sourceFile, 'theme.acss')
+    for (const consumer of consumers) {
+      expect(consumer.consume([])).toEqual([])
+    }
+    owner.removeSource(sourceFile)
+    for (const consumer of consumers) {
+      expect(consumer.consume([])).toEqual(['theme.acss'])
+    }
+  })
+
   it('does not retain dirty revisions for sources without owned outputs', () => {
     const owner = createViteSourceOutputRelationOwner()
     for (let revision = 0; revision < 100; revision++) {
