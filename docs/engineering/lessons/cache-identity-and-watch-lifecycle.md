@@ -151,3 +151,24 @@ Root 结果命中原先仍会构造整棵 AST 的 JSON、复制输入 CSS/map，
 未隐藏首轮构建与 HMR 的高值。本机稳态回退收窄、构建内存降低，仅证明优化方向；Ubuntu 门禁仍须在新 head 验证，预算保持不变。
 
 验证命令：`pnpm --filter @weapp-tailwindcss/postcss exec vitest run --update=none`、主包 `vitest run test/postcss --update=none`、benchmark 的 `vitest run test/watch-lifecycle.test.mjs --update=none`，以及 PostCSS 构建/类型、受影响文件 ESLint、`pnpm architecture:check` 和 `pnpm agents:check`。真实对照命令为 `node benchmark/version-compare/scripts/run-matrix.mjs --versions-file .tmp/pr1251-perf-roots.json --build-runs 3 --hmr-runs 5 --timeout 180000 --only demo-taro-vite-react-tailwindcss-v4__mp-weixin --out .tmp/pr1251-perf-root-snapshot.json`。没有改动 demo 输入或 static 基线。
+
+### fe149b25f：最终清理的重复解析与选择器分配
+
+该 head 的 Synthetic、Release、三个 PR 单测分片及已完成的 Windows watch 通过；Taro Vite 分片仍失败（run `36374678581`、attempt 1、job `108778001066`）：HMR 插件 median 1832 → 2132ms（+16.38%），构建峰值 RSS 1604.87 → 1697.00MiB（+5.74%）。首轮日志和 artifact 保存在 `.tmp/pr1251-headfe-taro.log` 与 `.tmp/pr1251-headfe-taro/`，未重跑该失败。
+
+本轮切换至 Node 22.22.3，在真实 Taro watch 中采集 CPU 分段，profile 在 `.tmp/pr1251-watch-cpu/`。Root 缓存命中仅占少量耗时；仍可消除的成本集中在最终清理：多个函数每次读取 `Rule.selectors` 都重新拆分列表，`finalizeMiniProgramCss` 还会在移除不支持的 at-rule 后打印并再次解析同一份 CSS。现在只有可能包含目标占位符、浏览器选择器或 container 的规则才进入相应列表处理；复杂语法继续完整解析。at-rule 清理与最终平台转换共用 AST，异常语法保留原扫描修复和字符串兜底。
+
+仅选择器优化的中间样本在 `.tmp/pr1251-cleanups-node22.json`，稳态 HMR 插件 median 1011.5 → 972.5ms，但构建 RSS median 1711.58 → 1800.30MiB 仍偏高。加入 AST 复用后的同配置报告为 `.tmp/pr1251-finalize-node22.json`（3 次构建、5 次 HMR，macOS，main `739f8116` 对照当前工作树）：
+
+| 本机指标 | main | 当前修改 |
+| --- | ---: | ---: |
+| 构建耗时 median / p95（ms） | 14068.88 / 14589.57 | 13474.94 / 13916.47 |
+| 构建插件 median / p95（ms） | 2900 / 3007 | 2684 / 2732 |
+| 构建峰值 RSS median / p95（MiB） | 1800.41 / 1821.17 | 1767.47 / 1805.56 |
+| HMR 插件 median / p95，全部 5 次（ms） | 1022 / 1230 | 965 / 1010 |
+| HMR 插件 median / p95，按脚本排除首轮后（ms） | 1102 / 1230 | 959.5 / 966 |
+| watch 峰值 RSS（MiB） | 3063.33 | 3083.56 |
+
+两轮样本均保留，基线自身也存在波动，不把这些小样本差值当作稳定提速比例。最终恢复后的 7 份 WXSS 与 main 对照逐文件 SHA-256 完全一致，证据为 `.tmp/pr1251-finalize-css-hashes.json`。真实对照命令沿用上一节，运行时切换为 Node 22.22.3，输出改为 `.tmp/pr1251-finalize-node22.json`。预算未修改，新 head 仍须通过 Ubuntu 门禁。
+
+PostCSS 包 1214 条通过、3 条既有跳过；随后新增的单次解析、扫描修复与无效语法兜底 3 条通过。选择器回归覆盖不分配普通类名列表、属性中的逗号、转义伪类、重复占位符、原生标签与 container 列表；原始快照保持不变。额外执行主包 `test/postcss`、Vite/Webpack watch golden、PostCSS 构建/类型、受影响文件 ESLint、架构与 AGENTS 检查。没有改动 demo 输入或 static 基线。
