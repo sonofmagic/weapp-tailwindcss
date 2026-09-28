@@ -34,7 +34,7 @@ async function normalizePlugin(value: unknown, from: string): Promise<AcceptedPl
   return plugin as AcceptedPlugin
 }
 
-async function normalizePlugins(configured: unknown, from: string): Promise<AcceptedPlugin[]> {
+async function normalizePlugins(configured: unknown, from: string, filterGeneration: boolean): Promise<AcceptedPlugin[]> {
   const entries = Array.isArray(configured) ? configured : Object.values(configured ?? {})
   const plugins: AcceptedPlugin[] = []
   for (const entry of entries) {
@@ -43,13 +43,24 @@ async function normalizePlugins(configured: unknown, from: string): Promise<Acce
       plugins.push(plugin)
     }
   }
-  removeTailwindPostcssPlugins(plugins)
+  if (filterGeneration) {
+    removeTailwindPostcssPlugins(plugins)
+  }
   return plugins
 }
 
 /** 重放框架提供的管线，不附加小程序转换或默认插件。 */
 export async function processFrameworkCss(css: string | Root, options: LoadedPostcssOptions) {
-  const plugins = await normalizePlugins(options.plugins, options.options?.from ?? resolve('postcss.config.js'))
+  return processConfiguredCss(css, options, true)
+}
+
+/** 通用作者阶段保持传入插件契约，生成插件的过滤只属于框架重放边界。 */
+export async function processUserCss(css: string | Root, options: LoadedPostcssOptions) {
+  return processConfiguredCss(css, options, false)
+}
+
+async function processConfiguredCss(css: string | Root, options: LoadedPostcssOptions, filterGeneration: boolean) {
+  const plugins = await normalizePlugins(options.plugins, options.options?.from ?? resolve('postcss.config.js'), filterGeneration)
   return postcss(plugins).process(css, {
     from: undefined,
     ...options.options,

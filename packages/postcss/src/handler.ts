@@ -14,7 +14,7 @@ import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintStyleOptions } from './fingerprint'
-import { processFrameworkCss } from './framework-pipeline'
+import { processUserCss } from './framework-pipeline'
 import { resolvePostcssFrameworkProfile } from './frameworks'
 import { createOptionsResolver, normalizeCssOptions } from './options-resolver'
 import { isKnownPurePostcssPlugin } from './plugin-cache-policy'
@@ -77,6 +77,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     cloneOutput: boolean,
     opt?: Partial<IStyleHandlerOptions>,
     emitDiagnostics = true,
+    sourcePrepared = false,
   ) {
     const resolvedOptions = resolver.resolve(opt)
     const plugins = resolvedOptions.postcssOptions?.plugins
@@ -92,17 +93,17 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       catch { /* 扩展 AST 无法序列化时直接执行转换。 */ }
     }
     const cacheable = !hasExternalPlugins && (root === undefined || rootIdentity !== undefined)
-    const normalizedRawSource = normalizeCssLineComments(rawSource)
+    const normalizedRawSource = sourcePrepared ? rawSource : normalizeCssLineComments(rawSource)
     // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
     // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
     const isUniAppXFramework = resolvedOptions.appType === 'uni-app-x'
-    const protectedVarFallbacks = resolvedOptions.uniAppX || isUniAppXFramework
+    const protectedVarFallbacks = !sourcePrepared && (resolvedOptions.uniAppX || isUniAppXFramework)
       ? protectDynamicVarFallbacks(normalizedRawSource)
       : {
           css: normalizedRawSource,
           restore: (value: string) => value,
         }
-    const protectedColorMix = resolvedOptions.majorVersion === 4
+    const protectedColorMix = !sourcePrepared && resolvedOptions.majorVersion === 4
       ? protectDynamicColorMixAlpha(protectedVarFallbacks.css)
       : undefined
     const source = protectedColorMix?.css ?? protectedVarFallbacks.css
@@ -128,10 +129,24 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
         postcssOptions: { ...resolvedOptions.postcssOptions, plugins: [] },
       }
       const stageStartedAt = performance.now()
-      return processFrameworkCss(getProcessInput(), { ...resolvedOptions.postcssOptions, options: { ...resolvedOptions.postcssOptions?.options, map: false } })
+      const userInput = getProcessInput()
+      const userRoot = typeof userInput === 'string' ? postcss.parse(userInput, resolvedOptions.postcssOptions?.options) : userInput
+      const firstUserNode = userRoot.first
+      const firstUserBefore = firstUserNode?.raws.before
+      return processUserCss(userRoot, { ...resolvedOptions.postcssOptions, options: { ...resolvedOptions.postcssOptions?.options, map: false } })
         .then(async (prepared) => {
-          const transformed = await processSource(prepared.root.toString(), prepared.root as Root, true, platformOptions, false)
-          const result = restoreProtectedResult(transformed)
+          const preparedSource = prepared.root.toString()
+          // 用户阶段串行化时推导的缩进缓存不能带入改变层级的后续平台转换。
+          delete (prepared.root as Root & { rawCache?: unknown }).rawCache
+          const transformed = await processSource(preparedSource, prepared.root as Root, true, platformOptions, false, true)
+          let result = restoreProtectedResult(transformed)
+          // 作者删除首节点的空白归属必须跨 layer 提升保留，不能重新暴露块内缩进。
+          if (firstUserNode && !firstUserNode.parent && result.root.first && result.root.first.raws.before !== firstUserBefore) {
+            result.root.first.raws.before = firstUserBefore
+            const updated = result.root.toResult(result.opts)
+            updated.messages.push(...result.messages)
+            result = updated
+          }
           result.messages.unshift(...prepared.messages)
           if (emitDiagnostics) {
             await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - stageStartedAt, cache: { hit: false } })

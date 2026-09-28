@@ -117,3 +117,16 @@ Taro Vite 分片的回退在本地定向 watch 对照复现，额外耗时集中
 Windows repeated-watch 第 2 轮日志显示 `[HMR] Update check failed: apply() is only allowed in ready status (state: prepare)`。探针已渲染和 WebSocket 握手不足以证明上一轮更新已完成；测试探针暴露当前 module.hot 状态，浏览器必须等到 idle 且模块请求结束后才能触发下一次写入。新增浏览器状态回归通过；`subpackage-taro-webpack-react-tailwindcss-v4:h5` 本地 production、initial、replace、add、restore、refresh 全部通过。已单独运行 `pnpm e2e:demo:matrix subpackage-taro-webpack-react-tailwindcss-v4:h5 --update --build-only` 重生成对应 static 基线，结果无语义差异。
 
 GitHub 在本轮期间合入 main 到 PR（`487a844`）；已检查新增内容为 #1250 的快照候选/JS 字符串修复，并快进保留上游提交，未覆盖远端历史。
+
+
+### 21bd1c7：选择器热点与首节点空白
+
+Windows repeated-watch、五个真实框架 benchmark 分片和 Performance guard 在该 head 通过。Synthetic 的 5000 条主样式 p95=614.40ms（预算541ms）、median=462.57ms，保留失败报告 `.tmp/pr1251-head21-synthetic/synthetic.json`，没有对该 head 连续重跑。
+
+本地 CPU profile 显示主要重复工作在 RuleExit：普通 class 仍经过 fallback parser，两个 specificity cleaner 还重复读取会分配数组的 Rule.selectors。增加严格的单个未转义 class/id 快速路径；有伪类、属性、转义、组合和列表时保持完整解析。占位符清理先检查实际可能替换的文本，根 scope host 追加同样先排除不可能命中的规则。
+
+相同 CPU 采样参数（2次预热、3次测量）下，5000 条 main median 217.95 → 170.09ms，p95 229.49 → 187.99ms；12个场景输出哈希全部一致。报告为 `.tmp/pr1251-postcss-cpu/` 与 `.tmp/pr1251-postcss-cpu-after/`，对应 profile 保留在 `.tmp/pr1251-postcss.cpuprofile` 和 `.tmp/pr1251-postcss-after.cpuprofile`。这是本机热点验证，不代替新 head 的 Ubuntu 门禁。
+
+PR 单测第三分片同时发现 `test/postcss/v4.test.ts` 的两个文件头空白差异。原因是用户删除 leading comment 的动作先于 layer 提升，提升后的子节点再次带入内部缩进。现在只在用户阶段确实删除原始首节点时，把原首节点的顶层空白传到最终首节点；原本没有被删除首节点的输入保持已有格式。原测试与 tracked fixtures 已恢复一致，未更新失败快照。
+
+第二分片的通用 styleHandler 插件用例还暴露了阶段边界复用错误：框架重放需要过滤重复生成插件，通用作者阶段不能照搬该过滤；生成后的 AST 也不能再执行一遍字符串输入保护，否则会重新解析并固定原 layer 内缩进。分开两类插件执行入口、只准备一次输入后，主包 `test/postcss` 105条通过/4条既有跳过，保留原始全部快照。
