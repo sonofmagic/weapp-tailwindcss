@@ -6,6 +6,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { buildCompatibilityBundle } from './build'
 import { exampleDir, lynxIntermediateDir, repoRoot } from './catalog'
+import { command } from './native-command'
 import { iosPodInstallArguments, parseNativeRunArgs } from './native-options'
 import { defaultReportPath, nativeReportConclusion, validateNativeReport } from './reports'
 
@@ -18,22 +19,6 @@ const androidDeviceId = process.env['LYNX_ANDROID_DEVICE_ID'] ?? process.env['AN
 
 function adbArgs(args: string[]) {
   return platform === 'android' ? ['-s', androidDeviceId, ...args] : args
-}
-
-async function command(name: string, args: string[], cwd: string, timeout = 300_000) {
-  const result = await execa(name, args, {
-    all: true,
-    cwd,
-    env: name === (process.env['LYNX_GRADLE'] ?? 'gradle') && process.env['LYNX_JAVA_HOME']
-      ? { JAVA_HOME: process.env['LYNX_JAVA_HOME'] }
-      : undefined,
-    reject: false,
-    timeout,
-  })
-  if (result.exitCode !== 0) {
-    throw new Error(`${name} ${args.join(' ')} failed:\n${result.all ?? result.stderr ?? result.stdout ?? result.shortMessage}`)
-  }
-  return result.all ?? ''
 }
 
 async function wait(milliseconds: number) {
