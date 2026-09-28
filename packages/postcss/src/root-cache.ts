@@ -1,84 +1,164 @@
-import type { Input, Node, Root } from 'postcss'
+import type { Input, Node, Position, Root } from 'postcss'
 import { fingerprintOptions } from './fingerprint'
 
-const standardFields = new Set(['type', 'selector', 'name', 'params', 'prop', 'value', 'important', 'text', 'nodes', 'raws', 'source', 'parent', 'lastEach', 'indexes', 'rawCache', 'proxyCache'])
+const traversalFields = new Set(['parent', 'nodes', 'source', 'raws', 'lastEach', 'indexes', 'rawCache', 'proxyCache'])
 
-function inputIdentity(input: Input) {
-  const serialized = input.toJSON() as { id?: string }
-  delete serialized.id
-  return JSON.stringify(serialized)
+interface FieldsSnapshot {
+  keys: string[]
+  values: unknown[]
 }
 
-/** 匿名 Input 的随机 id 不描述来源；缓存命中后必须绑定回本轮 Input。 */
-export function rootCacheIdentity(root: Root) {
-  const inputs = new Map<Input, number>()
-  const records: unknown[] = []
-  const record = (node: Node) => {
-    const source = node.source
-    let inputId: number | undefined
-    if (source) {
-      inputId = inputs.get(source.input)
-      if (inputId === undefined) {
-        inputId = inputs.size
-        inputs.set(source.input, inputId)
+interface InputSnapshot {
+  input: Input
+  css: string
+  file: string | undefined
+  hasBOM: boolean
+  map: string | undefined
+}
+
+interface NodeSnapshot {
+  fields: FieldsSnapshot
+  raws: FieldsSnapshot
+  children: number | undefined
+  source?: { input: number, start: Position | undefined, end: Position | undefined }
+}
+
+export interface RootCacheSnapshot {
+  nodes: NodeSnapshot[]
+  inputs: InputSnapshot[]
+}
+
+function captureFields(value: object, shapes: Map<string, string[]>, ignored?: ReadonlySet<string>): FieldsSnapshot {
+  const ownKeys: string[] = []
+  for (const key in value) {
+    if (Object.hasOwn(value, key) && !ignored?.has(key)) {
+      ownKeys.push(key)
+    }
+  }
+  const shape = JSON.stringify(ownKeys)
+  const keys = shapes.get(shape) ?? ownKeys
+  shapes.set(shape, keys)
+  const values = keys.map((key) => {
+    const entry = (value as Record<string, unknown>)[key]
+    return entry !== null && typeof entry === 'object' ? { fingerprint: fingerprintOptions(entry) } : entry
+  })
+  return { keys, values }
+}
+
+function matchesFields(snapshot: FieldsSnapshot, value: object, ignored?: ReadonlySet<string>) {
+  let size = 0
+  for (const key in value) {
+    if (Object.hasOwn(value, key) && !ignored?.has(key)) {
+      size++
+    }
+  }
+  if (size !== snapshot.keys.length) {
+    return false
+  }
+  for (let index = 0; index < size; index++) {
+    const key = snapshot.keys[index]!
+    if (!Object.hasOwn(value, key)) {
+      return false
+    }
+    const entry = (value as Record<string, unknown>)[key]
+    const previous = snapshot.values[index]
+    if (previous !== null && typeof previous === 'object') {
+      if (fingerprintOptions(entry) !== (previous as { fingerprint: string }).fingerprint) {
+        return false
       }
     }
-    const value = node as Node & Record<string, unknown>
-    const extra = Object.keys(node).filter(key => !standardFields.has(key))
-    // 遍历游标与字符串缓存不是 AST 语义；保留结构、真实字段、raws 以及来源位置。
-    records.push([
-      node.type,
-      value.selector,
-      value.name,
-      value.params,
-      value.prop,
-      value.value,
-      value.important,
-      value.text,
-      Array.isArray(value.nodes) ? value.nodes.length : undefined,
-      node.raws,
-      inputId,
-      source?.start?.offset,
-      source?.start?.line,
-      source?.start?.column,
-      source?.end?.offset,
-      source?.end?.line,
-      source?.end?.column,
-      extra.length ? fingerprintOptions(Object.fromEntries(extra.map(key => [key, value[key]]))) : undefined,
-    ])
+    else if (!Object.is(entry, previous)) {
+      return false
+    }
   }
-  record(root)
-  root.walk(record)
-  return JSON.stringify([records, [...inputs.keys()].map(inputIdentity)])
+  return true
 }
 
-export function cloneRootWithCurrentSources(cached: Root, current?: Root) {
+function inputMap(input: Input) {
+  return input.map ? JSON.stringify((input.toJSON() as { map?: unknown }).map) : undefined
+}
+
+function childrenCount(node: Node) {
+  return 'nodes' in node && Array.isArray(node.nodes) ? node.nodes.length : undefined
+}
+
+function samePosition(left: Position | undefined, right: Position | undefined) {
+  return Boolean(left) === Boolean(right) && left?.offset === right?.offset && left?.line === right?.line && left?.column === right?.column
+}
+
+/** 未命中时保存语义与来源快照；命中检查不再为整棵 AST 构造 JSON 字符串。 */
+export function captureRootCacheSnapshot(root: Root): RootCacheSnapshot {
+  const snapshot: RootCacheSnapshot = { nodes: [], inputs: [] }
+  const inputIds = new Map<Input, number>()
+  const shapes = new Map<string, string[]>()
+  const capture = (node: Node) => {
+    let source: NodeSnapshot['source']
+    if (node.source) {
+      const input = node.source.input
+      let id = inputIds.get(input)
+      if (id === undefined) {
+        id = inputIds.size
+        inputIds.set(input, id)
+        snapshot.inputs.push({ input, css: input.css, file: input.file, hasBOM: input.hasBOM, map: inputMap(input) })
+      }
+      source = { input: id, start: node.source.start ? { ...node.source.start } : undefined, end: node.source.end ? { ...node.source.end } : undefined }
+    }
+    snapshot.nodes.push({ fields: captureFields(node, shapes, traversalFields), raws: captureFields(node.raws, shapes), children: childrenCount(node), ...(source ? { source } : {}) })
+  }
+  capture(root)
+  root.walk(capture)
+  return snapshot
+}
+
+/** 返回本轮 Input 绑定；结构、语义字段、来源或映射不同均不得复用。 */
+export function matchRootCacheSnapshot(snapshot: RootCacheSnapshot, root: Root) {
+  const inputIds = new Map<Input, number>()
+  const bindings = new Map<Input, Input>()
+  let index = 0
+  let matched = true
+  const compare = (node: Node): false | undefined => {
+    const previous = snapshot.nodes[index++]
+    if (!previous || previous.children !== childrenCount(node) || !matchesFields(previous.fields, node, traversalFields) || !matchesFields(previous.raws, node.raws)
+      || Boolean(previous.source) !== Boolean(node.source)) {
+      matched = false
+      return false
+    }
+    if (node.source && previous.source) {
+      const input = node.source.input
+      let id = inputIds.get(input)
+      if (id === undefined) {
+        id = inputIds.size
+        inputIds.set(input, id)
+        const old = snapshot.inputs[id]
+        if (!old || old.css !== input.css || old.file !== input.file || old.hasBOM !== input.hasBOM || old.map !== inputMap(input)) {
+          matched = false
+          return false
+        }
+        if (old.input !== input) {
+          bindings.set(old.input, input)
+        }
+      }
+      if (id !== previous.source.input || !samePosition(previous.source.start, node.source.start) || !samePosition(previous.source.end, node.source.end)) {
+        matched = false
+        return false
+      }
+    }
+  }
+  if (compare(root) !== false) {
+    root.walk(compare)
+  }
+  return matched && index === snapshot.nodes.length ? bindings : undefined
+}
+
+export function cloneRootWithCurrentSources(cached: Root, bindings?: ReadonlyMap<Input, Input>) {
   const cloned = cached.clone()
-  if (!current) {
+  if (!bindings?.size) {
     return cloned
   }
-  const inputs = new Map<string, Input>()
-  const visited = new Set<Input>()
-  const collect = (node: Node) => {
-    const input = node.source?.input
-    if (input && !visited.has(input)) {
-      visited.add(input)
-      inputs.set(inputIdentity(input), input)
-    }
-  }
-  collect(current)
-  current.walk(collect)
-  const replacements = new Map<Input, Input | undefined>()
   const rebind = (node: Node) => {
     const source = node.source
-    if (!source) {
-      return
-    }
-    if (!replacements.has(source.input)) {
-      replacements.set(source.input, inputs.get(inputIdentity(source.input)))
-    }
-    const input = replacements.get(source.input)
-    if (input) {
+    const input = source && bindings.get(source.input)
+    if (source && input) {
       node.source = { ...source, input }
     }
   }

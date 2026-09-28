@@ -130,3 +130,24 @@ Windows repeated-watch、五个真实框架 benchmark 分片和 Performance guar
 PR 单测第三分片同时发现 `test/postcss/v4.test.ts` 的两个文件头空白差异。原因是用户删除 leading comment 的动作先于 layer 提升，提升后的子节点再次带入内部缩进。现在只在用户阶段确实删除原始首节点时，把原首节点的顶层空白传到最终首节点；原本没有被删除首节点的输入保持已有格式。原测试与 tracked fixtures 已恢复一致，未更新失败快照。
 
 第二分片的通用 styleHandler 插件用例还暴露了阶段边界复用错误：框架重放需要过滤重复生成插件，通用作者阶段不能照搬该过滤；生成后的 AST 也不能再执行一遍字符串输入保护，否则会重新解析并固定原 layer 内缩进。分开两类插件执行入口、只准备一次输入后，主包 `test/postcss` 105条通过/4条既有跳过，保留原始全部快照。
+
+### 9891687：Root 缓存命中分配
+
+该 head 的 Synthetic、三个 PR 单测分片与 Windows watch 已通过。真实 Taro Vite benchmark（run `36372337743`、attempt 1、job `108771153579`）仍失败：HMR 插件稳态 median 为 2117 → 2313ms（+9.26%），构建峰值 RSS 为 1585.45 → 1669.31MiB（+5.29%）。保留 `.tmp/pr1251-head989-taro/` 和原日志，没有重跑这次失败。
+
+Root 结果命中原先仍会构造整棵 AST 的 JSON、复制输入 CSS/map，并在重新绑定来源时再次收集和序列化 Input。现在只在未命中时捕获节点字段、raws、容器结构、位置与输入映射快照；命中检查逐节点比较，并直接返回本轮 Input 绑定。快照字段形状共享，累计快照最多保留 128000 个节点，仍保留 256 条结果上限。来源、source map、扩展元数据与闭包变化均使缓存失效；无法检查的扩展输入绕过缓存。回归覆盖多输入绑定、原地修改、结构变化、遍历状态、raws 与 POSIX/Windows/相对来源身份。
+
+本机微基准（2 次预热、7 次测量）中，5000 条规则命中 median 8.88 → 5.84ms、p95 33.34 → 6.78ms；报告在 `.tmp/pr1251-rootmatch-before.json`、`.tmp/pr1251-rootmatch-shapes.json`。真实 Taro 使用精确 main `739f8116` 对照当前修改，按现有 matrix 脚本执行 3 次构建和 5 次 HMR，完整报告保存在 `.tmp/pr1251-perf-root-snapshot.json`，其中历史标签 `web-revision-only` 指本次工作树。
+
+| 本机指标 | main | 当前修改 |
+| --- | ---: | ---: |
+| 构建耗时 median / p95（ms） | 11797.93 / 12739.66 | 11622.65 / 14687.08 |
+| 构建插件 median / p95（ms） | 2465 / 2647 | 2383 / 2537 |
+| 构建峰值 RSS median / p95（MiB） | 1885.50 / 1901.45 | 1852.55 / 1861.77 |
+| HMR 插件 median / p95，全部 5 次（ms） | 840 / 901 | 851 / 965 |
+| HMR 插件 median / p95，按脚本排除首轮后（ms） | 837.5 / 901 | 847.5 / 866 |
+| watch 峰值 RSS（MiB） | 3214.38 | 3224.94 |
+
+未隐藏首轮构建与 HMR 的高值。本机稳态回退收窄、构建内存降低，仅证明优化方向；Ubuntu 门禁仍须在新 head 验证，预算保持不变。
+
+验证命令：`pnpm --filter @weapp-tailwindcss/postcss exec vitest run --update=none`、主包 `vitest run test/postcss --update=none`、benchmark 的 `vitest run test/watch-lifecycle.test.mjs --update=none`，以及 PostCSS 构建/类型、受影响文件 ESLint、`pnpm architecture:check` 和 `pnpm agents:check`。真实对照命令为 `node benchmark/version-compare/scripts/run-matrix.mjs --versions-file .tmp/pr1251-perf-roots.json --build-runs 3 --hmr-runs 5 --timeout 180000 --only demo-taro-vite-react-tailwindcss-v4__mp-weixin --out .tmp/pr1251-perf-root-snapshot.json`。没有改动 demo 输入或 static 基线。
