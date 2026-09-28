@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/cva
 
+## 0.1.11
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/runtime@0.1.10
+
 ## 0.1.10
 
 ### Patch Changes

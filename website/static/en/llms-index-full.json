@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-23T12:10:15.837Z",
+  "generatedAt": "2026-09-28T11:53:23.457Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -4131,12 +4131,14 @@
         "limits"
       ],
       "headings": [
-        "Current build fix",
+        "Default automatic adaptation",
         "Build-time advisory warning",
         "rpx conversion can amplify errors in the base length",
         "cssCalc capabilities and known limitations",
-        "@theme inline does not automatically remove calc",
+        "@theme inline and automatic mode",
         "Choosing between fixed sizes and runtime themes",
+        "Update px spacing dynamically",
+        "Provide final rpx lengths dynamically",
         "Validation scope"
       ],
       "source": "i18n/en/docs/issues/spacing-rpx.md"
