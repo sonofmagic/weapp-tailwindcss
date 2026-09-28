@@ -129,7 +129,8 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
             return []
           }
           const currentFiles = new Set([...currentBundleFiles].map(normalizeOutputFile))
-          const removedFiles = [...state.pending].filter(file => !currentFiles.has(file))
+          // 同名输出可能已在前一生命周期重新取得归属，旧删除通知不能清除当前输出图。
+          const removedFiles = [...state.pending].filter(file => !currentFiles.has(file) && !sourcesByOutput.has(file))
           state.pending.clear()
           return removedFiles
         },

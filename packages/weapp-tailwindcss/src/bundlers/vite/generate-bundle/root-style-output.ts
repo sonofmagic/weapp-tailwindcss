@@ -39,12 +39,12 @@ export function resolveSingleCssImportOutputFile(targetFile: string, css: string
       if (!request || /^(?:https?:)?\/\//i.test(request) || request.startsWith('data:')) {
         return
       }
-      const cleanRequest = request.replace(/[?#].*$/, '')
+      const cleanRequest = normalizeOutputPathKey(request.replace(/[?#].*$/, ''))
       if (!/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i.test(cleanRequest)) {
         return
       }
       const targetDir = path.posix.dirname(normalizeOutputPathKey(targetFile))
-      importedFile = normalizeOutputPathKey(path.posix.join(targetDir === '.' ? '' : targetDir, cleanRequest))
+      importedFile = path.posix.normalize(cleanRequest.startsWith('/') ? cleanRequest.slice(1) : path.posix.join(targetDir, cleanRequest))
     })
   }
   catch {
@@ -110,14 +110,16 @@ export function resolveFrameworkRootImportShellPlan(
     shouldKeep: options.shouldKeep,
   })
   if (isCurrentImportShell) {
-    const importedFile = resolveSingleCssImportOutputFile(
-      options.rootImportShellOutputFile,
-      options.rawSource,
-    )
+    // 多个合法导入不能被收缩成单一重定向关系。
+    const imports = postcss.parse(options.rawSource).nodes.filter(node => node.type === 'atrule' && node.name === 'import')
+    const importedFile = imports.length === 1
+      ? resolveSingleCssImportOutputFile(options.rootImportShellOutputFile, options.rawSource)
+      : undefined
     return {
       isCurrentImportShell,
-      reusableTarget: options.rememberedTarget,
+      reusableTarget: undefined,
       targetToRemember: importedFile && isRootStyleOutputFile(importedFile)
+        && normalizeOutputPathKey(importedFile) !== normalizeOutputPathKey(options.rootImportShellOutputFile)
         ? importedFile
         : undefined,
     }
@@ -195,6 +197,9 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
     }
     const rawSource = output.source.toString()
     if (!shouldKeepRootMiniProgramStyleAsImportShell(options.shouldKeep(sourceFile, rawSource))) {
+      continue
+    }
+    if (isPureLocalCssImportWrapper(rawSource)) {
       continue
     }
     const nextSource = createCssImportShell(sourceFile, targetFile)
