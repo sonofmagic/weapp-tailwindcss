@@ -3,7 +3,6 @@ import type { Compiler, CompilerCssTransformOptions, CompilerSnapshot } from './
 import type { UserDefinedOptions } from '@/types'
 import { finalizeMiniProgramCssRoot, stripTailwindBannerComments } from '@weapp-tailwindcss/postcss/transform'
 import { getCompilerContext } from '@/context'
-import { shouldSkipJsTransform } from '@/js/precheck'
 import { getInternalCompilerSnapshot } from './snapshot'
 
 const DEFAULT_JS_OPTIONS = Object.freeze({ tailwindcssMajorVersion: 4 as const })
@@ -121,11 +120,9 @@ export function createCompilerTransforms({ ensureActive, track, userOptions }: C
     const resolvedOptions = options?.tailwindcssMajorVersion === undefined
       ? options ? { ...options, tailwindcssMajorVersion: 4 } : DEFAULT_JS_OPTIONS
       : options
-    return track(Promise.resolve(
-      shouldSkipJsTransform(source, resolvedOptions)
-        ? { code: source }
-        : context.jsHandler(source, classSet, resolvedOptions),
-    ))
+    // 显式快照可包含自定义 utility 和 JS 转义拼写；通用前缀预检不能否定快照中的候选。
+    // 匹配仍由 handler 的 classNameSet 精确约束，并复用其解析快速路径与缓存。
+    return track(Promise.resolve(context.jsHandler(source, classSet, resolvedOptions)))
   }
 
   function transformTemplate(source: string, snapshot: CompilerSnapshot, options?: Parameters<Compiler['transformTemplate']>[2]) {
