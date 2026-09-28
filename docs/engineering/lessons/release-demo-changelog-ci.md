@@ -19,6 +19,8 @@ PR #1248 仅升级包版本及生成发布文档，但 Benchmark 的 mpx、weapp
 
 原生命令设置 `reject: false` 后自行拼接异常，空字符串经过 `??` 不会回退到 `shortMessage`，因而吞掉超时、信号与退出码信息。改为保留 execa 原始异常，并用真实 Node 子进程覆盖静默超时、静默非零退出、stderr 和成功输出。此改动修复诊断信息丢失；iOS 启动失败的原因仍需新一次远端运行验证。
 
+首次修复错误地直接推到了 `release/pnpm-version`。用户指出该分支会在 `main` 推送后重新生成，因此生成分支不能承载持久修复。将同一修复迁到 `main`，由发布工作流重新生成 PR，再验收新 head；此前发布分支上的成功只保留为中间验证证据。
+
 ## 验证
 
 - 新增性能分类回归在修复前 6 项失败，修复后通过。
@@ -27,6 +29,7 @@ PR #1248 仅升级包版本及生成发布文档，但 Benchmark 的 mpx、weapp
 - `CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/lynx-native-command.test.ts --update=none`：3 项通过。
 - 对实际 PR 基线 `7dd7f53c7a82939b8c0505bbc973dd6dde5c5308` 调用分类器，结果 `relevant: false`，发布日志进入 `ignoredReleaseMetadataFiles`。
 - 远端原始证据：[Benchmark](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36384524166)、[Lynx](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36384524130)。最终远端结果见 PR 当前提交检查。
+- 中间提交 `cd4b57c818fcd5aff092fd6c0e2f08550a8f29c6` 的 [Benchmark](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36387771739) 与 [Lynx iOS](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36387771791) 均通过。没有据此断言原生启动失败的具体原因；重新生成后的 PR 仍须独立验收。
 
 ## 适用边界
 
@@ -34,4 +37,4 @@ PR #1248 仅升级包版本及生成发布文档，但 Benchmark 的 mpx、weapp
 
 ## 规则评估
 
-不新增规则。既有根因回归、原始错误保留及当前提交 CI 验收要求已覆盖本次问题，补充可执行测试即可。
+按用户纠正，在根 `AGENTS.md` 增加发布生成分支的交付边界：修复落到 `main`，禁止直接向 `release/pnpm-version` 手工提交或推送。触发场景是发布 PR 修复；验证入口是发布工作流及重新生成后的 PR head；发布分支生成方式改变时需复查该规则。其他根因回归与诊断要求沿用已有规范。
