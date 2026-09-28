@@ -91,6 +91,12 @@ pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/webpack.v5.unit.te
 
 ## 适用边界
 
+### PR #1251 CI 修复
+
+首轮 Release Gate（run `36364376024`，head `e90e824`）在 Nuxt SSR 构建中复现 `CSS generation queue has been disposed`：Nuxt 连续使用同一插件配置，客户端 closeBundle 后原先闭包中的队列已经释放。插件工厂现在以 resolved config 分配独立状态，并按环境上下文路由钩子，保留每个实例的正常释放。新增主入口/Web 入口连续 client → SSR → client 的真实 Vite 回归及多环境交错钩子测试；定向 Nuxt build 在修复前失败、修复后通过。
+
+另外更新旧指纹测试：函数签名的契约是同一函数稳定、不同闭包可区分，不再断言函数名或未转义的内部字符串编码。相关 58 条 PostCSS 定向测试通过。
+
 本轮通过的是定向单测、真实解析器/编译器、程序化 watcher、构建与类型证据。未启动全仓/全端验收，未运行微信 IDE、HBuilderX、iOS/Android/Harmony 或浏览器 UI 验收；因此不声称这些环境通过。全面测试仍须先执行本轮多端预检。未等待远端 CI，也未发布 npm。
 
 ## 规则评估
