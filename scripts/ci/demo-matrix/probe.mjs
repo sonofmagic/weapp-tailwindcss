@@ -86,5 +86,8 @@ export async function insertProbe(original, item, round) {
     offset = template.loc.start.offset + template.content.indexOf('>', attributeEnd) + 1
   }
   assert.ok(Number.isInteger(offset) && offset >= 0, `Missing render entry: ${item.name}`)
-  return `${original.slice(0, offset)}\n${snippet(item, round)}\n${original.slice(offset)}`
+  const hotStateProbe = item.source.endsWith('.tsx') && isWeb(item) && item.name.includes('webpack')
+    ? `if (typeof module !== 'undefined' && module.hot) { (globalThis as any).__WEAPP_TW_MATRIX_HMR_STATUS__ = () => module.hot.status() }\n`
+    : ''
+  return `${hotStateProbe}${original.slice(0, offset)}\n${snippet(item, round)}\n${original.slice(offset)}`
 }

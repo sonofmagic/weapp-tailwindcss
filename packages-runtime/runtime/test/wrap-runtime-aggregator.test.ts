@@ -26,15 +26,15 @@ describe('wrapRuntimeAggregator', () => {
     expect(inner).toHaveBeenCalledWith('p-4 p-2')
   })
 
-  it('无特殊字符时跳过 escape', () => {
+  it('自定义 escape 不能根据默认字符表跳过', () => {
     const escape = vi.fn((value: string) => `esc:${value}`)
     const run = wrapRuntimeAggregator(value => value, {
       escape,
       unescape: value => value,
     })
 
-    expect(run('flex items-center')).toBe('flex items-center')
-    expect(escape).not.toHaveBeenCalled()
+    expect(run('flex items-center')).toBe('esc:flex esc:items-center')
+    expect(escape.mock.calls.map(([value]) => value)).toEqual(['flex', 'items-center'])
   })
 
   it('含 modifier 或任意值时仍 escape', () => {
@@ -49,7 +49,7 @@ describe('wrapRuntimeAggregator', () => {
     expect(run('w-[10rpx]')).toBe('esc:w-[10rpx]')
   })
 
-  it('已转义输入才会 unescape', () => {
+  it('自定义 unescape 对普通和已转义输入都执行', () => {
     const unescape = vi.fn((value: string) => value.replaceAll('_c', ':'))
     const inner = vi.fn((value: string) => value)
     const run = wrapRuntimeAggregator(inner, {
@@ -58,7 +58,7 @@ describe('wrapRuntimeAggregator', () => {
     })
 
     run('flex')
-    expect(unescape).not.toHaveBeenCalled()
+    expect(unescape).toHaveBeenCalledWith('flex')
 
     run('hover_cp-2')
     expect(unescape).toHaveBeenCalledWith('hover_cp-2')

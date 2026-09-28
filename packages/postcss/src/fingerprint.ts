@@ -5,6 +5,10 @@ interface FingerprintState {
   counter: number
 }
 
+// 函数身份必须跨调用稳定；弱引用避免缓存指纹持有已释放的插件闭包。
+const functionIds = new WeakMap<object, number>()
+let nextFunctionId = 0
+
 export function fingerprintOptions(
   value: unknown,
   state: FingerprintState = { map: new WeakMap<object, string>(), counter: 0 },
@@ -14,13 +18,18 @@ export function fingerprintOptions(
   }
 
   if (typeof value === 'function') {
-    return `fn:${value.name || 'anonymous'}`
+    let id = functionIds.get(value)
+    if (id === undefined) {
+      id = nextFunctionId++
+      functionIds.set(value, id)
+    }
+    return `fn:${id}`
   }
   if (typeof value === 'symbol') {
     return `sym:${String(value)}`
   }
   if (typeof value !== 'object') {
-    return `${typeof value}:${String(value)}`
+    return `${typeof value}:${JSON.stringify(String(value))}`
   }
 
   const objectValue = value as Record<string, unknown>
@@ -49,7 +58,7 @@ export function fingerprintOptions(
   }
 
   const keys = Object.keys(objectValue).sort()
-  const parts = keys.map(key => `${key}:${fingerprintOptions(objectValue[key], state)}`)
+  const parts = keys.map(key => `${JSON.stringify(key)}:${fingerprintOptions(objectValue[key], state)}`)
   return `{${parts.join(',')}}@${marker}`
 }
 

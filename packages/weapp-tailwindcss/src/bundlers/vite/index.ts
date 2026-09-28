@@ -17,11 +17,12 @@ import { createUniAppVitePlugins } from './frameworks/uni-app'
 import { createUniAppXVitePlugins } from './frameworks/uni-app-x'
 import { createWeappVitePlugins } from './frameworks/weapp-vite'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
+import { createConfigScopedPlugins } from './shared/config-scoped-plugins'
 
 export type { WeappTailwindcssVitePlugin } from './shared/create-framework-plugins'
 
 type HookName = 'config' | 'configResolved' | 'buildStart' | 'buildEnd' | 'resolveId' | 'load' | 'transform'
-  | 'configureServer' | 'handleHotUpdate' | 'watchChange' | 'generateBundle' | 'writeBundle' | 'closeBundle'
+  | 'configureServer' | 'handleHotUpdate' | 'watchChange' | 'generateBundle' | 'writeBundle' | 'closeBundle' | 'closeWatcher' | 'moduleParsed' | 'shouldTransformCachedModule'
 
 const hookNames: HookName[] = [
   'config',
@@ -37,6 +38,9 @@ const hookNames: HookName[] = [
   'generateBundle',
   'writeBundle',
   'closeBundle',
+  'closeWatcher',
+  'moduleParsed',
+  'shouldTransformCachedModule',
 ]
 
 function platformFamily(platform: string | undefined): ViteCapabilityProfile['platformFamily'] {
@@ -306,5 +310,5 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
 
 /** Vite 单一入口。框架分支在 Vite 完成配置解析后选择，保持原有导入和注册方式。 */
 export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwindcssVitePlugin[] | undefined {
-  return createDispatcher(options)
+  return createConfigScopedPlugins(() => createDispatcher(options))
 }

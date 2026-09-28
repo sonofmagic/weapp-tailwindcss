@@ -7,71 +7,55 @@ import type { GenerateBundleContext } from '../generate-bundle/types'
 import type { SourceCandidateCollector } from '../source-candidates'
 import type { ViteFrameworkBranchContext } from './create-framework-plugins'
 import type { ViteFrameworkRuntimeOptions } from './framework-runtime-options'
-import type { CssStage } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { Buffer } from 'node:buffer'
-import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { compileCssMacroConditionalComments, transformWebCssCompat, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss/transform'
-import { LRUCache } from 'lru-cache'
+import { compileCssMacroConditionalComments, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss/transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/generation/directives'
-import { hasUserCssLayerBlocks, normalizeEmptyTailwindCustomVariants, splitUserCssLayerBlocks } from '@/generation/user-css'
+import { hasTailwindRootDirectives } from '@/generation/directives'
+import { hasUserCssLayerBlocks } from '@/generation/user-css'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
 import { extractCandidatesFromSource } from '@/tailwindcss/candidates'
-import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
-import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
-import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { hasConfiguredTailwindV4CssRoots } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { normalizeMiniProgramGeneratorCssSource } from '../../../generation/output-import-shell'
-import { generateTailwindV4Css } from '../../../generation/service'
-import { annotateCssSourceTrace, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
-import { createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
+import { isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
-import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { frameworkViteCapabilityProfile } from '../capability-profile'
 import { createViteCssAssetIdentityResolver } from '../css-asset-identity'
 import { createViteCssCalcStage } from '../css-calc-stage'
 import { createViteCssFinalizerOutputPlugin } from '../css-finalizer'
 import { createViteWebCssFinalizerOutputPlugin } from '../css-finalizer/web-plugin'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from '../css-handler-options'
-import { createViteCssMemory } from '../css-memory'
-import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from '../generate-bundle'
+import { createGenerateBundleHook } from '../generate-bundle'
 import { createJsHandlerOptionsFactory } from '../generate-bundle/js-handler-options'
-import { isSfcStyleSourceFile, resolveSfcStyleRequestFromKnownSource } from '../generate-bundle/sfc-style-source'
-import { touchMapEntry } from '../map-cache'
-import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache } from '../plugin-cache'
-import { removeScopedTailwindPreflightCss } from '../processed-css-assets'
+import { normalizeVitePersistentCacheKey } from '../plugin-cache'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
 import { installRuntimeClassSetLifecycle } from '../runtime-class-set/lifecycle'
 import { createViteCssGenerationPlugins } from '../serve-css-generation'
 import { createViteServeJsTransformPlugin } from '../serve-js-transform'
-import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import-shell'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
-import { discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteTailwindV4CssDependencies } from '../source-scan'
-import { cleanUrl, isCSSRequest, isHTMLRequest, resolveViteCssPipelineRequestFile, slash } from '../utils'
+import { cleanUrl, slash } from '../utils'
 import { shouldAdaptFrameworkWatchCssBeforeCache } from '../watch-css-post'
-import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
-import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 import { createConfiguredCssEntryDiagnostics } from './configured-css-entry-observer'
-import { createFrameworkCssGenerationQueue } from './framework-css-generation-queue'
+import { createFrameworkCssAssets } from './framework-css-assets'
+import { createFrameworkCssGenerator } from './framework-css-generator'
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
 import { createViteHmrCssModuleVersionFilterPlugin, createViteHmrCssModuleVersionTracker } from './framework-hmr-module-version'
 import { createFrameworkModuleCandidateRegistrar } from './framework-module-candidates'
 import { orderFrameworkSourceCandidatePlugins } from './framework-plugin-order'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
-import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
 import { createFrameworkCssEntrySync, resolveFrameworkStylePlatform } from './framework-runtime-configuration'
+import { createFrameworkRuntimeLifecycle } from './framework-runtime-lifecycle'
 import { collectConfiguredCssEntries, isInternalUserDefinedOptions, isNuxtPageHotModule, isWebOrNativeAppPlatform } from './framework-runtime-utils'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
+import { createFrameworkSourceDiscovery } from './framework-source-discovery'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
 import { createFrameworkWatchCssCacheAdapter } from './framework-watch-css-adapter'
@@ -129,96 +113,16 @@ export function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions 
   }
   const shouldInferAppType = !hasExplicitAppType && !initialGeneratorBranch.isWeb
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({ ...rawOptions, cssEntries: opts.cssEntries ?? rawOptions.cssEntries })
-  const autoCssSourceContent = new Map<string, string>()
-  const frameworkRootImportShellTargetByFile = new Map<string, string>()
-  const transientAutoCssSources = new Map()
-  let refreshRuntimeStateForAutoCssSources: ReturnType<typeof createViteRuntimeClassSet>['refreshRuntimeState'] | undefined
-  let autoCssSourcesRefresh: Promise<void> | undefined
-  let autoCssSourcesDiscovered = false
-  const syncTailwindCssSourceCandidates = async (id: string, css: string) => {
-    if (tailwindcssMajorVersion === 4 && isMissingInternalCssSource(cleanUrl(id), weappTailwindcssPackageDir)) {
-      return
-    } await sourceCandidateCollector.syncCss(id, css); sourceScanSession.cacheCurrent()
-  }
-  const registerAutoCssSource = async (id: string, css: string, options2: { refresh?: boolean | undefined } = {}) => {
-    if (!shouldOwnTailwindGeneration) {
-      return
-    } const file = cleanUrl(id); if (!path.isAbsolute(file)) {
-      return
-    } if (!isTailwindV4CssEntry(file)) {
-      return
-    } if (isMissingInternalCssSource(file, weappTailwindcssPackageDir)) {
-      return
-    } const sourceFile = path.normalize(file); const sourceBase = path.dirname(sourceFile); const sourceCss = normalizeTailwindSourceForGenerator(normalizeTailwindConfigDirectives(css, sourceBase), { importFallback: true }); if (autoCssSourceContent.get(sourceFile) === sourceCss) {
-      return
-    } autoCssSourceContent.set(sourceFile, sourceCss); await syncTailwindCssSourceCandidates(sourceFile, sourceCss); cssMemory.refreshRememberedCssSourceBySourceFile(sourceFile, sourceCss); const transientSource = { file: sourceFile, base: sourceBase, css: sourceCss, dependencies: [] as string[] }; if (hasInitialTailwindCssRoots) {
-      transientAutoCssSources.set(sourceFile, transientSource)
-      return
-    } const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, sourceBase); transientSource.dependencies = dependencies; transientAutoCssSources.set(sourceFile, transientSource); const changed = upsertTailwindV4CssSource(opts, { file: sourceFile, base: sourceBase, css: sourceCss, dependencies }); if (!changed) {
-      return
-    } sourceScanSession.invalidate(); debug('detected tailwindcss v4 css source from vite css module: %s', sourceFile); if (options2.refresh === false) {
-      return
-    } autoCssSourcesRefresh = (autoCssSourcesRefresh ?? Promise.resolve()).then(async () => { await refreshRuntimeStateForAutoCssSources?.(true); await sourceScanSession.sync({ force: true }) }); await autoCssSourcesRefresh
-  }
-  const discoverAndRegisterAutoCssSources = async () => {
-    if (!shouldOwnTailwindGeneration || hasInitialTailwindCssRoots || !resolvedConfig?.root) {
-      return
-    } const cssEntries = await discoverTailwindV4CssEntries(resolvedConfig.root, resolvedConfig.build?.outDir); autoCssSourcesDiscovered = true; let changed = false; for (const cssEntry of cssEntries) {
-      const sourceFile = path.resolve(cssEntry)
-      const sourceBase = path.dirname(sourceFile)
-      const sourceCss = normalizeTailwindSourceForGenerator(normalizeTailwindConfigDirectives(await readFile(sourceFile, 'utf8'), sourceBase), { importFallback: true })
-      if (autoCssSourceContent.get(sourceFile) === sourceCss) {
-        continue
-      }
-      autoCssSourceContent.set(sourceFile, sourceCss)
-      await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
-      const resolved = await resolveTailwindV4EntriesFromCssCached(sourceCss, sourceBase)
-      changed = upsertTailwindV4CssSource(opts, { file: sourceFile, base: sourceBase, css: sourceCss, dependencies: resolved?.dependencies ?? [] }) || changed
-    } if (!changed) {
-      return
-    } sourceScanSession.invalidate(); await refreshRuntimeStateForAutoCssSources?.(true)
-  }
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
   let recordedGeneratorCandidates: Set<string> | undefined
   const sourceCandidateCollector = createSourceCandidateCollector({ bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues, customAttributesEntities, disabledDefaultTemplateHandler })
-  const originalCssLayerSourceByFile = new LRUCache<string, string>({ max: 128 })
-  const rememberOriginalCssLayerSource = (id: string, code: string) => {
-    const file = cleanUrl(id); if (!isCSSRequest(file)) {
-      return
-    } if (!hasUserCssLayerBlocks(code)) {
-      originalCssLayerSourceByFile.delete(file)
-      return
-    } originalCssLayerSourceByFile.set(file, splitUserCssLayerBlocks(code).layer)
-  }
-  const processedCssAssets = new WeakSet<OutputAsset>()
-  const processedCssAssetSourceByFile = new Map<string, string>()
-  const cleanGeneratedCssByFile = new Map<string, string>()
-  const tracedGeneratedCssByFile = new Map<string, string>()
-  const generatedClassSetByFile = new Map<string, Set<string>>()
-  const processedCssRegistry = createFrameworkProcessedCssRegistry()
-  const cssMemory = createViteCssMemory({ debug, getSourceCandidateSource: file => sourceCandidateCollector.source(file) })
+  const cssAssets = createFrameworkCssAssets({ debug, getSourceCandidateSource: file => sourceCandidateCollector.source(file) })
+  const { originalCssLayerSourceByFile, rememberOriginalCssLayerSource, cleanGeneratedCssByFile, generatedClassSetByFile, processedCssRegistry, cssMemory, markCssAssetProcessed, isCssAssetProcessed, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getViteProcessedCssAssetResult, pruneViteCssCaches, frameworkRootImportShellTargetByFile } = cssAssets
   const { runtimeState, refreshRuntimeState, invalidateRuntimeClassSet, ensureRuntimeClassSet, ensureBundleRuntimeClassSet } = createViteRuntimeClassSet({ opts, initialTailwindRuntime, refreshTailwindcssRuntime: refreshTailwindRuntime, uniAppXEnabled, customAttributesEntities, disabledDefaultTemplateHandler, debug })
   const hmrTimingRecorder = createHmrTimingRecorder('vite')
-  refreshRuntimeStateForAutoCssSources = refreshRuntimeState
+  const refreshRuntimeStateForAutoCssSources = refreshRuntimeState
   onLoad()
   const getResolvedConfig = () => resolvedConfig
-  const readCssAssetSource = (asset: OutputAsset) => { return typeof asset.source === 'string' ? asset.source : asset.source instanceof Uint8Array ? Buffer.from(asset.source).toString() : String(asset.source ?? '') }
-  const markCssAssetProcessed = (asset: OutputAsset, file?: string) => {
-    processedCssAssets.add(asset); if (file) {
-      processedCssAssetSourceByFile.set(normalizeOutputPathKey(file), readCssAssetSource(asset))
-    }
-  }
-  const isCssAssetProcessed = (asset: OutputAsset, file?: string) => {
-    if (processedCssAssets.has(asset)) {
-      return true
-    } if (!file) {
-      return false
-    } const source = readCssAssetSource(asset); if (processedCssAssetSourceByFile.get(normalizeOutputPathKey(file)) === source) {
-      return true
-    } const record = processedCssRegistry.get(file); if (!record) {
-      return false
-    } return source === record.css
-  }
   const recordGeneratorCandidates = (candidates: Iterable<string>) => { recordedGeneratorCandidates = new Set(candidates) }
   const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
   const invalidateRecordedGeneratorCandidates = () => { recordedGeneratorCandidates = void 0 }
@@ -251,27 +155,11 @@ export function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions 
     shouldOwnTailwindGeneration,
     sourceCandidateCollector,
   })
-  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = createFrameworkTailwindRootCss({ getImportFallback: () => resolveCurrentGeneratorOptions().importFallback, refreshRuntimeState, registerAutoCssSource, shouldOwnTailwindGeneration, sourceScanSession })
-  const recordCssAssetResult = (file: string, css: string) => { touchMapEntry(cleanGeneratedCssByFile, normalizeVitePersistentCacheKey(file), css) }
-  const recordViteProcessedCssAssetResult = processedCssRegistry.record
-  const getViteProcessedCssAssetResults = processedCssRegistry.entries
-  const getViteProcessedCssAssetResult = processedCssRegistry.get
-  const getViteCssCacheStats = () => ({ cleanGeneratedCssByFile: cleanGeneratedCssByFile.size, cleanGeneratedCssByFileRaw: summarizeStringCache(cleanGeneratedCssByFile), tracedGeneratedCssByFile: tracedGeneratedCssByFile.size, tracedGeneratedCssByFileRaw: summarizeStringCache(tracedGeneratedCssByFile), generatedClassSetByFile: generatedClassSetByFile.size, ...processedCssRegistry.getStats(), ...cssMemory.getStats(), ...sourceScanSession.getStats() })
-  const pruneViteCssCaches: NonNullable<GenerateBundleContext['pruneViteCssCaches']> = (options2) => {
-    const activeFiles = new Set([...options2.activeFiles].map(normalizeVitePersistentCacheKey)); for (const key of cleanGeneratedCssByFile.keys()) {
-      if (!activeFiles.has(key)) {
-        cleanGeneratedCssByFile.delete(key)
-      }
-    } for (const key of tracedGeneratedCssByFile.keys()) {
-      if (!activeFiles.has(key)) {
-        tracedGeneratedCssByFile.delete(key)
-      }
-    } for (const key of generatedClassSetByFile.keys()) {
-      if (!activeFiles.has(key)) {
-        generatedClassSetByFile.delete(key)
-      }
-    } processedCssRegistry.prune(activeFiles); cssMemory.prune(options2)
-  }
+  const sourceDiscovery = createFrameworkSourceDiscovery({ opts, hasInitialTailwindCssRoots, shouldOwnTailwindGeneration, tailwindcssMajorVersion, weappTailwindcssPackageDir, debug, sourceCandidateCollector, sourceScanSession, cssMemory, refreshRuntimeState, getResolvedConfig })
+  const { registerAutoCssSource, transientAutoCssSources, discoverAndRegisterAutoCssSources } = sourceDiscovery
+  const tailwindRootCss = createFrameworkTailwindRootCss({ getImportFallback: () => resolveCurrentGeneratorOptions().importFallback, refreshRuntimeState, registerAutoCssSource, shouldOwnTailwindGeneration, sourceScanSession })
+  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = tailwindRootCss
+  const getViteCssCacheStats = () => ({ ...cssAssets.getStats(), ...sourceScanSession.getStats() })
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = processedCssRegistry.markSource
   const isUniViteProject = () => { return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false }
@@ -280,142 +168,7 @@ export function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions 
   const transformCssHandlerOptions = createCssHandlerOptionsCache({ getAppType: () => opts.appType, mainCssChunkMatcher, getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, getOutputRoot: () => resolvedConfig?.build?.outDir ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir) : resolvedConfig?.root, getExtraOptions: file => ({ ...resolveViteCssHandlerExtraOptions(file), ...frameworkCssPipelineStrategy?.getCssHandlerExtraOptions?.({ ...createCssPipelineContext(), file }) ?? {} }), getDynamicCssOptions: () => ({ cssPreflight: opts.cssPreflight }) })
   const serveJsHandlerOptions = createJsHandlerOptionsFactory({ getExperimentalJsFastPath: () => opts.experimentalJsFastPath ?? 'oxc', getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: void 0 })
   const shouldAdaptFrameworkWatchCss = () => { const platform = resolveViteStylePlatform(); return shouldAdaptFrameworkWatchCssBeforeCache({ enabled: frameworkBranch.adaptWatchCssBeforeFrameworkCache === true, ownsTailwindGeneration: shouldOwnTailwindGeneration, isWatchBuild: isWatchBuild(), isWebGeneratorBranch: resolveCurrentGeneratorBranch().isWeb, platform }) }
-  const generateTailwindCssForVitePipelineNow = async (id: string, code: string, hookContext?: {
-    addWatchFile?: ((id: string) => void) | undefined
-    emitFile?: (asset: { type: 'asset', fileName: string, source: string }) => string
-    cssStage?: CssStage | undefined
-    disableSourceScan?: boolean | undefined
-    sourceCandidates?: Iterable<string> | undefined
-    transient?: boolean | undefined
-  }) => {
-    if (!shouldOwnTailwindGeneration) {
-      return void 0
-    }
-    await runtimeState.readyPromise
-    await sourceScanSession.waitForPendingSyncs()
-    const file = cleanUrl(id)
-    const inferredSfcStyleRequest = isSfcStyleSourceFile(file) ? resolveSfcStyleRequestFromKnownSource(file, cssMemory.getKnownSfcSource(file), code) : file
-    const requestFile = isCSSRequest(id) ? inferredSfcStyleRequest === file ? resolveViteCssPipelineRequestFile(id) : inferredSfcStyleRequest : inferredSfcStyleRequest
-    if (!isCSSRequest(requestFile) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
-      return void 0
-    }
-    const generatorCode = normalizeEmptyTailwindCustomVariants(code)
-    const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-    const currentGeneratorOptions = resolveCurrentGeneratorOptions()
-    const currentGeneratorBranch = resolveCurrentGeneratorBranch()
-    const cssPipelineContext = createCssPipelineContext({ currentGeneratorBranch, currentGeneratorOptions })
-    const shouldPreserveStyleOutputExtension = frameworkCssPipelineStrategy?.shouldPreserveStyleOutputExtension?.(cssPipelineContext) ?? frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
-    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, shouldPreserveStyleOutputExtension, sourceRoot)
-    const generatorTransformCode = currentGeneratorBranch.isWeb ? generatorCode : normalizeMiniProgramGeneratorCssSource(generatorCode, outputFile)
-    const fileKey = normalizeGeneratedCssCacheFile(file)
-    const fullRuntime = getSourceCandidates() ?? getRecordedGeneratorCandidates() ?? await ensureRuntimeClassSet()
-    const transient = hookContext?.transient === true
-    const pendingHmrChange = transient ? void 0 : hmrCandidateState.resolve(generatorCode, file)
-    const forceFullHmrCssRegeneration = hmrCandidateState.shouldForceFullRegeneration(file, pendingHmrChange !== undefined)
-    const runtime = hookContext?.sourceCandidates === undefined
-      ? new Set(fullRuntime)
-      : new Set(hookContext.sourceCandidates)
-    if (pendingHmrChange) {
-      for (const candidate of pendingHmrChange.addedCandidates) {
-        runtime.add(candidate)
-      }
-    }
-    const getGenerationSourceCandidatesForEntries: SourceCandidateCollector['valuesForEntries'] = pendingHmrChange
-      ? (entries, options2) => {
-          const candidates = new Set(getSourceCandidatesForEntries(entries, options2))
-          for (const candidate of pendingHmrChange.addedCandidates) {
-            candidates.add(candidate)
-          }
-          return candidates
-        }
-      : getSourceCandidatesForEntries
-    const importShellCss = resolveViteServeRootMiniProgramImportShell({ css: generatorTransformCode, cssPipelineContext, cssPipelineStrategy: frameworkCssPipelineStrategy, isWebGeneratorTarget: currentGeneratorBranch.isWeb, outputFile })
-    if (importShellCss !== void 0) {
-      cleanGeneratedCssByFile.set(fileKey, importShellCss)
-      tracedGeneratedCssByFile.set(fileKey, importShellCss)
-      generatedClassSetByFile.set(fileKey, new Set())
-      recordViteProcessedCssAssetResult(file, importShellCss, { injectIntoMain: false, outputFile })
-      markViteProcessedCssSource(file)
-      rememberTailwindRootCssModule(id)
-      recordGeneratorCandidates(fullRuntime)
-      if (pendingHmrChange || forceFullHmrCssRegeneration) {
-        hmrCandidateState.finishTarget(file)
-      }
-      else if (!hmrCandidateState.hasPendingChange()) {
-        hmrCandidateState.clear()
-      }
-      cssMemory.rememberCssSource({ outputFile, rawSource: code, sourceFile: requestFile })
-      debug('css preserved root mini-program import shell for vite postcss pipeline: %s bytes=%d', requestFile, importShellCss.length)
-      return importShellCss
-    }
-    if (pendingHmrChange && currentGeneratorOptions.target === 'weapp' && filterUnsupportedMiniProgramTailwindV4Candidates(pendingHmrChange.addedCandidates).size === 0) {
-      const previousTracedCss = tracedGeneratedCssByFile.get(fileKey)
-      if (previousTracedCss !== void 0) {
-        hmrCandidateState.finishTarget(file)
-        return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}
-${previousTracedCss}`
-      }
-    }
-    const sourceCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(requestFile)
-    const outputCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
-    const cssHandlerOptions = { ...sourceCssHandlerOptions, isMainChunk: outputCssHandlerOptions.isMainChunk }
-    const transientCssSource = transientAutoCssSources.get(file) ?? (hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback }) || hasTailwindSourceDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback }) || hasTailwindApplyDirective(generatorTransformCode) ? { base: path.dirname(path.resolve(file)), css: generatorTransformCode, file: path.resolve(file) } : void 0)
-    const shouldDeferEmptyScopedCssSource = transientCssSource == null && (frameworkCssPipelineStrategy?.shouldDeferEmptyScopedCssSource?.({ ...cssPipelineContext, cssHandlerOptions, generatorCode: generatorTransformCode }) ?? true)
-    const previousCss = pendingHmrChange && !forceFullHmrCssRegeneration ? cleanGeneratedCssByFile.get(fileKey) : void 0
-    const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile) : previousCss
-    const hmrDebugState = hmrCandidateState.snapshotDebugState()
-    const generated = await hmrTimingRecorder.measure(`generateCss.${resolvedConfig?.command ?? 'unknown'}`, () => generateTailwindV4Css({ opts, runtimeState, runtime, rawSource: generatorTransformCode, file, outputFile, cssHandlerOptions, cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(requestFile), cssSources: transientCssSource ? [transientCssSource] : void 0, getSourceCandidatesForEntries: getGenerationSourceCandidatesForEntries, generatorPlatform: resolveGeneratorPlatform(), styleHandler, debug, previousCss: previousGeneratorCss, previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration ? generatedClassSetByFile.get(fileKey) : void 0, deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource, deferCssAdaptation: resolvedConfig?.command === 'build' && !transient && !currentGeneratorBranch.isWeb && !shouldAdaptFrameworkWatchCss(), disableSourceScan: hookContext?.disableSourceScan === true, cssStage: hookContext?.cssStage, restoreLocalCssImports: !currentGeneratorBranch.isWeb }), { file, memoryDebug: { cleanCacheHit: cleanGeneratedCssByFile.has(fileKey), forceFullHmrCssRegeneration, ...hmrDebugState, pendingResolved: pendingHmrChange !== void 0, runtimeCandidates: runtime.size, target: currentGeneratorOptions.target } })
-    if (!generated) {
-      if (pendingHmrChange) {
-        hmrCandidateState.finishTarget(file)
-      }
-      else if (!hmrCandidateState.hasPendingChange()) {
-        hmrCandidateState.clear()
-      }
-      return void 0
-    }
-    const finalizedCss = finalizeViteMiniProgramCss(generated.css)
-    const shouldApplyWebCssCompat = shouldApplyViteWebCssCompat(cssPipelineContext, frameworkCssPipelineStrategy)
-    const outputCss = frameworkCssPipelineStrategy?.transformGeneratedCss?.(finalizedCss, { ...cssPipelineContext, defaultWebCssCompat: css => transformWebCssCompat(css, resolveViteWebCssCompatOptions(cssPipelineContext)), removeScopedPreflight: removeScopedTailwindPreflightCss, shouldApplyWebCssCompat }) ?? removeScopedTailwindPreflightCss(shouldApplyWebCssCompat ? transformWebCssCompat(finalizedCss, resolveViteWebCssCompatOptions(cssPipelineContext)) : finalizedCss)
-    if (transient) {
-      for (const dependency of generated.dependencies) {
-        hookContext?.addWatchFile?.(dependency)
-      }
-      return outputCss
-    }
-    const tracedCss = annotateCssSourceTrace(outputCss, { opts, tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(void 0), opts) })
-    for (const dependency of generated.dependencies) {
-      hookContext?.addWatchFile?.(dependency)
-    }
-    cleanGeneratedCssByFile.set(fileKey, outputCss)
-    tracedGeneratedCssByFile.set(fileKey, tracedCss)
-    generatedClassSetByFile.set(fileKey, new Set(generated.classSet))
-    const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType) || hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback }) && !normalizeOutputPathKey(outputFile).includes('/')
-    recordViteProcessedCssAssetResult(file, tracedCss, { injectIntoMain: shouldInjectGeneratedCssIntoMain, outputFile })
-    if (tracedCss.includes('weapp-tailwindcss layer components start')) {
-      recordViteProcessedCssAssetResult(file, tracedCss, { injectIntoMain: shouldInjectGeneratedCssIntoMain, outputFile })
-    }
-    if (shouldPreserveStyleOutputExtension && outputFile.endsWith('.css')) {
-      hookContext?.emitFile?.({ type: 'asset', fileName: outputFile, source: tracedCss })
-    }
-    markViteProcessedCssSource(file)
-    if (hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback })) {
-      rememberTailwindRootCssModule(id)
-    }
-    recordGeneratorCandidates(fullRuntime)
-    if (pendingHmrChange || forceFullHmrCssRegeneration) {
-      hmrCandidateState.finishTarget(file)
-    }
-    else if (!hmrCandidateState.hasPendingChange()) {
-      hmrCandidateState.clear()
-    }
-    cssMemory.rememberCssSource({ outputFile, rawSource: code, sourceFile: requestFile })
-    debug('css generated for vite postcss pipeline: %s bytes=%d', requestFile, tracedCss.length)
-    return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}
-${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMarker('vite', normalizeViteProcessedCssFile(file))}` : ''}`
-  }
-  const generateTailwindCssForVitePipeline = createFrameworkCssGenerationQueue(normalizeGeneratedCssCacheFile, generateTailwindCssForVitePipelineNow)
+  const generateTailwindCssForVitePipeline = createFrameworkCssGenerator({ ...cssAssets, opts, runtimeState, shouldOwnTailwindGeneration, sourceScanSession, getResolvedConfig, resolveCurrentGeneratorOptions, resolveCurrentGeneratorBranch, createCssPipelineContext, frameworkCssPipelineStrategy, normalizeGeneratedCssCacheFile, getSourceCandidates, getRecordedGeneratorCandidates, ensureRuntimeClassSet, hmrCandidateState, getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, markViteProcessedCssSource, rememberTailwindRootCssModule, recordGeneratorCandidates, debug, normalizeViteProcessedCssFile, transformCssHandlerOptions, transientAutoCssSources, hmrTimingRecorder, resolveGeneratorPlatform, styleHandler, shouldAdaptFrameworkWatchCss, finalizeViteMiniProgramCss, mainCssChunkMatcher })
   const shouldDeferFrameworkPreTransformGeneration = (id: string, code: string) => frameworkCssPipelineStrategy?.shouldDeferPreTransformTailwindGeneration?.({ ...createCssPipelineContext(), code, id }) === true
   const rewritePlugins = createRewriteCssImportsPlugins({ getAppType: () => opts.appType, generateTailwindCss: generateTailwindCssForVitePipeline, rootImport: shouldOwnTailwindGeneration ? `${weappTailwindcssDirPosix}/generator-placeholder.css` : void 0, onTailwindRootCss: registerTailwindRootCss, onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code), shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code), shouldDeferGeneration: (id, code) => !shouldRewriteCssImports && hasTailwindRootDirectives(code, { importFallback: resolveCurrentGeneratorOptions().importFallback }) || shouldDeferFrameworkPreTransformGeneration(id, code), shouldOwnTailwindGeneration, shouldRewrite: shouldRewriteCssImports, weappTailwindcssDirPosix })
   if (disabledOptions.plugin) {
@@ -429,7 +182,7 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
   const cssFinalizerOutputPlugin = capability.cssOnly ? createViteWebCssFinalizerOutputPlugin(cssFinalizerContext) : createViteCssFinalizerOutputPlugin(cssFinalizerContext)
   const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}; const syncSourceCandidatesForHotUpdate = (ctx: HmrContext) => syncFrameworkSourceCandidatesForHotUpdate(sourceScanSession, ctx); const registerModuleGraphCandidates = createFrameworkModuleCandidateRegistrar({ cacheCurrent: sourceScanSession.cacheCurrent, debug, getCssHandlerOptions: transformCssHandlerOptions.getCssHandlerOptions, getGeneratorPlatform: resolveGeneratorPlatform, invalidateRecordedGeneratorCandidates, opts, runtimeState, sourceCandidateCollector, styleHandler })
   const prepareTailwindGeneration = async () => {
-    if (sourceScanSession.shouldDiscoverAutoCssSources(autoCssSourcesDiscovered)) {
+    if (sourceScanSession.shouldDiscoverAutoCssSources(sourceDiscovery.isDiscovered())) {
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
@@ -490,5 +243,22 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
   plugins.push(cssFinalizerOutputPlugin)
   plugins.push(createViteHmrCssModuleVersionFilterPlugin(hmrCssModuleVersions))
   if (capability.styleInjector) { plugins.push(...capability.cssOnly && typeof (options as any).__internalViteWebStyleInjectorFactory === 'function' ? (options as any).__internalViteWebStyleInjectorFactory(styleInjector) : createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate)) }
+  plugins.push(createFrameworkRuntimeLifecycle({
+    getResolvedConfig,
+    async dispose() {
+      await generateTailwindCssForVitePipeline.dispose()
+      try {
+        await sourceDiscovery.dispose()
+        await sourceScanSession.dispose()
+      }
+      finally {
+        tailwindRootCss.dispose()
+        webCssEntryDiagnostics.dispose()
+        runtimeState.dispose()
+        cssAssets.dispose()
+        invalidateRecordedGeneratorCandidates()
+      }
+    },
+  }))
   return plugins
 }

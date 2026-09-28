@@ -45,8 +45,9 @@ const COLOR_DECLARATION_REGEX = /color:/g
 
 describe('utility coverage helpers', () => {
   it('fingerprintOptions handles anonymous functions', () => {
-    const anonResult = fingerprintOptions(() => {})
-    expect(anonResult).toBe('fn:anonymous')
+    const anonymous = () => {}
+    const anonResult = fingerprintOptions(anonymous)
+    expect(fingerprintOptions(anonymous)).toBe(anonResult)
 
     const proxyFn = new Proxy(() => {}, {
       get(target, prop, receiver) {
@@ -56,7 +57,8 @@ describe('utility coverage helpers', () => {
         return Reflect.get(target, prop, receiver)
       },
     })
-    expect(fingerprintOptions(proxyFn)).toBe('fn:anonymous')
+    expect(fingerprintOptions(proxyFn)).not.toBe(anonResult)
+    expect(fingerprintOptions(proxyFn)).toBe(fingerprintOptions(proxyFn))
   })
 
   it('hasTwVars handles rules without nodes', () => {

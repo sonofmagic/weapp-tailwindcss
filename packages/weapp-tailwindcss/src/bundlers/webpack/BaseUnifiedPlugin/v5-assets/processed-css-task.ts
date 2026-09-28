@@ -24,7 +24,7 @@ export interface WebpackCssAssetTaskContext {
 }
 
 export async function processWebpackProcessedCssAsset(element: [string, Pick<sources.Source, 'source'>], context: WebpackCssAssetTaskContext) {
-  const { ConcatSource, assetHashByChunk, compilerOptions, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, getCssHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, runtimeAffectingSourceHash, updateAssetIfChanged, watchMode, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates } = context
+  const { ConcatSource, assetHashByChunk, compilerOptions, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, getCssHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, runtimeAffectingSourceHash, updateAssetIfChanged, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates } = context
   const [file, originalSource] = element
 
   let rawSource: string | undefined
@@ -48,15 +48,8 @@ export async function processWebpackProcessedCssAsset(element: [string, Pick<sou
   const processedLoaderGeneratedCss = processedSourceFile
     ? generatedCssSources.get(path.resolve(processedSourceFile))
     : undefined
-  const processedAssetSourceHash = watchMode
-    && isWebGeneratorTarget
-    && cssHandlerOptionsForProcessedAsset.isMainChunk
-    ? compilerOptions.cache.computeHash(readRawSource())
-    : chunkHash === undefined
-      ? processedCssAssetKnown
-        ? 'webpack-css-asset:known'
-        : compilerOptions.cache.computeHash(readRawSource())
-      : 'webpack-css-asset:chunk'
+  // 固定文件名的 CSS asset 可在 JS chunk hash 不变时更新，已知资产同样必须核对本轮内容。
+  const processedAssetSourceHash = `${compilerOptions.cache.computeHash(readRawSource())}:${processedLoaderGeneratedCss ? compilerOptions.cache.computeHash(processedLoaderGeneratedCss.css) : 'loader:0'}`
   const processedCssHashKey = createRuntimeAwareCssHash(
     chunkHash,
     processedAssetSourceHash,

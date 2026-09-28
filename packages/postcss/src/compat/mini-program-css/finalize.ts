@@ -2,7 +2,7 @@ import type { FinalizeMiniProgramCssOptions } from './finalize-options'
 import postcss from 'postcss'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
 import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '../tailwindcss-v4'
-import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } from './at-rules'
+import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules, removeUnsupportedMiniProgramAtRulesRoot } from './at-rules'
 import {
   hasTailwindcssV4Signal,
   removeTailwindGenerationDirectives,
@@ -123,13 +123,28 @@ export function finalizeMiniProgramCss(css: string, options: FinalizeMiniProgram
       isTailwindcssV4 = TAILWIND_V4_BANNER_RE.test(repairedCss)
     }
   }
-  const cleanedCss = removeUnsupportedMiniProgramAtRules(repairedCss)
+  let root: postcss.Root
+  let cleanedCss: string | undefined
   try {
-    const root = postcss.parse(cleanedCss)
+    root = postcss.parse(repairedCss)
+  }
+  catch {
+    // 无法解析的作者输入仍先尝试既有扫描修复，再执行原有兜底。
+    cleanedCss = removeUnsupportedMiniProgramAtRules(repairedCss)
+    try {
+      root = postcss.parse(cleanedCss)
+    }
+    catch {
+      return removeSpecificityPlaceholdersFromSource(cleanedCss)
+    }
+  }
+  try {
+    // 清理与最终转换共用同一棵 AST，避免中间打印后再次完整解析。
+    removeUnsupportedMiniProgramAtRulesRoot(root)
     finalizeMiniProgramCssRoot(root, { ...options, isTailwindcssV4 })
     return root.toString()
   }
   catch {
-    return removeSpecificityPlaceholdersFromSource(cleanedCss)
+    return removeSpecificityPlaceholdersFromSource(cleanedCss ?? removeUnsupportedMiniProgramAtRules(repairedCss))
   }
 }

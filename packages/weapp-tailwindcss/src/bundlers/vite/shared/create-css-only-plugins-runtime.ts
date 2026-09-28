@@ -3,11 +3,10 @@ import type { CssStage } from '@/compiler'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
-import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/generation/directives'
-import { hasUserCssLayerBlocks, normalizeEmptyTailwindCustomVariants } from '@/generation/user-css'
+import { normalizeEmptyTailwindCustomVariants } from '@/generation/user-css'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { resolvePackageDir } from '@/utils/resolve-package'
@@ -21,17 +20,18 @@ import { createViteWebCssFinalizerOutputPlugin } from '../css-finalizer/web-plug
 import { createCssHandlerOptionsCache } from '../css-handler-options'
 import { createViteCssMemory } from '../css-memory'
 import { resolveViteCssPipelineOutputFile } from '../css-output'
-import { mergeHotModulesByIdentity, resolveHotTailwindCssModules } from '../hot-css-modules'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
 import { createViteCssGenerationPlugins } from '../serve-css-generation'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { cleanUrl, isCSSRequest } from '../utils'
+import { createFrameworkSourceCandidatesPluginForCssOnly } from './css-only-source-candidates'
 import { createFrameworkCssGenerationQueue } from './framework-css-generation-queue'
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
 import { createViteHmrCssModuleVersionFilterPlugin, createViteHmrCssModuleVersionTracker } from './framework-hmr-module-version'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
 import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
+import { createFrameworkRuntimeLifecycle } from './framework-runtime-lifecycle'
 import { createFrameworkSourceScanSession } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
 
@@ -114,7 +114,7 @@ export function createCssOnlyVitePlugins(
     // Web 只生成 CSS；候选来自构建图，CSS 声明的来源由生成器扫描，无需额外生成运行时类集合。
     return sourceCandidateCollector.values()
   }
-  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = createFrameworkTailwindRootCss({
+  const tailwindRootCss = createFrameworkTailwindRootCss({
     getImportFallback: () => resolveWebGeneratorOptions(opts).importFallback,
     refreshRuntimeState: async () => { await refreshRuntimeState(true) },
     registerAutoCssSource: async (id, css) => {
@@ -123,6 +123,7 @@ export function createCssOnlyVitePlugins(
     shouldOwnTailwindGeneration: shouldGenerate,
     sourceScanSession,
   })
+  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = tailwindRootCss
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => undefined,
     mainCssChunkMatcher: opts.mainCssChunkMatcher,
@@ -259,42 +260,22 @@ export function createCssOnlyVitePlugins(
   if (opts.styleInjector !== undefined && typeof styleInjectorFactory === 'function') {
     plugins.push(...styleInjectorFactory(opts.styleInjector))
   }
+  plugins.push(createFrameworkRuntimeLifecycle({
+    getResolvedConfig: () => resolvedConfig,
+    async dispose() {
+      await generateCss.dispose()
+      try {
+        await sourceScanSession.dispose()
+      }
+      finally {
+        tailwindRootCss.dispose()
+        runtimeState.dispose()
+        cssMemory.dispose()
+        processedCssRegistry.dispose()
+        generatedCssByFile.clear()
+        recordedCandidates = undefined
+      }
+    },
+  }))
   return plugins
-}
-
-function createFrameworkSourceCandidatesPluginForCssOnly(options: any): Plugin {
-  return {
-    name: `${vitePluginName}:source-candidates`,
-    enforce: 'pre',
-    async transform(code, id) {
-      if (!options.sourceCandidateCollector || !isSourceCandidateRequest(id)) {
-        return
-      }
-      options.cssMemory.rememberKnownSfcSource(id, code)
-      if (isCSSRequest(id) && hasUserCssLayerBlocks(code)) {
-        options.rememberTailwindRootCssModule(id)
-      }
-      await options.sourceCandidateCollector.merge(id, code)
-    },
-    async watchChange(id) {
-      options.invalidateRecordedGeneratorCandidates()
-      options.sourceScanSession.invalidate()
-      await options.sourceScanSession.syncChangedFile(id)
-    },
-    async handleHotUpdate(ctx) {
-      options.invalidateRecordedGeneratorCandidates()
-      await options.sourceScanSession.syncChangedFile(ctx.file, await ctx.read?.())
-      await options.sourceScanSession.waitForPendingSyncs()
-      await options.refreshRuntimeStateForAutoCssSources(true)
-      const root = ctx.server.config?.root ?? process.cwd()
-      const cssModules = await resolveHotTailwindCssModules(
-        ctx,
-        options.tailwindRootCssModuleIds,
-        modules => options.hmrCssModuleVersions.filterModules(modules, ctx.timestamp, root),
-      )
-      return cssModules.length > 0
-        ? mergeHotModulesByIdentity(root, ctx.modules, cssModules)
-        : undefined
-    },
-  }
 }

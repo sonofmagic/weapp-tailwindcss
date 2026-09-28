@@ -425,6 +425,28 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
 
   return {
     cacheCurrent,
+    async dispose() {
+      await pendingChangedFilesFlush?.catch(() => {})
+      await sourceScanEligibleFilesRefresh?.catch(() => {})
+      await Promise.allSettled(pendingSourceCandidateSyncs)
+      pendingChangedFilesFlush = undefined
+      sourceScanEligibleFilesRefresh = undefined
+      pendingChangedFiles.clear()
+      pendingHotUpdateChangeByFile.clear()
+      pendingSourceCandidateSyncByFile.clear()
+      pendingSourceCandidateSyncs.clear()
+      sourceCandidateScanCache.clear()
+      sourceScanEligibleFiles.clear()
+      sourceScanIneligibleFiles.clear()
+      sourceScanDependencies.clear()
+      sourceScanEntries = undefined
+      sourceScanMatcher = undefined
+      sourceScanBoundaryMatcher = undefined
+      sourceScanRoots = []
+      sourceCandidateScanSignature = undefined
+      options.sourceCandidateCollector.clear()
+      options.hmrCandidateState.clear()
+    },
     consumeHotUpdateChange: (id: string) => pendingHotUpdateChangeByFile.delete(cleanUrl(id)),
     getStats: () => ({
       pendingSourceCandidateSyncByFile: pendingSourceCandidateSyncByFile.size,

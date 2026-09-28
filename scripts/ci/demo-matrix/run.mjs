@@ -125,6 +125,8 @@ async function runCase(item) {
       console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} begin ${round}`)
       const buildLogOffset = round === 'initial' ? 0 : session.log().length
       if (round !== 'initial') {
+        // DOM 已可见不代表上一轮 HMR 已完成，先等待运行时回到 idle 再触发新修改。
+        await browser?.waitForUpdateIdle()
         if (authoredFile) {
           await replaceSourceFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, round)}`)
         }

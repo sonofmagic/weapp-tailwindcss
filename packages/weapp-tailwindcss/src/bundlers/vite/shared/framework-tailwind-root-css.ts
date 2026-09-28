@@ -55,6 +55,10 @@ export function createFrameworkTailwindRootCss(options: FrameworkTailwindRootCss
   }
 
   return {
+    dispose() {
+      hotSourceByFile.clear()
+      moduleIds.clear()
+    },
     refreshSource,
     register,
     rememberModule,

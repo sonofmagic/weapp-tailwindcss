@@ -11,6 +11,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { withGenerationModuleCache } from './module-cache.ts'
 import { prepareGenerationModuleRequests } from './module-requests.ts'
+import { BoundedCache } from './node-adapter/cache.ts'
 
 interface TailwindV4CompiledSource {
   sources: TailwindV4SourcePattern[]
@@ -28,14 +29,14 @@ interface TailwindV4NodeModule {
   __unstable__loadDesignSystem: (css: string, options: { base: string }) => Promise<TailwindV4DesignSystem>
 }
 
-const nodeModulePromiseCache = new Map<string, Promise<TailwindV4NodeModule>>()
+const nodeModulePromiseCache = new BoundedCache<string, Promise<TailwindV4NodeModule>>(64)
 interface DesignSystemCacheEntry {
   promise: Promise<TailwindV4DesignSystem>
   dependencies: Set<string>
   fingerprint?: string
 }
 
-const designSystemPromiseCache = new Map<string, DesignSystemCacheEntry>()
+const designSystemPromiseCache = new BoundedCache<string, DesignSystemCacheEntry>(64)
 
 function fingerprintDesignDependencies(files: Iterable<string>) {
   const hash = createHash('sha256')
