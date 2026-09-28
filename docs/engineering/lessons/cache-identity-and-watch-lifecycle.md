@@ -102,3 +102,18 @@ pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/webpack.v5.unit.te
 ## 规则评估
 
 不新增或放宽 AGENTS 规则。现有缓存隔离、构建图、生命周期和性能证据规则足够，通过持久回归、客户端依赖门禁及职责文档落实。
+
+
+### 后续 CI：测试契约、HMR 就绪与性能
+
+在 `a285583` 上，PR 单测分片发现 runtime 的旧 mock 仍要求自定义转换器被默认探针跳过，style-injector 用例则把“最后一个输出钩子”写成“最后一个插件”。更新为自定义转换器逐 token 执行，以及最后一个 generateBundle 钩子仍是 style-injector，保留原始输出断言。
+
+Synthetic Performance Gate 首轮 p95 为 549.45ms，超过 541ms。保存首轮报告后，同 SHA/配置仅复测一次（run 36365289592 attempt 2），对应 job 108754035134 成功，预算未修改。
+
+Taro Vite 分片的回退在本地定向 watch 对照复现，额外耗时集中在 tasks.css。细分调用发现：外部框架插件导致整个确定性平台管线重复处理；包内 CSS macro 每次新建 prepare 函数，也使正确的函数身份指纹无法复用该纯转换。外部插件现在仍逐次完整执行，平台结果仅按它们的输出 AST、真实来源位置与输入映射缓存；本次依赖消息不进入缓存。匿名 Input 的随机 id 不作为内容身份，缓存命中后绑定回本轮 Input。包内 macro 使用稳定 prepare 函数并显式登记纯转换；第三方同名或扩展插件不继承缓存策略。
+
+探索记录分别保存在 `.tmp/pr1251-perf-targeted.json`、`pr1251-perf-root-identity.json`、`pr1251-perf-staged.json`、`pr1251-perf-compact.json`、`pr1251-perf-owned-macro.json`、`pr1251-perf-final.json`，保留失败与中间结果，不以反复重跑偶然通过代替优化。最终本地 5 次 HMR 采样（首轮预热后的 4 个稳态样本）插件 median 为基线 836ms、当前 886ms；峰值 RSS 3221.31MiB → 3235.50MiB。早期对应插件 median 为 842.5ms → 1052.5ms。回退已收窄，远端同环境门禁仍需确认，不据此宣称 CI 全绿。
+
+Windows repeated-watch 第 2 轮日志显示 `[HMR] Update check failed: apply() is only allowed in ready status (state: prepare)`。探针已渲染和 WebSocket 握手不足以证明上一轮更新已完成；测试探针暴露当前 module.hot 状态，浏览器必须等到 idle 且模块请求结束后才能触发下一次写入。新增浏览器状态回归通过；`subpackage-taro-webpack-react-tailwindcss-v4:h5` 本地 production、initial、replace、add、restore、refresh 全部通过。已单独运行 `pnpm e2e:demo:matrix subpackage-taro-webpack-react-tailwindcss-v4:h5 --update --build-only` 重生成对应 static 基线，结果无语义差异。
+
+GitHub 在本轮期间合入 main 到 PR（`487a844`）；已检查新增内容为 #1250 的快照候选/JS 字符串修复，并快进保留上游提交，未覆盖远端历史。

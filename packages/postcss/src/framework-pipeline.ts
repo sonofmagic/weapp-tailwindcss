@@ -1,4 +1,4 @@
-import type { AcceptedPlugin } from 'postcss'
+import type { AcceptedPlugin, Root } from 'postcss'
 import type { LoadedPostcssOptions } from './types'
 import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
@@ -48,7 +48,7 @@ async function normalizePlugins(configured: unknown, from: string): Promise<Acce
 }
 
 /** 重放框架提供的管线，不附加小程序转换或默认插件。 */
-export async function processFrameworkCss(css: string, options: LoadedPostcssOptions) {
+export async function processFrameworkCss(css: string | Root, options: LoadedPostcssOptions) {
   const plugins = await normalizePlugins(options.plugins, options.options?.from ?? resolve('postcss.config.js'))
   return postcss(plugins).process(css, {
     from: undefined,

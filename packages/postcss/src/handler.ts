@@ -6,6 +6,7 @@ import { performance } from 'node:perf_hooks'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
+import { isAutoprefixerPlugin } from './autoprefixer'
 import { protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from './compat/color-mix'
 import { normalizeCssLineComments } from './compat/line-comments'
 import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
@@ -13,10 +14,13 @@ import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintStyleOptions } from './fingerprint'
+import { processFrameworkCss } from './framework-pipeline'
 import { resolvePostcssFrameworkProfile } from './frameworks'
 import { createOptionsResolver, normalizeCssOptions } from './options-resolver'
+import { isKnownPurePostcssPlugin } from './plugin-cache-policy'
 import { createInjectPreflight } from './preflight'
 import { StyleProcessorCache } from './processor-cache'
+import { cloneRootWithCurrentSources, rootCacheIdentity } from './root-cache'
 
 /** CSS 结果缓存最大条目数 */
 const CSS_RESULT_CACHE_MAX = 256
@@ -52,13 +56,17 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   // 首次处理拿到内容信号后再创建管线，避免提前构建一条不会使用的完整管线。
 
   /** CSS 处理结果 LRU 缓存 */
-  const resultCache = new LRUCache<string, { source: string, options: string, result: PostcssResult }>({ max: CSS_RESULT_CACHE_MAX })
+  const resultCache = new LRUCache<string, { source: string, options: string, root: string | undefined, result: PostcssResult }>({ max: CSS_RESULT_CACHE_MAX })
 
-  function cloneResult(result: PostcssResult): PostcssResult {
+  function cloneResult(result: PostcssResult, current?: Root): PostcssResult {
     if (!result.root || typeof result.root.clone !== 'function') {
       return result
     }
-    const cloned = result.root.clone().toResult(result.opts)
+    const clonedRoot = cloneRootWithCurrentSources(result.root as Root, current)
+    // 没有 source map 时 CSS 已确定，复制结果不必再次序列化整棵 AST。
+    const cloned = result.opts.map
+      ? clonedRoot.toResult(result.opts)
+      : Object.assign(new postcss.Result(result.processor, clonedRoot, result.opts), { css: result.css })
     cloned.messages.push(...(result.messages ?? []))
     return cloned
   }
@@ -68,12 +76,22 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     root: Root | undefined,
     cloneOutput: boolean,
     opt?: Partial<IStyleHandlerOptions>,
+    emitDiagnostics = true,
   ) {
     const resolvedOptions = resolver.resolve(opt)
     const plugins = resolvedOptions.postcssOptions?.plugins
     const hasUserPlugins = Boolean(plugins && Object.keys(plugins).length > 0)
-    // 用户插件可能读取外部状态；Root 还携带来源与位置信息，不能只按字符串复用。
-    const cacheable = !hasUserPlugins && root === undefined
+    const configured = Array.isArray(plugins) ? plugins : Object.values(plugins ?? {})
+    const hasExternalPlugins = hasUserPlugins && !configured.every(isKnownPurePostcssPlugin)
+    // Root 的来源、位置与 source map 也属于输入身份，不能仅比较打印后的 CSS。
+    let rootIdentity: string | undefined
+    if (root && !hasExternalPlugins) {
+      try {
+        rootIdentity = rootCacheIdentity(root)
+      }
+      catch { /* 扩展 AST 无法序列化时直接执行转换。 */ }
+    }
+    const cacheable = !hasExternalPlugins && (root === undefined || rootIdentity !== undefined)
     const normalizedRawSource = normalizeCssLineComments(rawSource)
     // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
     // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
@@ -88,9 +106,46 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       ? protectDynamicColorMixAlpha(protectedVarFallbacks.css)
       : undefined
     const source = protectedColorMix?.css ?? protectedVarFallbacks.css
-    const processInput = source !== normalizedRawSource ? source : root?.clone() ?? source
-    // 当有用户插件时跳过内容探测，因为用户插件（如 tailwindcss）可能在 pre 阶段
-    // 生成新的 CSS 特征（如现代颜色函数、:is() 伪类等），而 probeFeatures 只看原始输入
+    const getProcessInput = () => source !== normalizedRawSource ? source : root?.clone() ?? source
+    const restoreProtectedResult = (result: PostcssResult) => {
+      const restoredCss = protectedVarFallbacks.restore(protectedColorMix?.restore(result.css) ?? result.css)
+      if (restoredCss !== result.css) {
+        const restored = result.root.clone().toResult(result.opts)
+        restored.css = restoredCss
+        restored.root = postcss.parse(restoredCss, result.opts)
+        restored.messages.push(...result.messages)
+        return restored
+      }
+      return result
+    }
+    if (hasExternalPlugins) {
+      const userAutoprefixer = configured.some(plugin => isAutoprefixerPlugin(plugin as never))
+        || (!Array.isArray(plugins) && Boolean(plugins?.autoprefixer))
+      // 用户阶段每次执行；只有它完成后的 AST 才能作为确定性平台阶段的缓存输入。
+      const platformOptions = {
+        ...resolvedOptions,
+        ...(userAutoprefixer ? { autoprefixer: false as const, cssOptions: { ...resolvedOptions.cssOptions, autoprefixer: false as const } } : {}),
+        postcssOptions: { ...resolvedOptions.postcssOptions, plugins: [] },
+      }
+      const stageStartedAt = performance.now()
+      return processFrameworkCss(getProcessInput(), { ...resolvedOptions.postcssOptions, options: { ...resolvedOptions.postcssOptions?.options, map: false } })
+        .then(async (prepared) => {
+          const transformed = await processSource(prepared.root.toString(), prepared.root as Root, true, platformOptions, false)
+          const result = restoreProtectedResult(transformed)
+          result.messages.unshift(...prepared.messages)
+          if (emitDiagnostics) {
+            await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - stageStartedAt, cache: { hit: false } })
+          }
+          return result
+        })
+        .catch(async (error) => {
+          if (emitDiagnostics) {
+            await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - stageStartedAt, error: { name: error instanceof Error ? error.name : undefined, message: error instanceof Error ? error.message : String(error) } })
+          }
+          throw error
+        })
+    }
+    // 外部插件已经完成，平台阶段探测本轮实际输入；包内 macro 仍随管线执行时保持保守探测。
     let signal: FeatureSignal | undefined
     if (!hasUserPlugins) {
       try {
@@ -105,12 +160,14 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     const optsFp = fingerprintStyleOptions(resolvedOptions)
     const signalKey = signal ? signalToCacheKey(signal) : ''
     const contentHash = simpleHash(source)
-    const cacheKey = `${optsFp}|${signalKey}|${contentHash}`
+    const cacheKey = `${optsFp}|${signalKey}|${contentHash}|${rootIdentity === undefined ? 'text' : simpleHash(rootIdentity)}`
 
     const cached = cacheable ? resultCache.get(cacheKey) : undefined
-    if (cached?.source === rawSource && cached.options === optsFp) {
-      void resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: 0, cache: { hit: true, key: cacheKey } })
-      return Promise.resolve(cloneOutput ? cloneResult(cached.result) : cached.result)
+    if (cached?.source === rawSource && cached.options === optsFp && cached.root === rootIdentity) {
+      if (emitDiagnostics) {
+        void resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: 0, cache: { hit: true, key: cacheKey } })
+      }
+      return Promise.resolve(cloneOutput ? cloneResult(cached.result, root) : cached.result)
     }
 
     const processor = processorCache.getProcessor(resolvedOptions, signal)
@@ -118,7 +175,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
 
     const startedAt = performance.now()
     return processor.process(
-      processInput,
+      getProcessInput(),
       processOptions,
     ).async().then(async (result) => {
       const styleBranch = resolvePostcssFrameworkProfile(resolvedOptions)
@@ -136,18 +193,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           finalResult = nextResult
         }
       }
-      if (protectedColorMix || protectedVarFallbacks.css !== normalizedRawSource) {
-        const restoredCss = protectedVarFallbacks.restore(
-          protectedColorMix?.restore(finalResult.css) ?? finalResult.css,
-        )
-        if (restoredCss !== finalResult.css) {
-          const nextResult = finalResult.root.clone().toResult(finalResult.opts)
-          nextResult.css = restoredCss
-          nextResult.root = postcss.parse(restoredCss, finalResult.opts)
-          nextResult.messages.push(...finalResult.messages)
-          finalResult = nextResult
-        }
-      }
+      finalResult = restoreProtectedResult(finalResult)
       const shouldSplitAuthorVariableFallbacks = resolvedOptions.uniAppX
         && (resolvedOptions.uniAppXCssTarget === 'uvue' || !isUniAppXFramework)
       if (shouldSplitAuthorVariableFallbacks && finalResult.root) {
@@ -159,12 +205,16 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       // 缓存最终结果
       if (cacheable) {
         // 短哈希仅用于索引，命中还须核对保护占位前的完整输入及配置。
-        resultCache.set(cacheKey, { source: rawSource, options: optsFp, result: finalResult })
+        resultCache.set(cacheKey, { source: rawSource, options: optsFp, root: rootIdentity, result: finalResult })
       }
-      await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey } })
+      if (emitDiagnostics) {
+        await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey } })
+      }
       return cloneOutput ? cloneResult(finalResult) : finalResult
     }).catch(async (error) => {
-      await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey }, error: { name: error instanceof Error ? error.name : undefined, message: error instanceof Error ? error.message : String(error) } })
+      if (emitDiagnostics) {
+        await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey }, error: { name: error instanceof Error ? error.name : undefined, message: error instanceof Error ? error.message : String(error) } })
+      }
       throw error
     })
   }
