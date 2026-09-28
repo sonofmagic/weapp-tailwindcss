@@ -4,10 +4,11 @@ import { createFrameworkSourceCandidatesPlugin } from '@/bundlers/vite/shared/fr
 import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 
 describe('Vite 文件型 source 的监听生命周期', () => {
-  it('来源 revision 改变时重转 CSS 入口，失败后仍可重试且不影响其他模块', async () => {
+  it.each([true, false])('Web=%s 按正确输出阶段处理来源 revision', async (isWeb) => {
     const runtimeState = createCompilerRuntimeState({ tailwindRuntime: {} as any, refreshTailwindcssRuntime: async () => ({} as any) })
     const plugin = createFrameworkSourceCandidatesPlugin({
       shouldOwnTailwindGeneration: true,
+      resolveCurrentGeneratorBranch: () => ({ isWeb }),
       runtimeState,
       invalidateRecordedGeneratorCandidates: () => {},
       prepareTailwindGeneration: async () => {},
@@ -23,11 +24,11 @@ describe('Vite 文件型 source 的监听生命周期', () => {
     expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBeNull()
     await invoke('watchChange', '/project/content.html', { event: 'update' })
     await invoke('buildStart')
-    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(true)
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(isWeb ? true : null)
     expect(await invoke('shouldTransformCachedModule', { id: 'unrelated.js' })).toBeNull()
     await invoke('buildEnd', new Error('failed'))
     await invoke('buildStart')
-    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(true)
+    expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBe(isWeb ? true : null)
     await invoke('buildEnd')
     await invoke('buildStart')
     expect(await invoke('shouldTransformCachedModule', { id: 'virtual:tailwind-entry' })).toBeNull()

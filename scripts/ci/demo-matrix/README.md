@@ -58,3 +58,5 @@ Mpx CLI 2.2.30 的首轮就绪 Promise 不能接收后续致命错误；原版�
 ## PR Gate
 
 [demo-matrix.yml](../../../.github/workflows/demo-matrix.yml) 在各操作系统使用根 `package.json#packageManager` 声明的 pnpm 版本冻结安装锁文件并构建当前包。所有目标必须执行成功；最终 gate 对照清单检查每个 OS/Node/目标和全部阶段、提交 SHA、pnpm 版本，不接受缺失、重复、过期或跳过的报告。PR Gate 对启用的矩阵要求 success。CI 证据只对报告中的具体提交有效，本机通过不能替代 Windows/Linux 验收。
+
+Webpack JSX 测试探针会暴露当前 module.hot 状态。DOM 与样式已渲染后仍须等待 HMR 回到 idle，再写入下一轮内容，避免启动期间旧更新尚在 prepare/apply 时触发重叠更新；其余浏览器与产物断言保持不变。

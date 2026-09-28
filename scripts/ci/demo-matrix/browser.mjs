@@ -19,6 +19,11 @@ export async function openBrowser(url, session, artifactDir) {
   let transientModuleFailure
   let startupReloads = 0
   let lastInspection
+  const assertUpdateIdle = async () => {
+    const status = await page.evaluate(() => globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.())
+    assert.ok(status === undefined || status === 'idle', `Development update is still applying: ${status}`)
+    assert.equal(pendingModules.size, 0, 'Local update modules are still loading')
+  }
   page.on('response', (response) => {
     const request = response.request()
     // hash/history 路由仍使用原文档和连接，只有新主文档响应重置状态。
@@ -98,9 +103,11 @@ export async function openBrowser(url, session, artifactDir) {
       assert.equal(pendingModules.size, 0, `Local modules still loading: ${[...pendingModules].map(request => request.url()).join(', ')}`)
       assert.ok(documentResponse?.ok(), 'Current document navigation is not complete')
       assert.ok(transportReady, 'Development update transport is not ready')
+      await assertUpdateIdle()
     }, session)
     return {
       events,
+      async waitForUpdateIdle() { await until(assertUpdateIdle, session) },
       async inspect(item, round) {
         const result = await page.evaluate(async ({ expected, round }) => {
           const styles = []

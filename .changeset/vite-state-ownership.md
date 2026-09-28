@@ -7,3 +7,5 @@
 修复 build watch 中候选或配置来源改变后 CSS 入口继续复用旧 transform 的问题，按来源 revision 重转实际消费入口，并补齐 dispatcher 对缓存模块、模块解析和 watcher 关闭钩子的转发。
 
 按 Vite resolved config 隔离可释放的插件实例，支持 Nuxt 客户端与 SSR 连续复用同一插件配置，避免客户端结束后关闭后续 SSR 使用的生成队列。
+
+只在消费 transform 样式产物的 Web 分支按 revision 重转入口；小程序继续在 bundle 阶段生成，避免重复转换入口。

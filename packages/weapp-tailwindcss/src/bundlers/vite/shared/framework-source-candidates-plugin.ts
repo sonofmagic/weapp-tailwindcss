@@ -118,7 +118,8 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       if (shouldSkipSourceCandidateState()) {
         return
       }
-      if (options.shouldOwnTailwindGeneration && (isSourceCandidateRequest(id) || options.sourceScanSession.isDependency(id))) {
+      // Web 样式依赖 transform 产物；小程序由 bundle 阶段统一重建，无需重复转换 CSS 入口。
+      if (options.shouldOwnTailwindGeneration && options.resolveCurrentGeneratorBranch?.().isWeb === true && (isSourceCandidateRequest(id) || options.sourceScanSession.isDependency(id))) {
         sourceRevision++
       }
       recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(id))]))
