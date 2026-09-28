@@ -54,6 +54,10 @@
   dir: packages/engine
   intents:
     - uni-app-x-runtime-refresh
+"@weapp-tailwindcss/engine@0.1.3":
+  dir: packages/engine
+  intents:
+    - bounded-build-caches
 "@weapp-tailwindcss/example-react-lynx-promo@0.0.0":
   dir: examples/react-lynx-promo
   intents:
@@ -170,6 +174,13 @@
   intents:
     - steady-compiler-boundary
     - strict-tailwind-source-media
+"@weapp-tailwindcss/postcss@3.3.10":
+  dir: packages/postcss
+  intents:
+    - bounded-build-caches
+    - cache-input-identity
+    - fluffy-poets-float
+    - orange-pumas-shake
 "@weapp-tailwindcss/postcss@3.3.2":
   dir: packages/postcss
   intents:
@@ -245,6 +256,10 @@
   dir: packages/reset
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/runtime@0.1.10":
+  dir: packages-runtime/runtime
+  intents:
+    - runtime-transformer-cache
 "@weapp-tailwindcss/runtime@0.1.8":
   dir: packages-runtime/runtime
   intents:
@@ -423,6 +438,16 @@ weapp-tailwindcss@5.5.10:
     - large-waves-attack
     - neat-suns-destroy
     - uni-app-x-runtime-refresh
+weapp-tailwindcss@5.5.11:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - bounded-build-caches
+    - core-snapshot-js-authority
+    - fluffy-poets-float
+    - issue-1245-wxss-import-ownership
+    - orange-pumas-shake
+    - vite-state-ownership
+    - webpack-css-content-identity
 weapp-tailwindcss@5.5.2:
   dir: packages/weapp-tailwindcss
   intents:

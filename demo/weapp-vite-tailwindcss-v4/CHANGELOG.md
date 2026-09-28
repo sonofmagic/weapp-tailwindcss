@@ -5,6 +5,13 @@
 ### Patch Changes
 
 - Updated dependencies:
+  - @weapp-tailwindcss/merge@2.2.6
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies:
   - @weapp-tailwindcss/merge@2.2.5
 
 ## 1.0.22

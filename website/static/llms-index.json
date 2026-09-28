@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-23T09:12:20.861Z",
+  "generatedAt": "2026-09-28T11:53:23.457Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -2025,12 +2025,14 @@
         "跨端"
       ],
       "headings": [
-        "当前构建修复",
+        "默认自动适配与显式配置",
         "构建期风险提示",
         "微信对 rpx 的换算可能放大基数误差",
         "cssCalc 的能力与已知限制",
-        "@theme inline 不会自动消除 calc",
+        "@theme inline 与自动模式",
         "固定尺寸与运行时主题如何选择",
+        "动态修改 px spacing",
+        "动态提供最终 rpx 长度",
         "验证范围"
       ],
       "source": "docs/issues/spacing-rpx.md"

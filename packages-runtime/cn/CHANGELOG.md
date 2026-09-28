@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/cn
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/runtime@0.1.10
+
 ## 0.1.3
 
 ### Patch Changes

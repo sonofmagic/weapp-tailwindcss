@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/merge
 
+## 2.2.6
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/runtime@0.1.10
+
 ## 2.2.5
 
 ### Patch Changes
