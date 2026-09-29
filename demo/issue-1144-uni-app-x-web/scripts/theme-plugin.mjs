@@ -102,6 +102,7 @@ export function themeUtsPlugin(input, output) {
 	const inputPath = resolve(input)
 	const sync = () => {
 		const css = readFileSync(inputPath, 'utf8')
+		if (!css.includes('@theme')) return
 		const next = renderThemeUts(parseThemeTokens(css), parseThemeClasses(css))
 		const current = existsSync(output) ? readFileSync(output, 'utf8') : ''
 		if (next !== current) writeFileSync(output, next)
