@@ -6,6 +6,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { disposeCompilerOwner } from '@/compiler'
 import { getCompilerContext } from '@/context'
+import { warnFinalRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { captureFrameworkPostcssOptions } from '@/generation/framework-postcss'
 import { generateTailwindV4Css } from '@/generation/service'
 
@@ -18,7 +19,7 @@ describe('rpx warning with real Tailwind generation', () => {
   const scenarios = [
     { platform: 'mp-weixin', target: 'weapp', logLevel: 'warn', inline: false, calc: false, replay: false, warnings: 1 },
     { platform: 'mp-weixin', target: 'weapp', logLevel: 'warn', inline: true, calc: false, replay: true, warnings: 1 },
-    { platform: 'mp-weixin', target: 'weapp', logLevel: 'warn', inline: true, calc: true, replay: true, warnings: 1 },
+    { platform: 'mp-weixin', target: 'weapp', logLevel: 'warn', inline: true, calc: true, replay: true, warnings: 0 },
     { platform: 'mp-weixin', target: 'weapp', logLevel: 'silent', inline: false, calc: false, replay: false, warnings: 0 },
     { platform: 'mp-alipay', target: 'weapp', logLevel: 'warn', inline: false, calc: false, replay: false, warnings: 0 },
     { platform: 'h5', target: 'web', logLevel: 'warn', inline: false, calc: false, replay: false, warnings: 0 },
@@ -72,10 +73,14 @@ describe('rpx warning with real Tailwind generation', () => {
       expect(first?.classSet.has('p-8')).toBe(true)
       expect(second?.css).toBe(first?.css)
       expect(second?.classSet).toEqual(first?.classSet)
+      expect(warn).not.toHaveBeenCalled()
+      if (scenario.target === 'weapp') {
+        warnFinalRpxThemeRisk(runtimeState, [first!.css, second!.css], opts, scenario.platform)
+      }
       expect(warn).toHaveBeenCalledTimes(scenario.warnings)
       if (scenario.warnings) {
-        expect(warn.mock.calls[0]?.[0]).toContain('--spacing')
-        expect(warn.mock.calls[0]?.[0]).toContain(scenario.calc ? '当前生成阶段未检测到相关 calc' : '当前生成阶段仍含 calc')
+        expect(warn.mock.calls[0]?.[0]).toContain(scenario.inline ? '内联 rpx' : '--spacing')
+        expect(warn.mock.calls[0]?.[0]).toContain('最终样式仍含 rpx 运行时 calc')
       }
       if (scenario.calc) {
         expect(first?.css).toMatch(/padding:\s*24rpx/)
@@ -88,7 +93,8 @@ describe('rpx warning with real Tailwind generation', () => {
         expect(muted?.classSet).toEqual(first?.classSet)
         const nextRuntimeState = { tailwindRuntime: opts.tailwindRuntime, readyPromise: Promise.resolve() }
         try {
-          await generateTailwindV4Css({ ...input, runtimeState: nextRuntimeState })
+          const regenerated = await generateTailwindV4Css({ ...input, runtimeState: nextRuntimeState })
+          warnFinalRpxThemeRisk(nextRuntimeState, [regenerated!.css], opts, scenario.platform)
           expect(warn).toHaveBeenCalledTimes(2)
         }
         finally {

@@ -63,5 +63,29 @@
     ".p-4": [
       "8rpx"
     ]
+  },
+  "override-3rpx": {
+    ".w-32": [
+      "calc(var(--spacing)*32)"
+    ],
+    ".p-4": [
+      "calc(var(--spacing)*4)"
+    ]
+  },
+  "override-4rpx": {
+    ".w-32": [
+      "calc(var(--spacing)*32)"
+    ],
+    ".p-4": [
+      "calc(var(--spacing)*4)"
+    ]
+  },
+  "override-cleared": {
+    ".w-32": [
+      "64rpx"
+    ],
+    ".p-4": [
+      "8rpx"
+    ]
   }
 }

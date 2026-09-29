@@ -5,11 +5,13 @@ import { collectRpxThemeVariables, inspectRpxCalcUsage } from '@weapp-tailwindcs
 import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 
 const warnedSessions = new WeakSet<object>()
+const riskSources = new WeakMap<object, Map<string, readonly string[]>>()
+type WarningOptions = Pick<InternalUserDefinedOptions, 'logLevel' | 'platform' | 'cssOptions' | 'appType'>
 
 export function shouldCheckRpxThemeRisk(
   session: object,
   target: string,
-  opts: Pick<InternalUserDefinedOptions, 'logLevel' | 'platform' | 'cssOptions' | 'appType'>,
+  opts: WarningOptions,
   platform?: string,
 ) {
   if (target !== 'weapp' || warnedSessions.has(session) || opts.logLevel === 'silent' || opts.logLevel === 'error') {
@@ -35,18 +37,51 @@ export function collectRpxThemeRiskSources(sources: Iterable<string>) {
   return [...variables]
 }
 
-export function warnRpxThemeRisk(session: object, variables: readonly string[], generatedCss: string) {
+/** 生成阶段只登记主题来源，避免在构建器完成静态计算前误报。 */
+export function recordRpxThemeRisk(session: object, source: string, variables: readonly string[]) {
+  if (warnedSessions.has(session)) {
+    return
+  }
+  const sources = riskSources.get(session) ?? new Map<string, readonly string[]>()
+  if (variables.length > 0) {
+    sources.set(source, variables)
+  }
+  else {
+    sources.delete(source)
+  }
+  riskSources.set(session, sources)
+}
+
+/** 由构建器在最终样式计算和单位转换后调用；安全轮次不消耗提示额度。 */
+export function warnFinalRpxThemeRisk(session: object, styles: Iterable<string>, opts: WarningOptions, platform?: string) {
+  if (!shouldCheckRpxThemeRisk(session, 'weapp', opts, platform)) {
+    return
+  }
+  const variables = [...new Set([...(riskSources.get(session)?.values() ?? [])].flat())]
+  if (variables.length === 0) {
+    return
+  }
+  for (const css of styles) {
+    warnRpxThemeRisk(session, variables, css)
+    if (warnedSessions.has(session)) {
+      break
+    }
+  }
+}
+
+export function warnRpxThemeRisk(session: object, variables: readonly string[], finalCss: string) {
   if (warnedSessions.has(session) || variables.length === 0) {
     return
   }
-  const usage = inspectRpxCalcUsage(generatedCss, new Set(variables))
-  const generationHint = usage === undefined
-    ? '当前生成阶段的 CSS 无法完成诊断，请检查最终 WXSS。'
-    : usage.variables.length > 0 || usage.inlineRpx
-      ? `当前生成阶段仍含 calc：${[...usage.variables, ...(usage.inlineRpx ? ['内联 rpx'] : [])].join(', ')}；后续构建处理可能将其静态化，最终状态以 WXSS 为准。`
-      : '当前生成阶段未检测到相关 calc；这不代表已验证最终产物、所有作用域和设备。'
+  const usage = inspectRpxCalcUsage(finalCss, new Set(variables))
+  // 解析失败不能证明存在风险，也不能提前占用后续 watch 的提示额度。
+  if (!usage || (usage.variables.length === 0 && !usage.inlineRpx)) {
+    return
+  }
+  const expressions = [...usage.variables, ...(usage.inlineRpx ? ['内联 rpx'] : [])].join(', ')
   warnedSessions.add(session)
+  riskSources.delete(session)
   logger.warn(
-    `[tailwindcss@4][rpx-theme] @theme 中使用 rpx 的主题变量：${variables.join(', ')}。${generationHint} 微信 v4 默认采用 cssCalc: 'auto'：完整样式作用域中固定的 rpx 主题会输出最终静态长度；局部或条件覆盖、来源冲突及不完整上下文仍保留运行时表达式。需要通过 JS 或内联样式动态修改主题时，请显式设置 cssOptions.cssCalc: false。微信 WXSS 可能先独立换算或量化基数再乘法，造成尺寸偏差，具体取整算法尚未确认。固定像素尺寸优先使用 px，需要缩放时在构建期输出最终静态 rpx；偶数或较大 rpx 也不保证准确。请检查最终 WXSS 并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
+    `[tailwindcss@4][rpx-theme] 最终样式仍含 rpx 运行时 calc：${expressions}。微信可能在乘法前换算或量化 rpx 基数，导致尺寸偏差。请检查主题覆盖、cssCalc 配置和最终 WXSS；固定主题优先输出静态 rpx，动态主题需保留运行时语义并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
   )
 }
