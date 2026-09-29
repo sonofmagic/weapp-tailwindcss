@@ -94,7 +94,7 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
             if (/\.(?:vue|uvue)$/.test(file)) content = await compileTemplateExpressions(compiler, content, snapshot, file)
           }
           if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = await compileScript(compiler, content, snapshot, file, block.attrs.lang ?? 'js')
-          if (block.type === 'style' && /@(apply|reference|theme)/.test(content)) {
+          if (block.type === 'style' && /@(apply|reference|theme)|@import\s+["'](?:tailwindcss|weapp-tailwindcss)(?:[\/"])/.test(content)) {
             const css = await preprocessStyle(block, path.join(consumer.project, file), require)
             content = finalize((await generateStyle(css, file)).css)
           }

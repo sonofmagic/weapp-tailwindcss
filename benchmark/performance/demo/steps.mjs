@@ -43,6 +43,7 @@ export async function planStep(consumer, files, marker) {
     const next = content.replaceAll('COST_SEQUENCE', marker)
     if (await readFile(target, 'utf8').catch(error => { if (error.code === 'ENOENT') return null; throw error }) !== next) writes.push([target, next])
   }
+  if (consumer.mode === 'static') writes.sort(([first], [second]) => Number(/\.(?:css|scss)$/.test(second)) - Number(/\.(?:css|scss)$/.test(first)))
   return async () => { for (const [target, next] of writes) await replaceSourceFile(target, next) }
 }
 

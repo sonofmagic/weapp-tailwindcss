@@ -2,7 +2,6 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { compile } from 'tailwindcss'
 
 export function parseThemeTokens(css) {
 	const source = css.replace(/\/\*[\s\S]*?\*\//g, '')
@@ -128,6 +127,7 @@ export function themeUtsPlugin(input, output) {
 }
 
 async function selfCheck() {
+	const { compile } = await import('tailwindcss')
 	const sampleCss = `
 		.light { --theme-page: #ffffff; }
 		.dark { --theme-page: #111111; }
