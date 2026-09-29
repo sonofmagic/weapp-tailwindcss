@@ -10,6 +10,7 @@ import { compileStatic, sourceFiles, stripGeneration, applySources } from './pre
 import { assertPublished, hash } from './published.mjs'
 import { run } from './process.mjs'
 import { prepareSteps } from './steps.mjs'
+import { frameworkCompatibility } from './capture.cjs'
 
 export async function prepareTarget(item, published, directory, logs) {
   await mkdir(logs, { recursive: true })
@@ -36,6 +37,7 @@ export async function prepareTarget(item, published, directory, logs) {
   }
   finally { await restore() }
   const records = (await readFile(captureFile, 'utf8')).trim().split(/\r?\n/).map(line => JSON.parse(line))
+  evidence.baselineCompatibility = frameworkCompatibility(records)
   await configure(consumers.native, 'disabled', records, consumer.project)
   await configure(consumers.static, 'disabled', records, consumer.project)
   const steps = Object.fromEntries(modes.map(mode => [mode, new Map()]))

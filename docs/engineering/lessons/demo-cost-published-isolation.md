@@ -16,6 +16,7 @@ regressions:
   - benchmark/version-compare/test/pr-baseline.test.mjs
   - benchmark/performance/demo/test/watch-lifetime.test.mjs
   - benchmark/performance/demo/test/process-group.test.mjs
+  - benchmark/performance/demo/test/precompile-script.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -48,6 +49,9 @@ regressions:
 
 - macOS 云端短进程超时清理出现 `kill EPERM`。进程退出与再次发送组信号之间存在竞态；只有独立进程快照确认目标组没有存活成员时才忽略该错误。仍有成员、快照失败或无法解析均保留原始权限错误，不扩大信号范围或提权。历史失败缺少当时的进程快照，不能断言其根因已被证明，仍需当前提交的 macOS 云端回归确认。
 
+- `6ef92ef` 的 Linux Taro 小程序分片安装全部通过，但静态组 CSS 为安全类名、TSX 仍为原类名。发布版 `5.5.11` 的 `transformJavaScript` 默认不启用 TSX，并将解析错误连同原文返回；准备工具只取 `.code`，丢失了失败信号。现在按文件扩展名或 SFC script 的 `lang` 传入解析选项，并强制检查返回错误。快照仍精确约束类名，不对集合外字符串兜底转换。
+- 同轮支付宝原生组在 Taro `modifyBuildAssets` 中崩溃：平台插件写入新 `.browserslistrc` 时，Vite runner 直接读取不存在的 bundle 成员。最初怀疑空样式，读取实际调用链后排除；生产接入已提供专用兼容资产，但禁用整组插件也将它移除了。两种基线通过 bundler `emitFile` 保留这个普通框架资产，记录 `baselineCompatibility`，不加载生成器、不处理样式。真实 Rollup 生命周期回归验证资产在后续改写之前可用。
+
 ## 验证
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
@@ -57,6 +61,10 @@ Mpx 样式注入 demo 补齐依赖后，执行 `node scripts/ci/demo-matrix/run.
 Mpx 正常采样数的本地运行在 `53b98f7e0` 上完成三组各 7 轮冷构建、热构建和启动验证；连续 HMR 在 16 轮之后的原生组发生漏更新并超时，原始样本和失败前源码／产物已保留，不能宣称 HMR 全量通过。
 
 串行 watcher 的 Mpx 定向诊断完成三组、每类 2 轮预热和 20 轮连续更新，marker 与静态／接入样式等价检查通过；该诊断仅采样 1 轮启动，不能替代正式全阶段报告。进程组清理与串行生命周期加入持久回归，`CI=1 pnpm test:perf:demo` 共 51 项通过。
+
+在 `6ef92ef` 上重新执行 `pnpm perf:demo:report --only style-injector-mpx:wx --phases build,hmr`，三组冷／热构建与启动各 7 轮、每类更新 20 轮全部通过，报告完整性错误为 0，并通过 `perf:demo:guard`。此前同提交的一批数据受本机合盖休眠污染，保留为失败报告；正常批次单独归档，不覆盖旧样本。Taro H5 本地定向准备因 npm 发布依赖下载超过 15 分钟失败，未进入计时阶段；不据此判断构建回归。
+
+源码准备修复新增真实 Babel 语法和 Rollup 资产生命周期回归，`CI=1 pnpm test:perf:demo` 共 54 项通过。使用独立消费项目中已安装的发布版 `5.5.11` 复现默认 TSX 解析错误，修复后 `h-[64rpx]` 转为 `h-_b64rpx_B`，集合外 `unknown-[8px]` 保持不变。完整云端静态输入仍须在修复提交重新生成并逐状态验收。
 
 ## 适用边界
 

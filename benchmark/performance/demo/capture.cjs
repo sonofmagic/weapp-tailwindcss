@@ -39,8 +39,21 @@ function decode(value, from, to) {
   return value
 }
 
+function frameworkCompatibility(records) {
+  return records.some(row => row.key === 'options' && row.value.module === 'weapp-tailwindcss/vite'
+    && row.value.options.appType === 'taro' && row.value.environment?.TARO_ENV === 'alipay')
+    ? ['taro-alipay-browserslist'] : []
+}
+
 function disabled(name, records, from, root, specifier = '') {
-  if (name === 'WeappTailwindcss' || name === 'StyleInjector') return function () { return new.target || /\/(?:webpack|rspack)(?:\/|$)/.test(specifier) ? { apply() {} } : [] }
+  if (name === 'WeappTailwindcss' || name === 'StyleInjector') return function () {
+    if (new.target || /\/(?:webpack|rspack)(?:\/|$)/.test(specifier)) return { apply() {} }
+    if (specifier !== 'weapp-tailwindcss/vite' || !frameworkCompatibility(records).length) return []
+    // 保留现有的 Taro 框架兼容处理；不加载发布包，也不生成或转换任何样式。
+    return [{ name: 'demo-cost:taro-alipay-framework-compat', enforce: 'pre', generateBundle() {
+      this.emitFile({ type: 'asset', fileName: '.browserslistrc', source: 'defaults and fully supports es6-module' })
+    } }]
+  }
   if (name === 'patchRspackConfig') return value => value
   if (name === 'createPlugins') return () => Object.fromEntries(['adaptWxss', 'generateWxss', 'transformJs', 'transformWxml'].map(key => [key, () => new Transform({ objectMode: true, transform(file, encoding, done) { done(null, file) } })]))
   const helper = records.filter(row => row.key === `helper:${name}`)
@@ -56,4 +69,5 @@ exports.disabled = disabled
 exports.encode = encode
 exports.decode = decode
 exports.platformEnvironmentKeys = platformEnvironmentKeys
+exports.frameworkCompatibility = frameworkCompatibility
 exports.captureOptions = options => { record('options', { module: 'weapp-vite', options, environment: captureEnvironment() }); return options }

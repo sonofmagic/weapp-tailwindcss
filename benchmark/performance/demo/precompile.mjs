@@ -9,6 +9,7 @@ import { decode } from './capture.cjs'
 import { compileAuthored } from './authored.mjs'
 import { preprocessStyle, sfcBlocks } from './sfc.mjs'
 import { withCapturedEnvironment } from './prepare-environment.mjs'
+import { compileScript } from './precompile-script.mjs'
 
 export function stripGeneration(css) {
   const root = postcss.parse(css)
@@ -73,7 +74,7 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
         for (const block of sfcBlocks(source, file)) {
           let content = block.content
           if (target === 'weapp' && block.type === 'template') content = await compiler.transformTemplate(content, snapshot)
-          if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = (await compiler.transformJavaScript(content, snapshot, { filename: file })).code
+          if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = await compileScript(compiler, content, snapshot, file, block.attrs.lang ?? 'js')
           if (block.type === 'style' && /@(apply|reference|theme)/.test(content)) {
             const css = await preprocessStyle(block, path.join(consumer.project, file), require)
             content = finalize((await generateStyle(css, file)).css)
@@ -84,7 +85,7 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
         for (const replacement of replacements.reverse()) transformed = transformed.slice(0, replacement.offset) + replacement.content + transformed.slice(replacement.offset + replacement.length)
       }
       else if (target === 'weapp' && /\.(?:wxml|ttml|html)$/.test(file)) transformed = await compiler.transformTemplate(source, snapshot)
-      else if (target === 'weapp' && /\.(?:tsx|jsx|ts|js|wxs)$/.test(file)) transformed = (await compiler.transformJavaScript(source, snapshot, { filename: file })).code
+      else if (target === 'weapp' && /\.(?:tsx|jsx|ts|js|wxs)$/.test(file)) transformed = await compileScript(compiler, source, snapshot, file)
       else if (/\.css$/.test(file) && /@(apply|reference|theme|import\s+["'](?:tailwindcss|weapp-tailwindcss))/.test(source)) {
         const generated = await generateStyle(source, file)
         transformed = finalize(generated.css)
