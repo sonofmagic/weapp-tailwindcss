@@ -58,6 +58,8 @@ regressions:
 
 ## 验证
 
+全 Linux 诊断的 React/Vue Vite、uni H5、Gulp 在快速基线组出现第二次保存无事件，接入组可能因处理更慢而未触发。Chokidar 3/5 实现均对 change 去重 50 ms，并对 remove 去重 100 ms。真实 Chokidar 5 目录 watcher 使用原子替换复现：收到首次 change 后立即再次保存，只观察到第一次；独立重建 watcher 并在事件后间隔 150 ms，两次内容均收到。测量器在上次结果已验证之后、下一次计时开始之前统一保留 150 ms 间隔，仍逐次验证新 marker 与样式；记录到样本和趋势身份。持久回归连续验证四次真实保存，不通过固定等待认定成功。该实验解释输入事件被吞的机制，完整框架修复状态仍以新提交云端报告为准。
+
 `36590396264` 的定向诊断确认分包 RN 和 uni App 构建通过，仍暴露出几类隔离准备问题。uni 示例直接声明所用 Sass；style-injector uni 同时声明 Sass Embedded 与 Less。消费项目复用根 `.pnpmfile.cjs` 对 UTS `gnu/glibc` 发布元数据的已有纠正，裁剪锁文件时保留钩子校验值；原安装日志明确记录 Linux GNU 包因 `gnu` 与 `glibc` 不匹配而被跳过。
 
 HBuilderX 预设的入口位于 `tailwindcss.v4.cssEntries`，已用发布版 `5.5.11` 实际返回值验证读取路径。weapp-vite 专用捕获入口改为 ESM 桥接，让 Node 加载 CJS 实现；独立 Node 子进程中的配置打包回归修复前失败、修复后通过，避免 Vitest 的运行环境掩盖动态 require 错误。

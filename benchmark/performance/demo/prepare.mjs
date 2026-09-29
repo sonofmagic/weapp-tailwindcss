@@ -13,6 +13,7 @@ import { run } from './process.mjs'
 import { prepareSteps } from './steps.mjs'
 import { frameworkCompatibility } from './capture.cjs'
 import { plainRuntimeMarkers } from './runtime-marker.mjs'
+import { interSaveQuietMs } from './save-pacing.mjs'
 
 export async function prepareTarget(item, published, directory, logs) {
   await mkdir(logs, { recursive: true })
@@ -76,6 +77,7 @@ export async function prepareTarget(item, published, directory, logs) {
   await applySources(consumer, originals)
   // 趋势只比较相同原生输入和基线依赖图；被测发布版的自身变化不放入兼容性身份。
   evidence.comparisonIdentity = {
+    interSaveQuietMs,
     installationLayout: evidence.installationLayout,
     nativeLock: hash(await readFile(path.join(consumers.native.project, 'pnpm-lock.yaml'), 'utf8')),
     staticLock: hash(await readFile(path.join(consumers.static.project, 'pnpm-lock.yaml'), 'utf8')),
