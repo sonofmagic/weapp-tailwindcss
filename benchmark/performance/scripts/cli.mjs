@@ -9,9 +9,9 @@ import { promisify } from 'node:util'
 import scenariosConfig from '../scenarios.json' with { type: 'json' }
 import { measureRuntimeBundles } from '../src/bundles.mjs'
 import { evaluateSyntheticGate, loadGateConfig } from '../src/gate.mjs'
+import { runIsolatedScenario } from '../src/isolate.mjs'
 import { renderReport } from '../src/report.mjs'
-import { createScenarios, resultOf } from '../src/scenarios.mjs'
-import { summarize } from '../src/stats.mjs'
+import { createScenarios } from '../src/scenarios.mjs'
 
 const execFileAsync = promisify(execFile)
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -31,54 +31,6 @@ async function gitHead() {
     return process.env.GITHUB_SHA
   }
   return (await execFileAsync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot })).stdout.trim()
-}
-
-async function runScenario(testCase, warmups, runs) {
-  const subject = testCase.fresh ? undefined : await testCase.create()
-  const samples = []
-  const memories = []
-  const hashes = []
-  let latest
-  const execute = async () => {
-    const started = performance.now()
-    const before = process.memoryUsage()
-    const runner = testCase.fresh ? await testCase.create() : subject
-    latest = resultOf(await runner())
-    const after = process.memoryUsage()
-    samples.push(performance.now() - started)
-    memories.push({
-      rssMb: after.rss / 1024 / 1024,
-      rssDeltaMb: (after.rss - before.rss) / 1024 / 1024,
-      heapDeltaMb: (after.heapUsed - before.heapUsed) / 1024 / 1024,
-    })
-    hashes.push(latest.outputHash)
-  }
-  for (let index = 0; index < warmups; index += 1) {
-    await execute()
-  }
-  const coldMs = samples[0]
-  samples.length = 0
-  memories.length = 0
-  hashes.length = 0
-  for (let index = 0; index < runs; index += 1) {
-    await execute()
-  }
-  return {
-    id: testCase.id,
-    group: testCase.group,
-    complexityGroup: testCase.complexityGroup ?? testCase.group,
-    size: testCase.size,
-    sampleCount: samples.length,
-    coldMs,
-    time: summarize(samples),
-    memory: {
-      peakRssMb: Math.max(...memories.map(item => item.rssMb)),
-      peakRssDeltaMb: Math.max(...memories.map(item => item.rssDeltaMb)),
-      heapDeltaMb: Math.max(...memories.map(item => item.heapDeltaMb)),
-    },
-    outputBytes: latest.outputBytes,
-    outputHashes: [...new Set(hashes)],
-  }
 }
 
 async function updateBaseline(results, config) {
@@ -120,7 +72,7 @@ async function main() {
   const results = []
   for (const testCase of cases) {
     process.stdout.write(`[performance] ${testCase.id}\n`)
-    results.push(await runScenario(testCase, warmups, runs))
+    results.push(await runIsolatedScenario(config, testCase.id, warmups, runs))
   }
   const report = {
     schemaVersion: 1,
@@ -132,7 +84,7 @@ async function main() {
       arch: process.arch,
       cpu: os.cpus()[0]?.model ?? 'unknown',
     },
-    options: { warmups, runs, groups: config.groups },
+    options: { warmups, runs, groups: config.groups, isolation: 'process' },
     cases: results,
   }
   const gateConfig = await loadGateConfig(root)
