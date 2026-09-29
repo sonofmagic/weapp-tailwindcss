@@ -14,7 +14,8 @@ export function trackBrowserState(page) {
     }
   })
   page.on('request', (request) => {
-    if (['script', 'stylesheet'].includes(request.resourceType())) pending.add(request)
+    // uni-image 在图片 load 回调中追加真实 IMG；仅等待 JS/CSS 会采到尚未完成的页面结构。
+    if (['script', 'stylesheet', 'image', 'font'].includes(request.resourceType())) pending.add(request)
   })
   page.on('requestfinished', request => pending.delete(request))
   page.on('requestfailed', (request) => {

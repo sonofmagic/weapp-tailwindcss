@@ -27,6 +27,7 @@ export function renderMarkdown(report) {
 - 原生组不保证样式等价；静态组预生成不计时，也不包含人工编写 CSS 的时间。
 - CLI 产物与浏览器覆盖不能代替 IDE／设备验收。仅构建目标没有 HMR 指标。
 - 网络冷安装仅供观察。每个 demo 的安装结果不按编译目标重复计数。
+- 三组统一复用匹配版本的仓库框架补丁，被测 npm 包不打补丁；版本、补丁原文与哈希见分片 dependencies 和 JSON。
 
 ## 实时处理开销最大的目标
 
@@ -65,6 +66,7 @@ export function renderHtml(report) {
 <h1>weapp-tailwindcss ${html(report.package.version ?? 'N/A')} 接入成本</h1>
 <p>${html(report.startedAt)} · ${html(report.sha)} · ${validateReport(report).length ? '报告不完整／失败' : '报告完整'} · 已完成 ${rows.filter(row => row.comparable).length}/${report.expected.length}</p>
 <p>单位 ms。原生组样式可能不等价；静态组预生成不计时。IDE／设备另行验收。负增量表示更快。</p>
+<p>三组统一复用匹配版本的仓库框架补丁，被测 npm 包不打补丁；补丁原文与哈希保存在分片 dependencies 和 JSON 中。</p>
 <label>demo <input id="demo" placeholder="输入名称"></label>
 ${select('target', '目标平台', rows.map(row => row.target))}
 ${select('os', '系统', rows.map(row => row.os))}

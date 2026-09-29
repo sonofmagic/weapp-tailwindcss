@@ -30,5 +30,6 @@ export function pruneLock(lock, importer) {
     }
   }
   for (const field of fields) for (const [name, entry] of Object.entries(importer[field] ?? {})) visit(name, entry)
-  return { lockfileVersion: lock.lockfileVersion, settings: lock.settings, ...(lock.pnpmfileChecksum ? { pnpmfileChecksum: lock.pnpmfileChecksum } : {}), importers: { '.': importer }, packages, snapshots }
+  const patchedDependencies = Object.fromEntries(Object.entries(lock.patchedDependencies ?? {}).filter(([key]) => packages[key]))
+  return { lockfileVersion: lock.lockfileVersion, settings: lock.settings, ...(lock.pnpmfileChecksum ? { pnpmfileChecksum: lock.pnpmfileChecksum } : {}), ...(Object.keys(patchedDependencies).length ? { patchedDependencies } : {}), importers: { '.': importer }, packages, snapshots }
 }

@@ -32,6 +32,7 @@ export async function prepareTarget(item, published, directory, logs) {
   const evidence = item.name.startsWith('style-injector-') ? { integration: 'weapp-style-injector' } : await assertPublished(consumers.enabled.project, published)
   evidence.installationLayout = installationLayout(item)
   evidence.profiling = 'disabled'
+  evidence.frameworkPatches = Object.fromEntries(await Promise.all(modes.map(async mode => [mode, JSON.parse(await readFile(path.join(consumers[mode].project, '.cost', 'framework-patches.json'), 'utf8'))])))
   const consumer = consumers.enabled
   const originals = new Map(await Promise.all((await sourceFiles(consumer)).map(async file => [file, await readFile(path.join(consumer.project, file), 'utf8')])))
   const ordinary = await plainRuntimeMarkers(originals)

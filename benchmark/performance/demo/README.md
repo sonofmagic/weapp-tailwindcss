@@ -44,6 +44,7 @@ pnpm perf:demo:guard --report .tmp/weekly-report/report.json --budget .tmp/cost-
 - 准备阶段独立安装 npm 发布依赖、捕获真实框架配置、生成每个操作状态的静态输入，全部排除在计时外。实际解析路径必须在消费项目内，禁止本地包回退。共有直接依赖固定版本，peer 实例差异保留在锁文件中。
 - 准备阶段将已下载包复制到各组独立 store，副本不使用硬链接；这仅减少重复网络下载。正式冷安装仍逐轮使用全新空 store，离线安装与构建缓存按组隔离。
 - 不复制 workspace peer 快照；那会把全仓可选 peer 带入普通项目。每组保存独立 manifest、完整锁文件和 integrity，框架依赖从仓库锁文件取确切版本。
+- 三组一致复用仓库已登记且匹配实际解析版本的框架补丁（例如 Rollup 连续监听修正），禁止修改被测 weapp-tailwindcss 发布包。补丁原文、版本与 SHA-256 保留在分片 dependencies 和 JSON 中。结果代表该明确记录的 demo 工具链，不能冒充完全无补丁框架的体验；补丁改变会改变锁文件趋势身份。
 - uni-app 默认保留符号链接，无法从 pnpm 嵌套布局解析部分传递依赖；该框架三组均使用 pnpm 的 `hoisted` 布局，其余框架使用默认 `isolated` 布局。项目与 store 仍各自独立，布局记入报告和趋势兼容身份，不能与旧布局直接比较。
 - `weappTwIgnore` 页面标记在两种基线中使用普通 `String.raw`，每轮准备先核验被测发布版导出确实与内建函数同一；其他运行时 API 不做推测替换。额外的 `debug-uni-app-x` 磁盘诊断在三组均关闭且不安装，避免 profiling 污染正常体验的数字。
 - 静态预编译按 TSX、JSX、TypeScript 和 SFC script 语法调用被测发布版，解析失败直接阻断，不能将原文当成安全类名转换成功。Taro Vite 支付宝的两种基线保留既有 `.browserslistrc` 框架兼容资产，通过 bundler API 提供并记入 `baselineCompatibility`；不加载 Tailwind 生成或转换实现。

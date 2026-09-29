@@ -47,3 +47,13 @@ it('当前文档请求失败保留错误证据，不能通过清空队列伪装�
   expect(state.pending.size).toBe(0)
   expect(state.errors).toEqual(['http://localhost/module.js: ERR_FAILED'])
 })
+
+it.each(['image', 'font'])('页面结构与布局采样必须等待 %s 资源', (type) => {
+  const page = new EventEmitter()
+  const state = trackBrowserState(page)
+  const request = { resourceType: () => type }
+  page.emit('request', request)
+  expect(state.pending.has(request)).toBe(true)
+  page.emit('requestfinished', request)
+  expect(state.pending.size).toBe(0)
+})
