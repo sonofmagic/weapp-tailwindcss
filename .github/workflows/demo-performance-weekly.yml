@@ -78,6 +78,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts --filter weapp-tailwindcss-monorepo --filter @weapp-tailwindcss-demo/web-vue-vite7-tailwindcss-v4
+      - name: 验证当前系统的短进程 RSS 与超时清理
+        run: pnpm exec vitest run -c benchmark/performance/demo/vitest.config.mjs test/process.test.mjs --update=none
       - run: pnpm exec playwright install --with-deps chromium
       - uses: actions/download-artifact@v4
         with:

@@ -20,17 +20,12 @@ export function treeRss(rows, rootPid) {
   return seen.size ? bytes / 1024 ** 2 : null
 }
 
-export async function sampleMemory(pid) {
+export async function samplePosixMemory(pid) {
   if (!pid) return null
-  const windows = process.platform === 'win32'
-  const result = await execa(windows ? 'powershell' : 'ps', windows
-    ? ['-NoProfile', '-Command', 'Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize | ConvertTo-Json -Compress']
-    : ['-Ao', 'pid=,ppid=,rss='], { reject: false, timeout: 5000, windowsHide: true })
+  const result = await execa('ps', ['-Ao', 'pid=,ppid=,rss='], { reject: false, timeout: 5000 })
   if (result.exitCode !== 0) return null
   try {
-    const rows = windows
-      ? JSON.parse(result.stdout).map(row => ({ pid: Number(row.ProcessId), ppid: Number(row.ParentProcessId), bytes: Number(row.WorkingSetSize) }))
-      : result.stdout.trim().split(/\r?\n/).map(line => {
+    const rows = result.stdout.trim().split(/\r?\n/).map(line => {
           const [pid, ppid, rss] = line.trim().split(/\s+/).map(Number)
           return { pid, ppid, bytes: rss * 1024 }
         })

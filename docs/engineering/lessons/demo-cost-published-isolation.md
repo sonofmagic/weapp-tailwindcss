@@ -41,6 +41,7 @@ regressions:
 - Taro `plugin-html@4.2.1` 的 `patchMappingElements` 在构建中改写已安装的 `runtime.js`，通过硬链接使准备 store 的对应内容失效。Linux 云端完成三组各 7 轮安装后，额外的离线恢复报 `ERR_PNPM_NO_OFFLINE_TARBALL`，继而让构建找不到 Taro。安装实验改为复制源码、manifest 与锁文件到独立目录，不复制 `node_modules`，不再删除和恢复用于构建的依赖；安装失败也不能污染后续阶段。
 - Taro Vite 首次依赖预构建触发文档重载时，浏览器观察器不能继续等待旧文档的请求。成功的新主文档响应替换请求集合和 HMR 握手身份，失败导航及 hash/history 导航不重置；新文档请求、错误和握手仍必须逐项验证，超时原因记录实际请求 URL。
 - PR Benchmark 运行 `36548103093` 的事件基准是 `887e16289`，实际 checkout 却是把 PR head 合入 `80b39395f` 的临时 merge。uni-app 的 RSS 回归经一次复测确认，但比较中包含其他 PR 的生产变化。基准改为经过 head 身份和祖先关系校验的实际 merge 第一父提交；直接 checkout head 时才使用事件基准。门槛不变，不能把错误比较对象导致的失败当成已排除的性能回归，仍需重新验收。
+- Windows 增量安装的实际样本约 335–395 ms，逐次启动 PowerShell/WMI 查询会在任务退出后才返回，RSS 成为 null。Windows 改为在计时前初始化常驻采样器，通过系统进程快照按父子关系采集目标进程树；50 ms 采样间隔仍是峰值估计，不包含采样器自身。POSIX 继续使用 `ps`。每个系统在正式测量前执行短进程内存与超时清理回归；准备采样器的时间不计入安装或 dev 启动时间。
 
 ## 验证
 

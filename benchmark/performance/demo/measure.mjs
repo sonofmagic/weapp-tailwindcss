@@ -73,8 +73,8 @@ async function startWatcher(consumer, initial, options, suffix) {
   await writeStep(consumer, initial, marker)
   const logFile = path.join(options.logs, `${consumer.mode}-dev-${suffix}.log`)
   await mkdir(path.dirname(logFile), { recursive: true })
-  const began = performance.now()
-  const session = startProcess('pnpm', command.dev, { cwd: consumer.project, env: developmentEnvironment(command.env), logFile, timeout: options.timeout * 10 })
+  const session = await startProcess('pnpm', command.dev, { cwd: consumer.project, env: developmentEnvironment(command.env), logFile, timeout: options.timeout * 10 })
+  const began = session.startedAt
   let browser
   const check = async (operation, marker, offset = 0) => {
     if (browser) return browser.inspect(consumer, operation, marker)

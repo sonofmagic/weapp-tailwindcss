@@ -12,9 +12,16 @@ it('找不到命令正常失败，不产生未处理拒绝', async () => {
   await expect(run('weapp-demo-cost-command-does-not-exist', [], { timeout: 1000 })).rejects.toThrow()
 })
 it('重复停止同一个 watcher 等待同一个清理过程', async () => {
-  const session = startProcess(process.execPath, ['-e', 'setInterval(()=>{},100)'])
+  const session = await startProcess(process.execPath, ['-e', 'setInterval(()=>{},100)'])
   await Promise.all([session.stop(), session.stop()])
   expect(() => session.ensureRunning()).toThrow()
+})
+
+it('短进程仍保留内存样本，采样器准备时间不混入耗时', async () => {
+  const result = await run(process.execPath, ['-e', 'setTimeout(()=>{},150)'])
+  expect(result.peakRssMb).toBeGreaterThan(0)
+  expect(result.ms).toBeGreaterThanOrEqual(150)
+  expect(result.ms).toBeLessThan(5000)
 })
 
 it('超时结束自己创建的子孙进程，不碰其他进程', async () => {

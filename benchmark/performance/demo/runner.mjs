@@ -18,6 +18,7 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
   assert.equal(Number(process.versions.node.split('.')[0]), job.node, '实际 Node 主版本与分片不同')
   await mkdir(directory, { recursive: true })
   const environment = { platform: process.platform, release: os.release(), arch: process.arch, node: process.version, pnpm: (await run('pnpm', ['--version'])).stdout.trim(), cpu: os.cpus()[0]?.model, cores: os.cpus().length, memoryBytes: os.totalmem(), runner: process.env.RUNNER_NAME ?? os.hostname(), image: process.env.ImageOS, imageVersion: process.env.ImageVersion }
+  environment.memorySampler = process.platform === 'win32' ? 'toolhelp32-working-set-50ms' : 'ps-rss-250ms'
   const report = { ...manifest, reverse, jobs: undefined, shard: job.id, environment, environmentKey: JSON.stringify({ ...environment, runner: undefined }), expected: job.rows.map(rowKey), rows: job.rows.map(row => ({ ...row, version: manifest.package.version, status: 'pending', semanticVerified: false, samples: Object.fromEntries(modes.map(mode => [mode, []])) })) }
   report.sampleBatchId = randomUUID()
   await writeReport(report, directory)
