@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import { commands, coverage } from '../../../scripts/ci/demo-matrix/catalog.mjs'
+import { insertProbe } from '../../../scripts/ci/demo-matrix/probe.mjs'
+import { configure } from './configs.mjs'
+import { cleanCache, compareCommonLocks, createConsumer, install, keepLockEvidence, prepareLock } from './fixtures.mjs'
+import { modes } from './model.mjs'
+import { compileStatic, sourceFiles, stripGeneration, applySources } from './precompile.mjs'
+import { assertPublished } from './published.mjs'
+import { run } from './process.mjs'
+import { prepareSteps } from './steps.mjs'
+
+export async function prepareTarget(item, published, directory, logs) {
+  await mkdir(logs, { recursive: true })
+  const consumers = {}
+  const locks = {}
+  for (const mode of ['enabled', 'native', 'static']) {
+    const consumer = await createConsumer(item, published, directory, mode)
+    consumers[mode] = consumer
+    locks[mode] = (await prepareLock(consumer, path.join(directory, `${mode}-store`), logs)).lock
+    await install(consumer, path.join(directory, `${mode}-store`), path.join(logs, `${mode}-prepare-install.log`))
+    await keepLockEvidence(consumer, path.join(logs, 'dependencies'))
+  }
+  compareCommonLocks(locks.native, locks.static)
+  compareCommonLocks(locks.native, locks.enabled)
+  const evidence = item.name.startsWith('style-injector-') ? { integration: 'weapp-style-injector' } : await assertPublished(consumers.enabled.project, published)
+  const consumer = consumers.enabled
+  const originals = new Map(await Promise.all((await sourceFiles(consumer)).map(async file => [file, await readFile(path.join(consumer.project, file), 'utf8')])))
+  const captureFile = path.join(logs, 'options.jsonl')
+  const restore = await configure(consumer, 'capture')
+  const command = commands(item)
+  try {
+    await run('pnpm', command.build, { cwd: consumer.project, env: { ...command.env, WEAPP_DEMO_COST_CAPTURE: captureFile }, logFile: path.join(logs, 'capture.log') })
+  }
+  finally { await restore() }
+  const records = (await readFile(captureFile, 'utf8')).trim().split(/\r?\n/).map(line => JSON.parse(line))
+  await configure(consumers.native, 'disabled', records, consumer.project)
+  await configure(consumers.static, 'disabled', records, consumer.project)
+  const steps = Object.fromEntries(modes.map(mode => [mode, new Map()]))
+  if (coverage(item) === 'native-build') {
+    const source = `${await insertProbe(originals.get(item.source), item, 'initial')}\n// COST_SEQUENCE\n`
+    // RN 的插件默认禁用，三组保留同一原生页面，不计为 Tailwind 生成性能。
+    for (const mode of modes) steps[mode].set('initial', new Map([[item.source, source.replace('tw-matrix-native-app', 'tw-matrix-native-app COST_SEQUENCE')]]))
+  }
+  else {
+    const changes = await prepareSteps(consumer, records)
+    for (const [operation, change] of changes) {
+      await applySources(consumer, originals)
+      await applySources(consumer, change)
+      steps.enabled.set(operation, new Map([...originals, ...change]))
+      const compiled = await compileStatic(consumer, records, consumer.project)
+      steps.static.set(operation, new Map([...originals, ...change, ...compiled]))
+      const native = new Map([...originals, ...change])
+      for (const [file, text] of native) {
+        if (/\.(?:css|scss)$/.test(file)) native.set(file, stripGeneration(text))
+        else if (/\.(?:vue|uvue|mpx)$/.test(file)) native.set(file, text.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/g, (_, open, css, close) => open + stripGeneration(css) + close))
+      }
+      steps.native.set(operation, native)
+    }
+  }
+  await applySources(consumer, originals)
+  await writeFile(path.join(logs, 'static-inputs.json'), JSON.stringify([...steps.static].map(([operation, sources]) => ({ operation, sources: Object.fromEntries(sources) }))))
+  for (const mode of modes) await cleanCache(consumers[mode], command.output)
+  assert.ok(steps.enabled.size)
+  await writeFile(path.join(logs, 'isolation.json'), JSON.stringify({ evidence, locks: Object.fromEntries(modes.map(mode => [mode, Object.keys(locks[mode].packages).length])) }, null, 2))
+  return { consumers, steps, locks, evidence }
+}

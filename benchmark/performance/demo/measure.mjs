@@ -1,0 +1,136 @@
+import assert from 'node:assert/strict'
+import { randomUUID } from 'node:crypto'
+import { mkdir, rm } from 'node:fs/promises'
+import path from 'node:path'
+import { commands } from '../../../scripts/ci/demo-matrix/catalog.mjs'
+import { freePort, developmentEnvironment, assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete } from '../../../scripts/ci/demo-matrix/process.mjs'
+import { cleanCache } from './fixtures.mjs'
+import { modes, operations, order } from './model.mjs'
+import { browserTarget, inspectOutput, observePage } from './observe.mjs'
+import { run, startProcess, waitFor } from './process.mjs'
+import { writeStep } from './steps.mjs'
+
+function equivalent(results) {
+  assert.deepEqual(results.static, results.enabled, '静态组与接入组的实际样式或页面结构不等价')
+}
+
+export async function measureBuild(prepared, rows, options) {
+  const { consumers, steps } = prepared
+  for (const metric of ['build.cold', 'build.warm']) {
+    if (!rows[metric]) continue
+    try {
+      for (let round = 0; round < options.runs; round++) {
+        const results = {}
+        for (const mode of order(round, options.reverse)) {
+          const consumer = consumers[mode]
+          const command = commands(consumer.item)
+          const marker = `cost-${randomUUID()}`
+          await writeStep(consumer, steps[mode].get('initial'), marker)
+          if (metric === 'build.cold') await cleanCache(consumer, command.output)
+          else {
+            if (round === 0) await run('pnpm', command.build, { cwd: consumer.project, env: command.env, logFile: path.join(options.logs, `${mode}-warm-prime.log`) })
+            // 保留编译器缓存，但删除旧产物，确保检查本轮真实输出。
+            await rm(path.join(consumer.project, command.output), { recursive: true, force: true })
+          }
+          const sample = await run('pnpm', command.build, { cwd: consumer.project, env: command.env, logFile: path.join(options.logs, `${mode}-${metric}-${round}.log`), timeout: options.timeout })
+          const result = await inspectOutput(consumer, path.join(consumer.project, command.output), 'initial', marker)
+          results[mode] = result
+          delete sample.stdout
+          rows[metric].samples[mode].push({ ...sample, round, marker, cache: metric.endsWith('cold') ? 'project-cache-cleared' : 'project-cache-retained' })
+        }
+        equivalent(results)
+      }
+      rows[metric].status = 'passed'
+      rows[metric].semanticVerified = true
+    }
+    catch (error) { rows[metric].status = 'failed'; rows[metric].error = error.stack }
+  }
+}
+
+function completeWatcher(session, consumer, offset) {
+  const checks = { taro: assertTaroWatchBuildComplete, uni: assertUniWatchBuildComplete, mpx: assertMpxWatchBuildComplete, gulp: assertGulpWatchBuildComplete, 'weapp-vite': assertViteWatchBuildComplete }
+  const check = checks[consumer.item.family]
+  assert.ok(check, '缺少产物 watcher 完成契约')
+  check(session.log(), offset)
+}
+
+async function startWatcher(consumer, initial, options, suffix) {
+  const command = commands(consumer.item, await freePort())
+  const marker = `cost-${randomUUID()}`
+  await cleanCache(consumer, command.output)
+  await writeStep(consumer, initial, marker)
+  const logFile = path.join(options.logs, `${consumer.mode}-dev-${suffix}.log`)
+  await mkdir(path.dirname(logFile), { recursive: true })
+  const began = performance.now()
+  const session = startProcess('pnpm', command.dev, { cwd: consumer.project, env: developmentEnvironment(command.env), logFile, timeout: options.timeout * 10 })
+  let browser
+  const check = async (operation, marker, offset = 0) => {
+    if (browser) return browser.inspect(consumer, operation, marker)
+    completeWatcher(session, consumer, offset)
+    return inspectOutput(consumer, path.join(consumer.project, command.output), operation, marker)
+  }
+  try {
+    if (browserTarget(consumer.item)) {
+      const index = command.dev.indexOf('--port')
+      assert.ok(index >= 0, 'Web 启动命令没有可归属的独立端口')
+      browser = await observePage(`http://127.0.0.1:${command.dev[index + 1]}${consumer.item.route ?? '/'}`, session, options.logs)
+    }
+    const result = await waitFor(() => check('initial', marker), session, options.timeout)
+    const sample = { ms: performance.now() - began, peakRssMb: session.memory(), marker, boundary: browser ? 'spawn-to-validated-page' : 'spawn-to-validated-artifact' }
+    return { session, browser, check, result, sample, async close() { try { await browser?.close() } finally { await session.stop() } } }
+  }
+  catch (error) { await browser?.close(); await session.stop(); throw error }
+}
+
+export async function measureWatch(prepared, rows, options) {
+  const { consumers, steps } = prepared
+  const endpoint = browserTarget(consumers.enabled.item) ? 'page' : 'artifact'
+  const startup = rows[`startup.${endpoint}`]
+  if (!startup) return
+  try {
+    for (let round = 0; round < options.runs; round++) {
+      const results = {}
+      for (const mode of order(round, options.reverse)) {
+        const watcher = await startWatcher(consumers[mode], steps[mode].get('initial'), options, round)
+        try { startup.samples[mode].push(watcher.sample); results[mode] = watcher.result.topology ?? watcher.result }
+        finally { await watcher.close() }
+      }
+      equivalent(results)
+    }
+    startup.status = 'passed'
+    startup.semanticVerified = true
+    // 保持每组 watcher 身份；只有当前组收到写入，其余组保持 idle。
+    const results = Object.fromEntries(modes.map(mode => [mode, {}]))
+    const watchers = {}
+    try {
+      for (const mode of order(0, options.reverse)) watchers[mode] = await startWatcher(consumers[mode], steps[mode].get('initial'), options, 'hmr')
+      for (let round = -options.warmups; round < options.hmrRuns; round++) {
+        for (const operation of operations.filter(operation => rows[`hmr.${operation}.${endpoint}`])) {
+          for (const mode of order(round + options.warmups, options.reverse)) {
+            const consumer = consumers[mode]
+            const watcher = watchers[mode]
+            const reset = operation === 'remove' ? 'add' : operation === 'restore' ? 'config' : 'initial'
+            const resetMarker = `cost-${randomUUID()}`
+            await writeStep(consumer, steps[mode].get(reset), resetMarker)
+            await waitFor(() => watcher.check(reset, resetMarker), watcher.session, options.timeout)
+            const marker = `cost-${randomUUID()}`
+            const offset = watcher.session.log().length
+            const documents = watcher.browser?.documents()
+            const began = performance.now()
+            await writeStep(consumer, steps[mode].get(operation), marker)
+            const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
+            const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
+            if (round >= 0) rows[`hmr.${operation}.${endpoint}`].samples[mode].push(sample)
+            results[mode][operation] = result.topology ?? result
+          }
+          equivalent(results)
+        }
+      }
+    }
+    finally { for (const watcher of Object.values(watchers)) await watcher.close() }
+    for (const row of Object.values(rows).filter(row => row.metric.startsWith('hmr.'))) { row.status = 'passed'; row.semanticVerified = true }
+  }
+  catch (error) {
+    for (const row of Object.values(rows).filter(row => /^(?:hmr|startup)\./.test(row.metric) && row.status !== 'passed')) { row.status = 'failed'; row.error = error.stack }
+  }
+}
