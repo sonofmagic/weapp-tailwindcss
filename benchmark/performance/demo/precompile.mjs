@@ -30,7 +30,7 @@ export async function compileStatic(consumer, records, capturedRoot) {
 }
 
 async function compileStaticForPlatform(consumer, records, capturedRoot) {
-  if (consumer.item.name.startsWith('style-injector-')) return compileAuthored(consumer, records, capturedRoot)
+  if (consumer.item.name.startsWith('style-injector-')) return compileAuthored(consumer, records, capturedRoot, await sourceFiles(consumer))
   const require = createRequire(path.join(consumer.project, 'package.json'))
   const { createCompiler } = await import(pathToFileURL(require.resolve('weapp-tailwindcss/core')).href)
   const integrationRequire = createRequire(require.resolve('weapp-tailwindcss/package.json'))

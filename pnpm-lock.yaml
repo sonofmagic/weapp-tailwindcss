@@ -2119,6 +2119,9 @@ importers:
 
   demo/style-injector-mpx:
     dependencies:
+      '@babel/runtime':
+        specifier: catalog:babelRuntime7284
+        version: 7.29.7
       '@mpxjs/api-proxy':
         specifier: ^2.11.1
         version: 2.11.1(b1a47d05f4be82069e05926a20b17bdf)

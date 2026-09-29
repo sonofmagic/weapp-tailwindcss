@@ -9,6 +9,8 @@ regressions:
   - benchmark/performance/demo/test/prepare-process.test.mjs
   - benchmark/performance/demo/test/prepare-environment.test.mjs
   - benchmark/performance/demo/test/css-values.test.mjs
+  - benchmark/performance/demo/test/authored.test.mjs
+  - benchmark/performance/demo/test/runtime-dependency.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -30,10 +32,15 @@ regressions:
 - Windows 云端分片在删除消费项目时遇到已加载的 `lightningcss.node` 文件锁。准备阶段改为独立 Node 进程，序列化源码状态后等待进程退出，再进行安装与构建测量；`dispose()` 无法替代原生模块卸载，增加删除重试也不能修复进程边界。
 - Taro CLI 动态设置 `TARO_ENV=h5`，缺少这个平台环境的预生成会采用不同的 `rpx` 兼容处理。捕获器仅保存平台变量白名单，静态生成在独立进程中重放并恢复；不复制 CI 凭据与外部模块搜索路径。
 - 产物比较先统一确切相同的 RGB/十六进制颜色与数值序列化，再比较规则；原始语义快照仍保留。不得裁剪色域、四舍五入透明度或放宽页面计算尺寸校验。
+- `style-injector-mpx` 的 Babel 配置使用默认 transform-runtime，需要直接声明 `@babel/runtime`。原仓库从其他项目间接获得该包，独立安装暴露了缺失；三组共用这个框架依赖，不计为接入专属成本。
+- Webpack 样式注入器读取原始内容并输出资产，没有按 `.scss`／`.less` 扩展名运行预处理器。静态准备必须遵守实际适配器行为，不能凭扩展名增加 Sass/Less 依赖；Vite 启用预处理的分支仍执行真实编译。
+- Mpx 作用域只给出样式 sidecar 时，静态组必须在已发现且归属唯一的页面组件中显式导入它。单独修改没有消费方的 CSS 文件不能代替原插件的产物注入；连接源码之后重新生成每个操作状态并验证连续更新。
 
 ## 验证
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
+
+Mpx 样式注入 demo 补齐依赖后，执行 `node scripts/ci/demo-matrix/run.mjs style-injector-mpx:wx --build-only --update` 重新生成 static 基线，内容未变化；再用相同命令去掉 `--update` 验证通过。该验证是定向产物验收，不包含 IDE／设备运行。
 
 ## 适用边界
 

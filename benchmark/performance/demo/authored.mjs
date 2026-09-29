@@ -6,8 +6,19 @@ import { pathToFileURL } from 'node:url'
 import { decode } from './capture.cjs'
 import { inside } from './published.mjs'
 import { isWeb } from '../../../scripts/ci/demo-matrix/catalog.mjs'
+import { connectMpxSidecar } from './authored-mpx.mjs'
 
-export async function compileAuthored(consumer, records, capturedRoot) {
+export async function prepareInjectedCss(scope, module, require) {
+  const css = await readFile(scope.sourceAbsolutePath, 'utf8')
+  // Webpack 注入器按原文 emitAsset，扩展名不代表它执行了 Sass/Less 编译。
+  if (module.includes('/webpack/') || scope.preprocess === false) return css
+  const extension = path.extname(scope.sourceAbsolutePath)
+  if (['.scss', '.sass'].includes(extension)) return (await require('sass').compileStringAsync(css, { url: pathToFileURL(scope.sourceAbsolutePath), syntax: extension === '.sass' ? 'indented' : 'scss' })).css
+  if (extension === '.less') return (await require('less').render(css, { filename: scope.sourceAbsolutePath })).css
+  return css
+}
+
+export async function compileAuthored(consumer, records, capturedRoot, sourceFiles) {
   const require = createRequire(path.join(consumer.project, 'package.json'))
   const injector = require('weapp-style-injector')
   const config = records.filter(row => row.key === 'options')
@@ -24,10 +35,7 @@ export async function compileAuthored(consumer, records, capturedRoot) {
   for (const scope of scopes) {
     assert.ok(inside(consumer.project, scope.sourceAbsolutePath), '注入来源越界')
     assert.ok(!scope.referenceFileName, '引用型注入需要单独验证其样式生成语义')
-    let css = await readFile(scope.sourceAbsolutePath, 'utf8')
-    const extension = path.extname(scope.sourceAbsolutePath)
-    if (['.scss', '.sass'].includes(extension)) css = (await require('sass').compileStringAsync(css, { url: pathToFileURL(scope.sourceAbsolutePath), syntax: extension === '.sass' ? 'indented' : 'scss' })).css
-    else if (extension === '.less') css = (await require('less').render(css, { filename: scope.sourceAbsolutePath })).css
+    const css = await prepareInjectedCss(scope, config[0].value.module, require)
     const targets = [...(scope.targetSourceFiles ?? []), ...(scope.sourceModules ?? [])]
     assert.ok(targets.length, '注入作用域没有源码目标映射，拒绝猜测输出关系')
     for (const target of targets) {
@@ -47,7 +55,10 @@ export async function compileAuthored(consumer, records, capturedRoot) {
     const source = await readFile(file, 'utf8')
     const css = [...styles].join('\n')
     if (/\.(?:vue|mpx)$/.test(file)) result.set(relative, `${source}\n<style>\n${css}\n</style>\n`)
-    else if (/\.(?:css|scss|sass|less)$/.test(file)) result.set(relative, `${css}\n${source}`)
+    else if (/\.(?:css|scss|sass|less)$/.test(file)) {
+      result.set(relative, `${css}\n${source}`)
+      if (consumer.item.family === 'mpx') await connectMpxSidecar(result, consumer.project, file, sourceFiles)
+    }
     else {
       assert.match(file, /\.(?:tsx|jsx|ts|js)$/)
       const styleFile = `${file}.cost.css`
