@@ -160,7 +160,13 @@ export async function measureWatch(prepared, rows, options) {
             const save = await planStep(consumer, steps[mode].get(operation), marker)
             await pacer.beforeSave()
             const began = performance.now()
-            await save()
+            await save({
+              afterWrite: mode === 'static' && watcher.browser
+                ? async target => {
+                  if (/\.(?:css|scss)$/.test(target)) await waitFor(() => watcher.browser.waitForStylesheetMarker(marker), watcher.session, options.timeout)
+                }
+                : undefined,
+            })
             const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
             const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, interSaveQuietMs, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
             pacer.settled()
