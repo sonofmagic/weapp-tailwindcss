@@ -19,7 +19,8 @@ export function canonicalCssValue(value) {
 export function canonicalStyleEvidence(result) {
   if (!result || typeof result !== 'object') return result
   if (Array.isArray(result)) return result.map(canonicalStyleEvidence)
-  return Object.fromEntries(Object.entries(result).map(([key, value]) => {
+  return Object.fromEntries(Object.entries(result).filter(([key]) => key !== 'comparisonProbes').map(([key, original]) => {
+    const value = key === 'probes' && result.comparisonProbes ? result.comparisonProbes : original
     if (key === 'rules') return [key, Object.fromEntries(Object.entries(value).map(([name, values]) => [name, [...new Set(values.map(canonicalCssValue))].sort()]))]
     if (key === 'spacing') return [key, [...new Set(value.map(canonicalCssValue))].sort()]
     return [key, canonicalStyleEvidence(value)]

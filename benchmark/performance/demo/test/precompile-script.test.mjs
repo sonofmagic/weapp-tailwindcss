@@ -14,6 +14,9 @@ it('静态预编译按源码语法解析 JSX、TSX、TypeScript 和 SFC script�
     ['page.jsx', 'const Page = () => <View className="h-[64rpx]"/>'],
     ['page.tsx', 'const Page = (n: number) => <View className="h-[64rpx]">{n}</View>'],
     ['page.ts', 'const value = <number>1'],
+    ['/project/page.tsx', 'const Page = (n: number) => <View>{n}</View>'],
+    ['C:\\project\\page.tsx', 'const Page = (n: number) => <View>{n}</View>'],
+    ['C:\\page.ts', 'const value = <number>1'],
     ['page.vue', 'const value: number = 1', 'ts'],
     ['page.vue', 'const Page = (n: number) => <View>{n}</View>', 'tsx'],
   ]) expect(await compileScript(parsingCompiler, source, {}, file, language)).toBe(source)

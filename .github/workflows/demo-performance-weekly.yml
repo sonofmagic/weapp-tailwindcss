@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
-      matrix: ${{ steps.plan.outputs.matrix }}
+      matrix: ${{ steps.diagnostic.outputs.matrix }}
       ready: ${{ steps.plan.outputs.ready }}
     steps:
       - uses: actions/checkout@v6
@@ -51,7 +51,20 @@ jobs:
         env:
           COST_VERSION: ${{ inputs.version || 'latest' }}
           COST_ONLY: ${{ inputs.only || '' }}
-        run: pnpm perf:demo:report --plan --diagnostic --phases hmr --runs 3 --hmr-runs 1 --warmups 0 --version "$COST_VERSION" --only "$COST_ONLY" --out-dir .tmp/weekly-plan
+        run: pnpm perf:demo:report --plan --diagnostic --phases build,hmr --runs 1 --hmr-runs 1 --warmups 0 --version "$COST_VERSION" --only "$COST_ONLY" --out-dir .tmp/weekly-plan
+      - id: diagnostic
+        name: 仅诊断 Linux CLI 适配，不作为正式验收
+        run: |
+          node --input-type=module <<'JS'
+          import { readFile, writeFile, appendFile } from 'node:fs/promises'
+          const file = '.tmp/weekly-plan/manifest.json'
+          const manifest = JSON.parse(await readFile(file, 'utf8'))
+          if (!manifest.diagnostic) throw new Error('仅允许缩减采样诊断')
+          manifest.jobs = manifest.jobs.filter(job => job.os === 'ubuntu-latest' && job.node === 24)
+          manifest.expected = manifest.jobs.flatMap(job => job.rows.map(row => JSON.stringify([row.demo, row.target, row.os, row.node, row.metric])))
+          await writeFile(file, JSON.stringify(manifest, null, 2))
+          await appendFile(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify({ include: manifest.jobs.map(({ rows, ...job }) => job) })}\n`)
+          JS
       - uses: actions/upload-artifact@v7
         if: always()
         with:

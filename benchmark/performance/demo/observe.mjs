@@ -11,6 +11,8 @@ import { roundFor } from './steps.mjs'
 import { waitFor } from './process.mjs'
 import { inspectExtraStyles } from './style-evidence.mjs'
 import { trackBrowserState } from './browser-state.mjs'
+import { waitForTaroComponents } from './component-ready.mjs'
+import { comparableCss } from './semantic-css.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -21,8 +23,12 @@ export async function inspectOutput(consumer, output, operation, marker) {
   if (coverage(consumer.item) === 'native-build') return inspectNative(output)
   if (consumer.mode === 'native') return { marker, structure: true, styleEquivalent: false }
   let extra
-  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => { extra = inspectExtraStyles(styles, consumed, consumer.item, operation) })
-  return extra ? { probes, extra } : probes
+  let comparisonProbes
+  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => {
+    extra = inspectExtraStyles(styles, consumed, consumer.item, operation)
+    comparisonProbes = inspectStyles(styles.map(comparableCss), consumer.item, roundFor(operation), consumed)
+  })
+  return extra ? { probes, comparisonProbes: { ...probes, ...comparisonProbes }, extra } : probes
 }
 
 export async function observePage(url, session, directory) {
@@ -42,6 +48,7 @@ export async function observePage(url, session, directory) {
       waitForTransport: () => waitFor(() => assert.ok(state.transportReady(), '开发更新通道尚未握手'), session),
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
+        if (consumer.item.family === 'taro') await page.evaluate(waitForTaroComponents)
         const result = await page.evaluate(({ expected, round, marker }) => {
           const first = document.getElementById('tw-matrix-height')
           if (!first?.textContent.includes(marker)) throw new Error('本轮页面 marker 尚未生效')
@@ -64,7 +71,6 @@ export async function observePage(url, session, directory) {
           })
           return { computed, styles, topology, ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
         }, { expected: probeClasses(consumer.item, round), round, marker })
-        // 独立诊断分支保存浏览器实际样式，数据不作为正式性能验收样本。
         lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
         assert.equal(pending.size, 0, `仍有模块或样式请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')
@@ -82,9 +88,10 @@ export async function observePage(url, session, directory) {
         return { computed: result.computed, topology: result.topology }
       },
       async close() {
-        await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ pid: session.pid, errors, lastObservation }))
-        await writeFile(path.join(directory, 'browser-errors.json'), JSON.stringify(errors))
-        await browser.close()
+        try {
+          await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ ...lastObservation, errors }))
+        }
+        finally { await browser.close() }
       },
     }
   }

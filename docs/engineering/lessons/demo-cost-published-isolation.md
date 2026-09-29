@@ -17,6 +17,8 @@ regressions:
   - benchmark/performance/demo/test/watch-lifetime.test.mjs
   - benchmark/performance/demo/test/process-group.test.mjs
   - benchmark/performance/demo/test/precompile-script.test.mjs
+  - benchmark/performance/demo/test/component-ready.test.mjs
+  - benchmark/performance/demo/test/semantic-css.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -52,7 +54,17 @@ regressions:
 - `6ef92ef` 的 Linux Taro 小程序分片安装全部通过，但静态组 CSS 为安全类名、TSX 仍为原类名。发布版 `5.5.11` 的 `transformJavaScript` 默认不启用 TSX，并将解析错误连同原文返回；准备工具只取 `.code`，丢失了失败信号。现在按文件扩展名或 SFC script 的 `lang` 传入解析选项，并强制检查返回错误。快照仍精确约束类名，不对集合外字符串兜底转换。
 - 同轮支付宝原生组在 Taro `modifyBuildAssets` 中崩溃：平台插件写入新 `.browserslistrc` 时，Vite runner 直接读取不存在的 bundle 成员。最初怀疑空样式，读取实际调用链后排除；生产接入已提供专用兼容资产，但禁用整组插件也将它移除了。两种基线通过 bundler `emitFile` 保留这个普通框架资产，记录 `baselineCompatibility`，不加载生成器、不处理样式。真实 Rollup 生命周期回归验证资产在后续改写之前可用。
 
+- Windows runner 的首个进程测试在 10 秒总期限内超时，后续四项通过。采样器本来允许 60 秒冷准备，测试却把它与 100 ms 的被测超时一起限制为 10 秒；失败日志未区分具体阶段，不能单凭该日志断言目标进程清理挂起。回归改为等待准备结束后，从 `session.startedAt` 独立断言超时及清理不超过 5 秒，外层期限容纳已有的准备上限。被测 timeout、性能预算和正式采样次数均不变。
+
 ## 验证
+
+`83fc43b` 的 Taro 小程序冷／热构建中，静态组 `.flex` 含 `-ms-flexbox`、`-webkit-flex`、`flex`，接入组含 `-ms-flexbox`、`flex`；开发启动两组均只有 `flex`。静态输入中原本只有标准 `display:flex`。真实 Autoprefixer 与该 demo 的生产 Browserslist 复现了添加旧前缀的行为，接入后的平台处理会清理该前缀。原比较器先把声明变成集合，丢失了前后覆盖关系。比较现按 AST 顺序，仅规范化同一规则中被后续同优先级标准 `flex`／`inline-flex` 覆盖的对应 WebKit 回退；不改源码或产物，原始探针规则另存于语义证据。不同规则、条件、声明顺序、优先级及真正的布局差异均保留。这里采用既有探针要求的标准 flex 支持边界，不推断不支持标准 flex 的旧浏览器。
+
+真实 Autoprefixer 回归及顺序／条件／优先级反例通过，性能工具共 59 项测试通过。Chromium 分别消费原始 CSS 与可比较 CSS，计算布局和子元素位置一致；云端仍需在当前提交重新生成静态输入并执行正式对照，不能把该最小浏览器实验当成设备验收。
+
+Windows 诊断运行 `36567931950` 的静态组已有本轮 marker、普通 CSS 与空请求队列，但缺少 `taro-view-core { display: block }`，接入组则已加载该样式。Taro `4.2.1` 的 Stencil 自定义元素在首轮渲染阶段挂载组件样式；仅检查 `document.complete` 与请求完成，会提前采到 `inline/auto` 布局。页面观察器对旧适配器等待 `componentOnReady()`；现代适配器没有该 API，必须核验元素已注册、组件声明的 CSS 已挂载在文档或 shadow root。初版只处理旧适配器，在后续入口审查中纠正，并用真实现代组件复现。检查不猜测应有的 `display`，单次等待有界，失败仍阻断。不能只检查 `hydrated` 类名，因为页面更新可以重新设置 class。每个 watcher 单独保存最后的完整样式与布局快照，避免后续进程覆盖证据。
+
+组件就绪回归覆盖异步渲染、未注册、拒绝、超时清理、现代适配器与 shadow root；`CI=1 pnpm test:perf:demo` 共 57 项通过。使用真实 Chromium 与发布的 `@tarojs/components@4.2.1` 做两种适配器的隔离实验：旧适配器阻住懒加载模块，现代适配器阻住首轮渲染任务；均实测到 `inline`，释放后变成 `block`。现代组件明确没有 `componentOnReady()`，渲染前就绪检查失败、样式挂载后通过；不支持组件告警的 Taro 事件入口在最小实验中未启用。此实验不替代完整页面或云端验收，也不能单凭它断言此前作者 CSS 宽度异常已解决。
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
 
