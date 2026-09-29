@@ -7,6 +7,7 @@ import { coverage, isWeb } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { operations } from './model.mjs'
 import { probeClasses } from '../../../scripts/ci/demo-matrix/probe.mjs'
 import { replaceSourceFile } from '../../../scripts/ci/demo-matrix/source-file.mjs'
+import { cssEntries } from './options.mjs'
 
 export const roundFor = operation => operation === 'replace' ? 'replace' : operation === 'add' ? 'add' : operation === 'remove' || operation === 'restore' ? 'restore' : 'initial'
 
@@ -15,7 +16,7 @@ export async function prepareSteps(consumer, records) {
   const original = await readFile(path.join(consumer.project, item.source), 'utf8')
   const authored = coverage(item) === 'authored-styles'
   const configuration = records.find(row => row.key === 'options')?.value.options
-  const cssFile = authored ? path.join(consumer.project, 'src/sub-normal/index.css') : configuration?.cssEntries?.[0]
+  const cssFile = authored ? path.join(consumer.project, 'src/sub-normal/index.css') : cssEntries(configuration)[0]
   assert.ok(cssFile, '没有可验证的样式入口')
   const css = await readFile(cssFile, 'utf8').catch(error => { if (authored && error.code === 'ENOENT') return ''; throw error })
   const changes = new Map()

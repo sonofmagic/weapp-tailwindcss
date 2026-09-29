@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest'
 import { cases } from './catalog.mjs'
 import { inspectStyles } from './output.mjs'
+import { probeClasses } from './probe.mjs'
 
 const item = cases.find(item => item.id === 'issue-1144-uni-app-x-web:h5')
 const inlineCss = String.raw`
@@ -14,6 +15,15 @@ const inlineCss = String.raw`
 .h-\[400px\] { height: 400px }
 .bg-emerald-50\/80 { background-color: rgba(236, 253, 245, .8) }
 `
+
+it('共享作用域类不能让未被探针消费的复合选择器污染背景证据', () => {
+  const consumed = Object.fromEntries(Object.values(probeClasses(item, 'initial')).map(name => [name, [name, 'data-v-scope']]))
+  const extra = '.hello-scss.data-v-scope{background-color:#f1f1f1}'
+  const baseline = inspectStyles([inlineCss], item, 'initial', consumed)
+  expect(inspectStyles([inlineCss + extra], item, 'initial', consumed)).toEqual(baseline)
+  const changed = String.raw`.bg-emerald-50\/80.data-v-scope{background-color:red}`
+  expect(inspectStyles([inlineCss + changed], item, 'initial', consumed).rules['bg-emerald-50/80']).toContain('red')
+})
 
 it('compares inline utility semantics independently of unused theme declarations', () => {
   const baseline = inspectStyles([inlineCss], item)

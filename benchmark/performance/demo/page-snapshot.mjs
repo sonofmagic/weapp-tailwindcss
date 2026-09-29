@@ -15,7 +15,9 @@ export async function readPageSnapshot({ expected, round, marker, family }) {
   if (round === 'restore' && document.getElementById('tw-matrix-added')) throw new Error('移除节点仍存在')
   const styles = []
   for (const sheet of document.styleSheets) {
-    try { styles.push([...sheet.cssRules].map(rule => rule.cssText).join('\n')) }
+    // Web demo 的 weapp 转换预览含 rpx；CSSOM 会丢弃该声明，原始已挂载样式才保留转换证据。
+    // 页面效果仍由下方计算样式单独核验，不能用原始文本冒充浏览器支持小程序单位。
+    try { styles.push(sheet.ownerNode?.tagName === 'STYLE' ? sheet.ownerNode.textContent : [...sheet.cssRules].map(rule => rule.cssText).join('\n')) }
     catch { /* 不读取跨域第三方样式。 */ }
   }
   const topology = [...document.body.querySelectorAll('*')].filter(element => !['SCRIPT', 'STYLE'].includes(element.tagName)).map(element => {

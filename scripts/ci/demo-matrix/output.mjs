@@ -17,6 +17,28 @@ export function cssClasses(selector) {
   return tokens.flatMap((token, index) => token[0] === TokenType.Delim && token[1] === '.' && tokens[index + 1]?.[0] === TokenType.Ident ? [tokens[index + 1][4].value] : [])
 }
 
+function classCompounds(selector) {
+  const groups = [{ names: [], uncertain: false }]
+  let depth = 0
+  const tokens = tokenize({ css: selector })
+  for (const [index, token] of tokens.entries()) {
+    if (token[0] === TokenType.Function || token[0] === TokenType.OpenParen) {
+      depth++
+      groups.at(-1).uncertain = true
+    }
+    if (token[0] === TokenType.CloseParen) {
+      depth--
+    }
+    if (depth === 0 && (token[0] === TokenType.Whitespace || token[0] === TokenType.Comma || (token[0] === TokenType.Delim && ['>', '+', '~', '|'].includes(token[1])))) {
+      groups.push({ names: [], uncertain: false })
+    }
+    if (token[0] === TokenType.Delim && token[1] === '.' && tokens[index + 1]?.[0] === TokenType.Ident) {
+      groups.at(-1).names.push(tokens[index + 1][4].value)
+    }
+  }
+  return groups
+}
+
 function safeClass(value) {
   return value.replaceAll('[', '_b').replaceAll(']', '_B').replaceAll('/', '_f')
 }
@@ -36,16 +58,18 @@ function numericDimension(value) {
 export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
   const probes = probeClasses(item, round)
   const classes = Object.values(probes)
-  const names = new Map(classes.flatMap(name => (consumed[name] ?? [name, safeClass(name)]).map(actual => [actual, name])))
+  const actualClasses = new Map(classes.map(name => [name, new Set(consumed[name] ?? [name, safeClass(name)])]))
   const rules = new Map()
   const variables = new Set()
   for (const style of styles) {
     const root = postcss.parse(style)
     root.walkDecls('--spacing', decl => variables.add(compact(decl.value)))
     root.walkRules((rule) => {
-      for (const selectorClass of cssClasses(rule.selector)) {
-        const original = names.get(selectorClass)
-        if (!original) {
+      const compounds = classCompounds(rule.selector)
+      for (const [original, actual] of actualClasses) {
+        // 作用域类只是复合选择器的一部分；缺少同一复合中的业务类时该规则不可能命中探针。
+        // 函数伪类的选择分支不能简单取交集，仍保留其证据，避免抹掉条件样式差异。
+        if (!compounds.some(group => group.names.some(name => actual.has(name)) && (group.uncertain || group.names.every(name => actual.has(name))))) {
           continue
         }
         const values = rules.get(original) ?? new Map()

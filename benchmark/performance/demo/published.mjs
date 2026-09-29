@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
-import { readFile, realpath, writeFile } from 'node:fs/promises'
+import { cp, readFile, realpath, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { parse, parseAllDocuments, stringify } from 'yaml'
@@ -72,6 +72,8 @@ export function withoutIntegration(manifest, { authored = false } = {}) {
 
 export async function writeConsumer(root, manifest, workspace) {
   await writeFile(path.join(root, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
+  // 复用仓库已有的发布元数据纠正，三组一致；不修改包版本、完整性或平台检测结果。
+  await cp(path.join(repo, '.pnpmfile.cjs'), path.join(root, '.pnpmfile.cjs'))
   // 安装策略来自仓库，路径补丁只作用于隔离消费目录中的独立副本。
   await writeFile(path.join(root, 'pnpm-workspace.yaml'), stringify({ packages: ['.'], nodeLinker: workspace.nodeLinker ?? 'isolated', allowBuilds: workspace.allowBuilds, minimumReleaseAge: 0, autoInstallPeers: true }))
   // 不能带入 workspace 的 peer 快照：其中的可选 peer 会把无关框架安装到消费项目。

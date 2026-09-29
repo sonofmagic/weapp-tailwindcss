@@ -33,6 +33,11 @@ function capture(module, name, original) {
     if (['WeappTailwindcss', 'createPlugins', 'StyleInjector'].includes(name)) record('options', { module, options: args[0] ?? {}, environment: captureEnvironment() })
     const result = new.target ? Reflect.construct(original, args) : original(...args)
     if (module.endsWith('/framework') || module.endsWith('/presets')) record(`helper:${name}`, result)
+    if (module === 'weapp-style-injector/vite/uni-app' && name === 'StyleInjector') {
+      return [result, { name: 'demo-cost:capture-preprocess', configResolved(config) {
+        record('injector:preprocess', { root: config.root, mode: config.mode, resolve: { alias: config.resolve.alias }, css: { transformer: config.css.transformer, preprocessorMaxWorkers: config.css.preprocessorMaxWorkers, devSourcemap: false } })
+      } }]
+    }
     return result
   }
 }

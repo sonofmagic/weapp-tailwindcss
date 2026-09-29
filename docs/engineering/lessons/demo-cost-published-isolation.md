@@ -58,6 +58,14 @@ regressions:
 
 ## 验证
 
+`36590396264` 的定向诊断确认分包 RN 和 uni App 构建通过，仍暴露出几类隔离准备问题。uni 示例直接声明所用 Sass；style-injector uni 同时声明 Sass Embedded 与 Less。消费项目复用根 `.pnpmfile.cjs` 对 UTS `gnu/glibc` 发布元数据的已有纠正，裁剪锁文件时保留钩子校验值；原安装日志明确记录 Linux GNU 包因 `gnu` 与 `glibc` 不匹配而被跳过。
+
+HBuilderX 预设的入口位于 `tailwindcss.v4.cssEntries`，已用发布版 `5.5.11` 实际返回值验证读取路径。weapp-vite 专用捕获入口改为 ESM 桥接，让 Node 加载 CJS 实现；独立 Node 子进程中的配置打包回归修复前失败、修复后通过，避免 Vitest 的运行环境掩盖动态 require 错误。
+
+uView 产物的 `.hello-scss.data-v-*` 被旧比较器仅凭共享作用域类错误归到背景探针。复合选择器检查现在排除缺少必要业务类的规则，保留函数伪类的不确定条件；真实下载 CSS 与回归均验证灰色声明不再污染探针，真正命中的红色背景仍被检测。浏览器读取已挂载 STYLE 元素的原始 CSS，避免 CSSOM 丢弃 `rpx` 让 Web demo 的 weapp 转换预览误报缺样式；Chromium 实验确认原始 `64rpx` 与实际 `18px` 分开保存，不能将转换预览当作小程序设备样式支持。
+
+Taro Vite 与 Webpack 样式注入均按发布适配器的原文生成职责准备静态输入，uni Vite 则使用消费项目的 Vite 与捕获配置执行两次预处理。作用域扫描中的页面配置模块不属于页面源码，禁止插入 CSS 导入。新增定向回归覆盖这些边界。uni 与 style-injector uni 的微信产物均显式执行 `node scripts/ci/demo-matrix/run.mjs <目标> --build-only --update`，随后不更新验证；style-injector uni 的 H5 也执行同样流程，基线内容未变化。普通 uni 第一次构建因本工作树缺少 merge 的 dist 失败，构建 merge/variants 依赖闭包后重新执行成功。
+
 Taro Webpack 的诊断运行 `36587807594` 中，H5 与 Harmony 产物在同一 CSS 文件先声明 `--spacing:4px`，随后由相同具名层、等价 `:root/:host` 选择器的 `0.1rem/0.2rem` 覆盖。静态组只保留后值。比较器现在仅消除可证明被同优先级后续声明覆盖的根主题变量，保留原始探针；条件、作用域、匿名层、不同选择器和优先级都不合并。下载的 20 个真实 CSS 文件在 Chromium 中规范化前后计算尺寸一致，两目标的静态与接入探针也一致。`CI=1 pnpm test:perf:demo` 共 74 项通过；这不替代完整 demo 页面和正式云端采样验收。
 
 Linux 诊断继续暴露独立消费项目边界：分包 Taro RN 漏声明 `metro-react-native-babel-preset`，Metro 报错但外层退出 0，marker 断言正确阻断。补齐与其他 RN demo 相同的直接依赖，锁文件仅增加该 importer 的三行；`pnpm install --frozen-lockfile --offline --ignore-scripts --filter @weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4` 通过。构建当前包依赖闭包后，定向执行 `node scripts/ci/demo-matrix/run.mjs subpackage-taro-webpack-react-tailwindcss-v4:rn --build-only --update` 重新生成 static 基线（无差异），再去掉 `--update` 验证通过。

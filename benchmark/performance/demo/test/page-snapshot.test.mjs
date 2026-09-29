@@ -4,6 +4,18 @@ import { readPageSnapshot } from '../page-snapshot.mjs'
 
 afterEach(() => vi.unstubAllGlobals())
 
+it('已挂载样式保留浏览器不认识的小程序单位，计算样式仍独立采样', async () => {
+  const element = { textContent: 'current', isConnected: true, dataset: { twMatrix: 'initial' }, classList: ['h-safe'], children: [], tagName: 'DIV' }
+  vi.stubGlobal('document', {
+    getElementById: () => element, body: { querySelectorAll: () => [element] }, readyState: 'complete',
+    styleSheets: [{ ownerNode: { tagName: 'STYLE', textContent: '.h-safe{height:64rpx}' }, cssRules: [{ cssText: '.h-safe {}' }] }],
+  })
+  vi.stubGlobal('getComputedStyle', () => ({ height: '18px' }))
+  const snapshot = await readPageSnapshot({ expected: { height: 'h-[64rpx]' }, round: 'initial', marker: 'current' })
+  expect(snapshot.styles).toEqual(['.h-safe{height:64rpx}'])
+  expect(snapshot.computed.height.height).toBe('18px')
+})
+
 it('空文档的就绪结果不能复用于随后出现且尚未渲染的本轮节点', async () => {
   let element
   let release

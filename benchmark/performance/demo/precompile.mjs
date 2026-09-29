@@ -10,6 +10,7 @@ import { compileAuthored } from './authored.mjs'
 import { preprocessStyle, sfcBlocks } from './sfc.mjs'
 import { withCapturedEnvironment } from './prepare-environment.mjs'
 import { compileScript } from './precompile-script.mjs'
+import { cssEntries } from './options.mjs'
 
 export function stripGeneration(css) {
   const root = postcss.parse(css)
@@ -40,7 +41,7 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
   assert.ok(config.length, '准备构建没有捕获启用的插件配置')
   const options = decode(config[0].value.options, capturedRoot, consumer.project)
   assert.ok(config.every(row => JSON.stringify(row.value.options) === JSON.stringify(config[0].value.options)), '同一目标有多个不同的插件配置，不能合并静态基线')
-  assert.ok(options.cssEntries?.length, '静态基线需要构建配置声明 CSS 入口')
+  const entries = cssEntries(options)
   const compiler = createCompiler(options)
   const target = options.generator?.target ?? (['h5', 'h5:ssr', 'web', 'app', 'harmony-hybrid'].includes(consumer.item.target) ? 'web' : 'weapp')
   const result = new Map()
@@ -52,7 +53,7 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
   }
   try {
     const snapshots = []
-    for (const entry of options.cssEntries) {
+    for (const entry of entries) {
       const generated = await compiler.generate({
         id: entry, target,
         sourceOptions: { projectRoot: consumer.project, cssEntries: [entry] },
