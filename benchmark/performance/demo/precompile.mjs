@@ -12,6 +12,7 @@ import { preprocessStyle, sfcBlocks } from './sfc.mjs'
 import { withCapturedEnvironment } from './prepare-environment.mjs'
 import { compileScript } from './precompile-script.mjs'
 import { cssEntries } from './options.mjs'
+import { compileTemplateExpressions } from './template-expressions.mjs'
 
 export function stripGeneration(css, language = 'css') {
   assert.ok(['css', 'scss'].includes(language), `尚未验证的原生样式语法：${language}`)
@@ -88,7 +89,10 @@ async function compileStaticForPlatform(consumer, records, capturedRoot) {
         const replacements = []
         for (const block of sfcBlocks(source, file)) {
           let content = block.content
-          if (target === 'weapp' && block.type === 'template') content = await compiler.transformTemplate(content, snapshot)
+          if (target === 'weapp' && block.type === 'template') {
+            content = await compiler.transformTemplate(content, snapshot)
+            if (/\.(?:vue|uvue)$/.test(file)) content = await compileTemplateExpressions(compiler, content, snapshot, file)
+          }
           if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = await compileScript(compiler, content, snapshot, file, block.attrs.lang ?? 'js')
           if (block.type === 'style' && /@(apply|reference|theme)/.test(content)) {
             const css = await preprocessStyle(block, path.join(consumer.project, file), require)

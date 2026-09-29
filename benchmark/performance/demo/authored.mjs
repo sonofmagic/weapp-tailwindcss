@@ -7,6 +7,7 @@ import { hash, inside } from './published.mjs'
 import { isWeb } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { connectMpxSidecar } from './authored-mpx.mjs'
 import { preprocessInjectedCss } from './authored-vite.mjs'
+import { connectScriptSidecar } from './authored-script.mjs'
 
 export async function prepareInjectedCss(scope, module, require, preprocessConfig) {
   const css = await readFile(scope.sourceAbsolutePath, 'utf8')
@@ -60,12 +61,13 @@ export async function compileAuthored(consumer, records, capturedRoot, sourceFil
   const result = new Map()
   for (const [file, styles] of additions) {
     const relative = path.relative(consumer.project, file)
-    const source = await readFile(file, 'utf8')
+    const source = result.get(relative) ?? await readFile(file, 'utf8')
     const css = [...styles].join('\n')
     if (/\.(?:vue|mpx)$/.test(file)) result.set(relative, `${source}\n<style>\n${css}\n</style>\n`)
     else if (/\.(?:css|scss|sass|less)$/.test(file)) {
       result.set(relative, `${css}\n${source}`)
       if (consumer.item.family === 'mpx') await connectMpxSidecar(result, consumer.project, file, sourceFiles)
+      if (consumer.item.family === 'taro') await connectScriptSidecar(result, consumer.project, file, sourceFiles)
     }
     else {
       assert.match(file, /\.(?:tsx|jsx|ts|js)$/)

@@ -1,8 +1,11 @@
+import assert from 'node:assert/strict'
+
 export function trackBrowserState(page) {
   const pending = new Set()
   const errors = []
   let documents = 0
   let transportReady = false
+  const styles = new Map()
   page.on('pageerror', error => errors.push(error.message))
   page.on('response', (response) => {
     const request = response.request()
@@ -10,7 +13,13 @@ export function trackBrowserState(page) {
     if (request.isNavigationRequest() && request.frame() === page.mainFrame() && response.status() >= 200 && response.status() < 300) {
       documents++
       pending.clear()
+      styles.clear()
       transportReady = false
+    }
+    else if (request.resourceType?.() === 'stylesheet') {
+      // 读取浏览器已请求的响应体，不另发网络请求；CSSOM 会删除浏览器不识别的 rpx 声明。
+      const text = response.text().then(text => ({ text }), error => ({ error }))
+      styles.set(request.url(), { document: documents, status: response.status(), text })
     }
   })
   page.on('request', (request) => {
@@ -31,5 +40,17 @@ export function trackBrowserState(page) {
       catch { /* 业务 WebSocket 不参与构建工具的握手验证。 */ }
     })
   })
-  return { pending, errors, documents: () => documents, transportReady: () => transportReady }
+  return { pending, errors, documents: () => documents, transportReady: () => transportReady,
+    async linkedStyles(urls) {
+      return Promise.all(urls.map(async url => {
+        const response = styles.get(url)
+        assert.ok(response && response.document === documents, `缺少本轮已挂载样式响应：${url}`)
+        assert.ok(response.status >= 200 && response.status < 400, `样式响应失败：${url}`)
+        const result = await response.text
+        if (result.error) throw result.error
+        assert.equal(response.document, documents, '读取样式期间主文档已切换')
+        return result.text
+      }))
+    },
+  }
 }

@@ -51,6 +51,7 @@ export async function observePage(url, session, directory) {
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
         const result = await page.evaluate(readPageSnapshot, { expected: probeClasses(consumer.item, round), round, marker, family: consumer.item.family })
+        result.styles.push(...await state.linkedStyles(result.styleLinks))
         lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
         assert.equal(pending.size, 0, `仍有页面资源请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')

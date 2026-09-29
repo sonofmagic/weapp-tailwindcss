@@ -14,15 +14,23 @@ export async function readPageSnapshot({ expected, round, marker, family }) {
   }
   if (round === 'restore' && document.getElementById('tw-matrix-added')) throw new Error('移除节点仍存在')
   const styles = []
+  const styleLinks = []
   for (const sheet of document.styleSheets) {
     // Web demo 的 weapp 转换预览含 rpx；CSSOM 会丢弃该声明，原始已挂载样式才保留转换证据。
     // 页面效果仍由下方计算样式单独核验，不能用原始文本冒充浏览器支持小程序单位。
-    try { styles.push(sheet.ownerNode?.tagName === 'STYLE' ? sheet.ownerNode.textContent : [...sheet.cssRules].map(rule => rule.cssText).join('\n')) }
+    try {
+      if (sheet.href && new URL(sheet.href, location.href).origin === location.origin) styleLinks.push(sheet.href)
+      else styles.push(sheet.ownerNode?.tagName === 'STYLE' ? sheet.ownerNode.textContent : [...sheet.cssRules].map(rule => rule.cssText).join('\n'))
+    }
     catch { /* 不读取跨域第三方样式。 */ }
   }
-  const topology = [...document.body.querySelectorAll('*')].filter(element => !['SCRIPT', 'STYLE'].includes(element.tagName)).map(element => {
+  // Nuxt 调试工具异步挂在 body 下；保留应用和 teleport，单独记录明确归属的开发工具节点。
+  const toolingSelector = '#vue-tracer-overlay, #nuxt-devtools-container, nuxt-devtools-inspect-panel'
+  const tooling = family === 'nuxt' ? [...document.body.querySelectorAll(toolingSelector)] : []
+  const excluded = element => tooling.some(root => root === element || root.contains(element))
+  const topology = [...document.body.querySelectorAll('*')].filter(element => !['SCRIPT', 'STYLE'].includes(element.tagName) && !excluded(element)).map(element => {
     const css = getComputedStyle(element)
     return { tag: element.tagName, children: element.children.length, height: css.height, width: css.width, color: css.color, background: css.backgroundColor, display: css.display }
   })
-  return { computed, styles, topology, ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
+  return { computed, styles, styleLinks, topology, tooling: tooling.map(element => ({ tag: element.tagName, id: element.id })), ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
 }

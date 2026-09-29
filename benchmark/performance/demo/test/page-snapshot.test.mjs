@@ -16,6 +16,20 @@ it('已挂载样式保留浏览器不认识的小程序单位，计算样式仍�
   expect(snapshot.computed.height.height).toBe('18px')
 })
 
+it('外链样式从当前挂载 sheet 提供 URL，不用丢失 rpx 的 CSSOM 冒充原始响应', async () => {
+  const element = { textContent: 'current', isConnected: true, dataset: { twMatrix: 'initial' }, classList: ['safe'], children: [], tagName: 'DIV' }
+  vi.stubGlobal('document', {
+    getElementById: () => element, body: { querySelectorAll: () => [element] }, readyState: 'complete',
+    styleSheets: [{ href: 'http://localhost/main.css?v=2', ownerNode: { tagName: 'LINK' }, cssRules: [{ cssText: '.safe {}' }] }],
+  })
+  vi.stubGlobal('location', { href: 'http://localhost/', origin: 'http://localhost' })
+  vi.stubGlobal('getComputedStyle', () => ({ height: '18px' }))
+  const snapshot = await readPageSnapshot({ expected: { height: 'h-[64rpx]' }, round: 'initial', marker: 'current' })
+  expect(snapshot.styles).toEqual([])
+  expect(snapshot.styleLinks).toEqual(['http://localhost/main.css?v=2'])
+  expect(snapshot.computed.height.height).toBe('18px')
+})
+
 it('空文档的就绪结果不能复用于随后出现且尚未渲染的本轮节点', async () => {
   let element
   let release

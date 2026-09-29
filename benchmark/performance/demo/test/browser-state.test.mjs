@@ -57,3 +57,20 @@ it.each(['image', 'font'])('页面结构与布局采样必须等待 %s 资源', 
   page.emit('requestfinished', request)
   expect(state.pending.size).toBe(0)
 })
+
+it('只读取当前文档已挂载链接的原始响应，保留 CSSOM 丢弃的单位且拒绝旧响应', async () => {
+  const page = new EventEmitter()
+  const frame = {}
+  page.mainFrame = () => frame
+  const state = trackBrowserState(page)
+  const url = 'http://localhost/main.css?v=1'
+  let complete
+  const request = { resourceType: () => 'stylesheet', url: () => url, isNavigationRequest: () => false }
+  page.emit('response', { request: () => request, status: () => 200, text: () => new Promise(resolve => { complete = resolve }) })
+  const reading = state.linkedStyles([url])
+  complete('.safe{height:64rpx}')
+  expect(await reading).toEqual(['.safe{height:64rpx}'])
+  await expect(state.linkedStyles(['http://localhost/main.css?v=2'])).rejects.toThrow('缺少本轮')
+  page.emit('response', { status: () => 200, request: () => ({ isNavigationRequest: () => true, frame: () => frame }) })
+  await expect(state.linkedStyles([url])).rejects.toThrow('缺少本轮')
+})
