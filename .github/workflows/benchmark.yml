@@ -42,7 +42,7 @@ on:
         default: ''
 
 concurrency:
-  group: benchmark-${{ github.event.pull_request.number || github.ref }}-${{ inputs.only }}
+  group: benchmark-${{ github.run_id }}
   cancel-in-progress: true
 
 permissions:
