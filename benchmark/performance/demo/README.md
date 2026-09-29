@@ -73,3 +73,4 @@ pnpm agents:check
 ```
 
 定向测试不需要全端预检；本地全面验收仍需本轮 `pnpm e2e:preflight prepare`、原生 Chrome 交互证据和 verify。普通云端 CLI 测量不声称完成微信 IDE、HBuilderX 或设备验收。静态输入在每次准备阶段重新生成并归档为 static-inputs.json，计时构建只验证，不更新该输入基线。
+页面验证同时读取计算样式和浏览器已经加载的原始 CSS 响应，不重复请求外链样式。Nuxt 的 `vue-tracer-overlay`、`nuxt-devtools-container` 和 `nuxt-devtools-inspect-panel` 属于开发工具，不进入应用 DOM 等价比较；其出现情况写入浏览器观察证据，应用及 teleport 节点仍完整比较，开发工具的实际运行开销仍在计时内。

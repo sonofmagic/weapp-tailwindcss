@@ -32,6 +32,7 @@ export async function prepareTarget(item, published, directory, logs) {
   const evidence = item.name.startsWith('style-injector-') ? { integration: 'weapp-style-injector' } : await assertPublished(consumers.enabled.project, published)
   evidence.installationLayout = installationLayout(item)
   evidence.profiling = 'disabled'
+  evidence.pageObservation = { version: 2, linkedStyles: 'browser-response-body', topology: item.family === 'nuxt' ? 'application-and-teleports-excluding-recorded-nuxt-devtools' : 'body' }
   evidence.frameworkPatches = Object.fromEntries(await Promise.all(modes.map(async mode => [mode, JSON.parse(await readFile(path.join(consumers[mode].project, '.cost', 'framework-patches.json'), 'utf8'))])))
   const consumer = consumers.enabled
   const originals = new Map(await Promise.all((await sourceFiles(consumer)).map(async file => [file, await readFile(path.join(consumer.project, file), 'utf8')])))
@@ -77,6 +78,7 @@ export async function prepareTarget(item, published, directory, logs) {
   await applySources(consumer, originals)
   // 趋势只比较相同原生输入和基线依赖图；被测发布版的自身变化不放入兼容性身份。
   evidence.comparisonIdentity = {
+    pageObservation: evidence.pageObservation,
     interSaveQuietMs,
     installationLayout: evidence.installationLayout,
     nativeLock: hash(await readFile(path.join(consumers.native.project, 'pnpm-lock.yaml'), 'utf8')),
