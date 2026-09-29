@@ -120,6 +120,7 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "rollup": "4.14.3",
+    "sass": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "typescript": "catalog:typescript59",

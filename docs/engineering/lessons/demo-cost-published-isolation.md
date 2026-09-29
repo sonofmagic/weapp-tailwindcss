@@ -58,6 +58,18 @@ regressions:
 
 ## 验证
 
+全 Linux 诊断的 React/Vue Vite、uni H5、Gulp 在快速基线组出现第二次保存无事件，接入组可能因处理更慢而未触发。Chokidar 3/5 实现均对 change 去重 50 ms，并对 remove 去重 100 ms。真实 Chokidar 5 目录 watcher 使用原子替换复现：收到首次 change 后立即再次保存，只观察到第一次；独立重建 watcher 并在事件后间隔 150 ms，两次内容均收到。测量器在上次结果已验证之后、下一次计时开始之前统一保留 150 ms 间隔，仍逐次验证新 marker 与样式；记录到样本和趋势身份。持久回归连续验证四次真实保存，不通过固定等待认定成功。该实验解释输入事件被吞的机制，完整框架修复状态仍以新提交云端报告为准。
+
+`36590396264` 的定向诊断确认分包 RN 和 uni App 构建通过，仍暴露出几类隔离准备问题。uni 示例直接声明所用 Sass；style-injector uni 同时声明 Sass Embedded 与 Less。消费项目复用根 `.pnpmfile.cjs` 对 UTS `gnu/glibc` 发布元数据的已有纠正，裁剪锁文件时保留钩子校验值；原安装日志明确记录 Linux GNU 包因 `gnu` 与 `glibc` 不匹配而被跳过。
+
+HBuilderX 预设的入口位于 `tailwindcss.v4.cssEntries`，已用发布版 `5.5.11` 实际返回值验证读取路径。weapp-vite 专用捕获入口改为 ESM 桥接，让 Node 加载 CJS 实现；独立 Node 子进程中的配置打包回归修复前失败、修复后通过，避免 Vitest 的运行环境掩盖动态 require 错误。
+
+uView 产物的 `.hello-scss.data-v-*` 被旧比较器仅凭共享作用域类错误归到背景探针。复合选择器检查现在排除缺少必要业务类的规则，保留函数伪类的不确定条件；真实下载 CSS 与回归均验证灰色声明不再污染探针，真正命中的红色背景仍被检测。浏览器读取已挂载 STYLE 元素的原始 CSS，避免 CSSOM 丢弃 `rpx` 让 Web demo 的 weapp 转换预览误报缺样式；Chromium 实验确认原始 `64rpx` 与实际 `18px` 分开保存，不能将转换预览当作小程序设备样式支持。
+
+Taro Vite 与 Webpack 样式注入均按发布适配器的原文生成职责准备静态输入，uni Vite 则使用消费项目的 Vite 与捕获配置执行两次预处理。作用域扫描中的页面配置模块不属于页面源码，禁止插入 CSS 导入。新增定向回归覆盖这些边界。uni 与 style-injector uni 的微信产物均显式执行 `node scripts/ci/demo-matrix/run.mjs <目标> --build-only --update`，随后不更新验证；style-injector uni 的 H5 也执行同样流程，基线内容未变化。普通 uni 第一次构建因本工作树缺少 merge 的 dist 失败，构建 merge/variants 依赖闭包后重新执行成功。
+
+Taro Webpack 的诊断运行 `36587807594` 中，H5 与 Harmony 产物在同一 CSS 文件先声明 `--spacing:4px`，随后由相同具名层、等价 `:root/:host` 选择器的 `0.1rem/0.2rem` 覆盖。静态组只保留后值。比较器现在仅消除可证明被同优先级后续声明覆盖的根主题变量，保留原始探针；条件、作用域、匿名层、不同选择器和优先级都不合并。下载的 20 个真实 CSS 文件在 Chromium 中规范化前后计算尺寸一致，两目标的静态与接入探针也一致。`CI=1 pnpm test:perf:demo` 共 74 项通过；这不替代完整 demo 页面和正式云端采样验收。
+
 Linux 诊断继续暴露独立消费项目边界：分包 Taro RN 漏声明 `metro-react-native-babel-preset`，Metro 报错但外层退出 0，marker 断言正确阻断。补齐与其他 RN demo 相同的直接依赖，锁文件仅增加该 importer 的三行；`pnpm install --frozen-lockfile --offline --ignore-scripts --filter @weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4` 通过。构建当前包依赖闭包后，定向执行 `node scripts/ci/demo-matrix/run.mjs subpackage-taro-webpack-react-tailwindcss-v4:rn --build-only --update` 重新生成 static 基线（无差异），再去掉 `--update` 验证通过。
 
 uni-app 发布包实际声明且安装了 `@weapp-core/escape`。真实 Vite 5.4.21 复现确认：框架默认 `preserveSymlinks: true` 导致 pnpm 嵌套依赖无法从链接路径解析，扁平布局可解析。三组统一用 pnpm `hoisted`，不增加手工依赖或修改发布包；记录布局并纳入趋势兼容身份。去掉 `weapp-tailwindcss` 的基线还需保留页面的标签模板语义：先核验发布版 `weappTwIgnore === String.raw`，再按 AST 将基线命名导入改为内建函数，其他 API 拒绝猜测替换。

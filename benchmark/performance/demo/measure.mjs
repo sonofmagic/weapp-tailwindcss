@@ -13,6 +13,7 @@ import { planStep, writeStep } from './steps.mjs'
 import { hash } from './published.mjs'
 import { canonicalStyleEvidence } from './css-values.mjs'
 import { withSerialWatchers } from './watch-lifetime.mjs'
+import { createSavePacer, interSaveQuietMs } from './save-pacing.mjs'
 
 function equivalent(results) {
   assert.deepEqual(canonicalStyleEvidence(results.static), canonicalStyleEvidence(results.enabled), '静态组与接入组的实际样式或页面结构不等价')
@@ -141,23 +142,28 @@ export async function measureWatch(prepared, rows, options) {
     await withSerialWatchers(modeOrder,
       mode => startWatcher(consumers[mode], steps[mode].get('initial'), options, 'hmr'),
       async (mode, watcher) => {
+        const pacer = createSavePacer()
         for (let round = -options.warmups; round < options.hmrRuns; round++) {
           for (const operation of operations.filter(operation => rows[`hmr.${operation}.${endpoint}`])) {
             const consumer = consumers[mode]
             await watcher.browser?.waitForTransport()
             const reset = operation === 'remove' ? 'add' : operation === 'restore' ? 'config' : 'initial'
             const resetMarker = `cost-${randomUUID()}`
+            await pacer.beforeSave()
             await writeStep(consumer, steps[mode].get(reset), resetMarker)
             await waitFor(() => watcher.check(reset, resetMarker), watcher.session, options.timeout)
+            pacer.settled()
             await watcher.browser?.waitForTransport()
             const marker = `cost-${randomUUID()}`
             const offset = watcher.session.log().length
             const documents = watcher.browser?.documents()
             const save = await planStep(consumer, steps[mode].get(operation), marker)
+            await pacer.beforeSave()
             const began = performance.now()
             await save()
             const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
-            const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
+            const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, interSaveQuietMs, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
+            pacer.settled()
             sample.semanticHash = await keepSemantic(result, mode, `hmr.${operation}.${endpoint}`, round, options)
             sample.modeOrder = modeOrder
             if (round >= 0) rows[`hmr.${operation}.${endpoint}`].samples[mode].push(sample)

@@ -1,9 +1,9 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { expect, it } from 'vitest'
-import { prepareInjectedCss } from '../authored.mjs'
+import { compileAuthored, prepareInjectedCss } from '../authored.mjs'
 import { connectMpxSidecar, mpxSidecarOwner } from '../authored-mpx.mjs'
 
 it('Webpack 样式注入按原文消费，不按文件扩展名额外加载预处理器', async () => {
@@ -15,6 +15,7 @@ it('Webpack 样式注入按原文消费，不按文件扩展名额外加载预�
       await writeFile(sourceAbsolutePath, css)
       const require = () => { throw new Error('原文注入不得加载预处理器') }
       expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: true }, 'weapp-style-injector/webpack/mpx', require)).toBe(css)
+      expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: true }, 'weapp-style-injector/vite/taro', require)).toBe(css)
       expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: false }, 'weapp-style-injector/vite/uni-app', require)).toBe(css)
     }
   }
@@ -26,7 +27,7 @@ it('启用 Vite 预处理时执行真实 Sass，而不是删除预处理语法',
   try {
     const sourceAbsolutePath = path.join(directory, 'entry.scss')
     await writeFile(sourceAbsolutePath, '$space: 2px; .entry { margin: $space; }')
-    expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: true }, 'weapp-style-injector/vite/uni-app', createRequire(import.meta.url))).toContain('margin: 2px')
+    expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: true }, 'weapp-style-injector/vite/uni-app', createRequire(import.meta.url), { root: process.cwd(), css: { transformer: 'postcss', preprocessorMaxWorkers: 0, devSourcemap: false } })).toContain('margin: 2px')
   }
   finally { await rm(directory, { recursive: true, force: true }) }
 })
@@ -46,6 +47,25 @@ it('Mpx sidecar 必须由已发现的页面源码实际导入，已有导入不�
     await expect(connectMpxSidecar(new Map(), directory, css, ['unrelated.mpx'])).rejects.toThrow('源码归属')
   }
   finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('Taro 配置模块即使被作用域扫描返回，也不能插入只能由组件消费的 CSS 导入', async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), 'cost-authored-targets-'))
+  try {
+    const pkg = path.join(project, 'node_modules', 'weapp-style-injector')
+    await mkdir(pkg, { recursive: true })
+    await writeFile(path.join(pkg, 'package.json'), '{"main":"index.cjs"}')
+    const sourceAbsolutePath = path.join(project, 'entry.css')
+    const targets = ['page.tsx', 'page.config.ts'].map(fileName => ({ fileName, sourceAbsolutePath: path.join(project, fileName) }))
+    await writeFile(sourceAbsolutePath, '.entry{color:red}')
+    for (const target of targets) await writeFile(target.sourceAbsolutePath, 'export default {}')
+    await writeFile(path.join(pkg, 'index.cjs'), `exports.resolveTaroSubPackages = () => ${JSON.stringify([{ sourceAbsolutePath, sourceModules: targets }])}; exports.isFileMatchedBySubpackageScope = exports.isSourceFileMatchedBySubpackageScope = () => true;`)
+    const result = await compileAuthored({ project, item: { family: 'taro', target: 'weapp', name: 'style-injector-taro-webpack-react' } }, [{ key: 'options', value: { module: 'weapp-style-injector/webpack/taro', options: {} } }], project, ['page.tsx', 'entry.css'])
+    expect(result.has('page.config.ts')).toBe(false)
+    expect(result.get('page.tsx')).toContain("import './page.tsx.cost.css'")
+    expect(result.get('page.tsx.cost.css')).toBe('.entry{color:red}')
+  }
+  finally { await rm(project, { recursive: true, force: true }) }
 })
 
 it('Mpx 源码归属兼容 POSIX、Windows 盘符与相对路径，不跨根匹配', () => {

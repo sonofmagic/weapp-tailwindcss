@@ -52,6 +52,8 @@ pnpm perf:demo:guard --report .tmp/weekly-report/report.json --budget .tmp/cost-
 - dev 启动截至本轮页面或产物验证完成。Web dev 的模块通常驻留内存，因此报告页面就绪，不伪造落盘时间。小程序报告产物就绪，不能冒充设备页面生效。
 - HMR 每组使用同一个 watcher 连续预热 2 轮、每类采样 20 轮，整批完成后关闭进程再开始下一组；同一 runner 不同时驻留三组 watcher。组次序按分片轮换，`--reverse` 反转整批次序，每个样本记录 `modeOrder`。安装、构建及启动仍逐轮轮换。每次按唯一 marker、实际消费类名和样式验证，不使用固定等待作为成功依据；逐状态读取两组语义证据进行等价比较。浏览器重新导航明确标记 reload；小程序为 native-watch。
 - Web 比较实际页面节点结构及计算尺寸／颜色；静态组和接入组探针与可达样式必须一致。作者 CSS 探针有实际消费方。配置失效指 Tailwind CSS 主题配置变更及恢复；纯样式注入项目没有 Tailwind 配置指标。
+- 每次观察到更新完成后，下一次保存前保留 150 ms 静默间隔，避开 Chokidar 的 50/100 ms change/remove 去重窗口。三组一致，该输入间隔在计时外；每次保存后仍等待本轮真实 marker 和样式。样本与趋势身份记录 `interSaveQuietMs`，不能与旧的连续无间隔保存口径混比。
+- Web demo 的 weapp 目标是转换预览：原始挂载 CSS 保存 rpx 转换证据，浏览器计算样式另存，不能将浏览器忽略 rpx 的布局当作小程序设备效果。
 - RSS 是进程树峰值估计，不包括观察器。POSIX 使用 `ps`，间隔 250 ms；Windows 在计时前初始化常驻系统进程快照采样器，间隔 50 ms。报告环境身份记录采样方法。HMR 记录 watcher 截至本轮的峰值，不能解释成单次操作独占内存。产物观察器轮询间隔 30 ms，页面验证成本包括在 save-to-validated-page 中。
 
 ## 统计与失败

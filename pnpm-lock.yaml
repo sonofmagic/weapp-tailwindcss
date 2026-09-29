@@ -2438,6 +2438,15 @@ importers:
         specifier: ^3.5.41
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
+      less:
+        specifier: ^4.6.6
+        version: 4.6.6
+      sass:
+        specifier: catalog:sass195
+        version: 1.105.0
+      sass-embedded:
+        specifier: catalog:sass195
+        version: 1.104.1
       '@dcloudio/types':
         specifier: ^3.4.8
         version: 3.4.31
@@ -3699,6 +3708,9 @@ importers:
         specifier: ^9.1.9
         version: 9.14.5(vue@3.5.43(typescript@6.0.3))
     devDependencies:
+      sass:
+        specifier: catalog:sass195
+        version: 1.105.0
       '@dcloudio/types':
         specifier: ^3.4.8
         version: 3.4.31
