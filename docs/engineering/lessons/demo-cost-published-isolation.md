@@ -52,6 +52,8 @@ regressions:
 - `6ef92ef` 的 Linux Taro 小程序分片安装全部通过，但静态组 CSS 为安全类名、TSX 仍为原类名。发布版 `5.5.11` 的 `transformJavaScript` 默认不启用 TSX，并将解析错误连同原文返回；准备工具只取 `.code`，丢失了失败信号。现在按文件扩展名或 SFC script 的 `lang` 传入解析选项，并强制检查返回错误。快照仍精确约束类名，不对集合外字符串兜底转换。
 - 同轮支付宝原生组在 Taro `modifyBuildAssets` 中崩溃：平台插件写入新 `.browserslistrc` 时，Vite runner 直接读取不存在的 bundle 成员。最初怀疑空样式，读取实际调用链后排除；生产接入已提供专用兼容资产，但禁用整组插件也将它移除了。两种基线通过 bundler `emitFile` 保留这个普通框架资产，记录 `baselineCompatibility`，不加载生成器、不处理样式。真实 Rollup 生命周期回归验证资产在后续改写之前可用。
 
+- Windows runner 的首个进程测试在 10 秒总期限内超时，后续四项通过。采样器本来允许 60 秒冷准备，测试却把它与 100 ms 的被测超时一起限制为 10 秒；失败日志未区分具体阶段，不能单凭该日志断言目标进程清理挂起。回归改为等待准备结束后，从 `session.startedAt` 独立断言超时及清理不超过 5 秒，外层期限容纳已有的准备上限。被测 timeout、性能预算和正式采样次数均不变。
+
 ## 验证
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
