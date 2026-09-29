@@ -29,7 +29,12 @@ it('Gulp 清空临时目录后，ready 必须晚于深层源码监听绑定且�
     for (let round = 0; round < 8; round++) {
       bound.clear()
       await rm(path.join(root, 'tmp'), { recursive: true, force: true })
-      watcher = await watchRoots(gulp.watch.bind(gulp), [source, temporary], { ignoreInitial: true, useFsEvents: false, usePolling: false })
+      watcher = await watchRoots(gulp.watch.bind(gulp), [source, temporary], {
+        ignored: /[/\\]\\./,
+        ignoreInitial: true,
+        useFsEvents: false,
+        usePolling: false,
+      })
       await once(watcher, 'ready')
       expect(bound.has(file)).toBe(true)
       const changed = once(watcher, 'change')
