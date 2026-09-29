@@ -48,12 +48,25 @@ else {
   assert.ok(phases.length && new Set(phases).size === phases.length && phases.every(value => ['install', 'build', 'hmr'].includes(value)), '未知或重复阶段')
   const settings = { runs: Number(args.runs ?? defaults.runs), hmrRuns: Number(args['hmr-runs'] ?? defaults.hmrRuns), warmups: Number(args.warmups ?? defaults.warmups) }
   assert.ok(Object.values(settings).every(value => Number.isInteger(value) && value >= 0) && settings.runs > 0 && settings.hmrRuns > 0, '无效采样次数')
-  const manifest = args.manifest ? await readJson(args.manifest) : { ...await createManifest({ only: args.only, phases, version: args.version, settings }), diagnostic: Boolean(args.diagnostic) }
-  if (!manifest.diagnostic) validateManifest(manifest)
+  let manifest
+  try {
+    manifest = args.manifest ? await readJson(args.manifest) : { ...await createManifest({ only: args.only, phases, version: args.version, settings }), diagnostic: Boolean(args.diagnostic) }
+  }
+  catch (error) {
+    if (!args.merge) throw error
+    manifest = await createManifest({ only: args.only, phases, version: args.version, settings, failure: new Error(`无法读取本轮计划：${error.message}`) })
+  }
+  if (!manifest.diagnostic && !manifest.planFailed) validateManifest(manifest)
   await writeFile(path.join(directory, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
-  if (args.plan) {
+  if (manifest.planFailed) {
+    const report = await writeReport(await mergeReports(manifest, []), directory)
+    if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, renderSummary(report))
+    console.error(manifest.collectionErrors.join('\n'))
+    process.exitCode = 1
+  }
+  else if (args.plan) {
     const matrix = { include: manifest.jobs.map(({ rows, ...job }) => job) }
-    if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify(matrix)}\n`)
+    if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `ready=true\nmatrix=${JSON.stringify(matrix)}\n`)
     console.log(JSON.stringify(matrix))
   }
   else {

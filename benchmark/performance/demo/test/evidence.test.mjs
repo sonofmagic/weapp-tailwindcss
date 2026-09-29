@@ -4,7 +4,7 @@ import path from 'node:path'
 import { afterEach, expect, it } from 'vitest'
 import { stringify } from 'yaml'
 import { assertRegistryGraph, pruneLock } from '../lock.mjs'
-import { planJobs } from '../manifest.mjs'
+import { createManifest, planJobs } from '../manifest.mjs'
 import { treeRss } from '../memory.mjs'
 import { defaults, modes, rowKey, schema, validateReport } from '../model.mjs'
 import { assertPublished, parseLock } from '../published.mjs'
@@ -80,6 +80,18 @@ it('安装按 demo、系统和 Node 去重，并覆盖全 CLI 清单', () => {
   const installs = jobs.flatMap(job => job.rows.filter(row => row.metric === 'install.cold').map(rowKey))
   expect(new Set(installs).size).toBe(installs.length)
   expect(installs.length).toBeLessThan(builds.length)
+})
+it('计划失败仍保留完整预期清单和下载报告，不解析替代版本', async () => {
+  const manifest = await createManifest({ only: 'gulp-tailwindcss-v4:weapp', failure: new Error('npm registry timeout') })
+  expect(manifest.planFailed).toBe(true)
+  expect(manifest.package.version).toBeNull()
+  expect(manifest.jobs).toEqual(planJobs('gulp-tailwindcss-v4:weapp'))
+  const report = await mergeReports(manifest, [])
+  expect(report.rows).toHaveLength(manifest.expected.length)
+  expect(report.rows.every(row => row.status === 'missing')).toBe(true)
+  expect(renderMarkdown(report)).toContain('npm registry timeout')
+  expect(renderHtml(report)).toContain('npm registry timeout')
+  expect(validateReport(report).length).toBeGreaterThan(0)
 })
 it('缺少样本、重复、版本错误、语义失败都会拒绝完整报告', () => {
   expect(validateReport(example())).toEqual([])

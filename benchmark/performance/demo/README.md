@@ -10,6 +10,8 @@
 
 plan job 只解析一次 npm latest。测量分片下载该 manifest，校验源码 SHA、固定发布版、操作系统、Node 主版本。聚合使用 plan 的预期清单，拒绝重复、缺失、错误版本或采样不足；失败时仍上传已经取得的原始数据。JSON、Markdown、HTML 和分片日志保留 90 天。报告留在 Actions，不发 Issue 或评论。
 
+npm 解析失败或计划 artifact 缺失时，聚合仍按清单生成失败报告，版本和指标显示 N/A；不会重新解析 latest 或改用仓库版本。runner 无法启动、checkout 或测量工具安装失败等基础设施故障仍依赖 Actions 自身日志。
+
 合并前可以通过已在默认分支登记的 Benchmark 工作流，以当前分支手动设置 `weekly_demo_cost=true` 调用新工作流。原有 PR 性能检查和微基准不受影响。
 
 ## 命令

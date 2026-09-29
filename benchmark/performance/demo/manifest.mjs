@@ -22,14 +22,23 @@ export function planJobs(only = '', phases = ['install', 'build', 'hmr']) {
   })
 }
 
-export async function createManifest({ only = '', phases = ['install', 'build', 'hmr'], version = 'latest', settings = defaults } = {}) {
+export async function createManifest({ only = '', phases = ['install', 'build', 'hmr'], version = 'latest', settings = defaults, failure } = {}) {
   const jobs = planJobs(only, phases)
-  return {
+  const manifest = {
     schema, runId: process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_ID}.${process.env.GITHUB_RUN_ATTEMPT}` : randomUUID(),
     sha: (await run('git', ['rev-parse', 'HEAD'])).stdout.trim(),
-    package: await resolvePublished(version), startedAt: new Date().toISOString(), settings,
+    package: { name: 'weapp-tailwindcss', version: null, integrity: null, requested: version }, startedAt: new Date().toISOString(), settings,
     phases, only, boundaries: boundaries(), jobs, expected: jobs.flatMap(job => job.rows.map(rowKey)),
   }
+  try {
+    if (failure) throw failure
+    manifest.package = await resolvePublished(version)
+  }
+  catch (error) {
+    manifest.planFailed = true
+    manifest.collectionErrors = [`计划未完成：${error.message}`]
+  }
+  return manifest
 }
 
 export function validateManifest(manifest) {
