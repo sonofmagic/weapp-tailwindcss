@@ -58,6 +58,12 @@ regressions:
 
 ## 验证
 
+Linux 诊断继续暴露独立消费项目边界：分包 Taro RN 漏声明 `metro-react-native-babel-preset`，Metro 报错但外层退出 0，marker 断言正确阻断。补齐与其他 RN demo 相同的直接依赖，锁文件仅增加该 importer 的三行；`pnpm install --frozen-lockfile --offline --ignore-scripts --filter @weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4` 通过。构建当前包依赖闭包后，定向执行 `node scripts/ci/demo-matrix/run.mjs subpackage-taro-webpack-react-tailwindcss-v4:rn --build-only --update` 重新生成 static 基线（无差异），再去掉 `--update` 验证通过。
+
+uni-app 发布包实际声明且安装了 `@weapp-core/escape`。真实 Vite 5.4.21 复现确认：框架默认 `preserveSymlinks: true` 导致 pnpm 嵌套依赖无法从链接路径解析，扁平布局可解析。三组统一用 pnpm `hoisted`，不增加手工依赖或修改发布包；记录布局并纳入趋势兼容身份。去掉 `weapp-tailwindcss` 的基线还需保留页面的标签模板语义：先核验发布版 `weappTwIgnore === String.raw`，再按 AST 将基线命名导入改为内建函数，其他 API 拒绝猜测替换。
+
+HBuilderX CLI 模板的 ESM 配置打包会把捕获器中的 CJS `require('node:module')` 转成不可用的动态调用。捕获器根据原导入类型生成 ESM 或 CJS 入口，ESM 用显式 `createRequire` 加载消费目录内的支持代码。真实 esbuild 配置打包回归覆盖捕获、记录和移除生成包后的禁用组，不靠 mock 宣称模块可加载。额外磁盘诊断 `debug-uni-app-x` 在三组准备阶段统一关闭并移除，其非正常用户开销不进入性能数字。App 作者探针按已有任意值探针使用 px，避免错误期待框架保留 rpx。定向工具测试共 72 项通过，云端仍须重新生成各状态静态输入验证这些调整。
+
 Linux 缩减采样运行 `36580080675` 的 React H5 仍出现组件布局差异。检查发现旧观察器分两次 evaluate 等待组件并采样；首次调用可能看到空文档，第二次看到刚创建的节点。现在先验证本轮 marker，再在同一页面调用中等待组件，确认原节点未脱离且 marker 未变后同步读取布局。持久回归覆盖空文档到延迟渲染、节点替换和 marker 变化；Chromium 强制该时序，旧顺序读到 `inline`，修复后读取 `block`。这是采样器的定向验证，仍需真实 H5 云端对照确认。
 
 同一诊断中，issue-951 的 `mainCssChunkMatcher: () => true` 被捕获器一概当作闭包拒绝。仅增加语法可证明的无参数布尔常量回调编码，不执行回调猜测返回值，不使用动态求值，不支持读取参数、外部变量或副作用的函数；往返与拒绝反例均有测试。`CI=1 pnpm test:perf:demo` 共 64 项通过。构建对照失败时，在计时之外保存三组 CSS／HTML 或 RN bundle，补充原始产物证据；已有 `--spacing` 与 RN marker 失败仍保持失败，等待证据定位。

@@ -4,6 +4,7 @@ import { expect, it } from 'vitest'
 import { repo } from '../../../../scripts/ci/demo-matrix/catalog.mjs'
 import { selectCases } from '../model.mjs'
 import { consumerManifest, withoutIntegration } from '../published.mjs'
+import { plainRuntimeMarkers } from '../runtime-marker.mjs'
 
 it('Mpx 样式注入 demo 的三组消费项目声明 Babel 实际生成的 runtime 依赖', async () => {
   const item = selectCases('style-injector-mpx:wx')[0]
@@ -12,4 +13,25 @@ it('Mpx 样式注入 demo 的三组消费项目声明 Babel 实际生成的 runt
   expect(config.plugins).toContain('@babel/plugin-transform-runtime')
   const { manifest } = await consumerManifest(item, { version: '5.5.11' })
   for (const consumer of [manifest, withoutIntegration(manifest, { authored: true })]) expect(consumer.dependencies['@babel/runtime']).toMatch(/^7\./)
+})
+
+it('所有 Taro RN 消费项目独立声明 Babel 的原生 preset，三组版本一致', async () => {
+  for (const item of selectCases().filter(item => item.target === 'rn')) {
+    const { manifest } = await consumerManifest(item, { version: '5.5.11' })
+    expect(manifest.devDependencies['metro-react-native-babel-preset'], item.id).toMatch(/^0\.77\./)
+    expect(withoutIntegration(manifest).devDependencies['metro-react-native-babel-preset']).toBe(manifest.devDependencies['metro-react-native-babel-preset'])
+  }
+})
+
+it('普通源码保留运行时模板标记的原始字符串语义和导入别名，不依赖已移除的包', async () => {
+  const source = 'import { weappTwIgnore as ignore } from "weapp-tailwindcss/escape"; export const value = ignore`h-[1px]\\n`;'
+  const original = new Map([['page.ts', source], ['page.vue', `<template><view/></template><script setup>${source}</script><style>.x{color:red}</style>`]])
+  const result = await plainRuntimeMarkers(original)
+  expect(result.get('page.ts')).toContain('const ignore = String.raw')
+  expect(result.get('page.ts')).not.toContain('weapp-tailwindcss/escape')
+  const actual = await import(`data:text/javascript,${encodeURIComponent(result.get('page.ts'))}`)
+  expect(actual.value).toBe('h-[1px]\\n')
+  expect(result.get('page.vue')).toContain('<style>.x{color:red}</style>')
+  expect(original.get('page.ts')).toBe(source)
+  await expect(plainRuntimeMarkers(new Map([['page.ts', 'import { escape } from "weapp-tailwindcss/escape"']]))).rejects.toThrow('仅支持')
 })

@@ -4,9 +4,10 @@ import { cp, mkdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/p
 import path from 'node:path'
 import { stringify } from 'yaml'
 import { repo } from '../../../scripts/ci/demo-matrix/catalog.mjs'
-import { consumerManifest, hash, inside, parseLock, withoutIntegration, writeConsumer } from './published.mjs'
+import { consumerManifest, hash, inside, installationLayout, parseLock, withoutIntegration, writeConsumer } from './published.mjs'
 import { run } from './process.mjs'
 import { assertRegistryGraph, pruneLock } from './lock.mjs'
+import { disableProfiling } from './profiling.mjs'
 
 export async function createConsumer(item, published, directory, mode) {
   await mkdir(directory, { recursive: true })
@@ -24,10 +25,11 @@ export async function createConsumer(item, published, directory, mode) {
     await cp(path.resolve(repo, entry), target)
   }
   const inputs = await consumerManifest(item, published)
+  await disableProfiling(root)
   const manifest = mode === 'enabled' || mode === 'prepare' ? inputs.manifest : withoutIntegration(inputs.manifest, { authored: item.name.startsWith('style-injector-') })
   // 仓库辅助计时不属于发布版默认体验，三组使用相同的关闭状态。
   for (const [key, value] of Object.entries(manifest.scripts ?? {})) manifest.scripts[key] = value.replaceAll('WEAPP_TW_HMR_TIMING=1', 'WEAPP_TW_HMR_TIMING=0')
-  await writeConsumer(project, manifest, inputs.workspace, inputs.sourceLock, inputs.importer)
+  await writeConsumer(project, manifest, { ...inputs.workspace, nodeLinker: installationLayout(item) })
   await writeFile(path.join(project, '.npmrc'), 'strict-peer-dependencies=false\nauto-install-peers=true\n')
   await symlink(path.join(project, 'node_modules'), path.join(root, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
   return { root, project, mode, item }
