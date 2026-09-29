@@ -53,6 +53,7 @@ it('Issue #1214 同一 uni-app 微信 watch 进程不复用旧主题计算或已
   }
   try {
     await verify('initial', startedAt, '32rpx', 'initial')
+    expect(session.logs()).not.toContain('[rpx-theme]')
 
     const themeUpdatedAt = Date.now()
     await writeWatchedFilePreserveEol(project.themeFile, themeSource({ spacing: '2rpx' }), await readFile(project.themeFile, 'utf8'))
@@ -65,6 +66,32 @@ it('Issue #1214 同一 uni-app 微信 watch 进程不复用旧主题计算或已
     const addedAt = Date.now()
     await writeWatchedFilePreserveEol(project.pageFile, pageSource('w-32 p-4', 'restored'), await readFile(project.pageFile, 'utf8'))
     await verify('restored', addedAt, '64rpx', 'restored')
+    expect(session.logs()).not.toContain('[rpx-theme]')
+
+    for (const base of ['3rpx', '4rpx']) {
+      const changedAt = Date.now()
+      await writeWatchedFilePreserveEol(project.themeFile, themeSource({
+        spacing: '2rpx',
+        overrides: `.scope { --spacing: ${base}; }`,
+      }), await readFile(project.themeFile, 'utf8'))
+      await waitFor(async () => {
+        if (session.lastCompileSuccessAt() < changedAt) {
+          return false
+        }
+        const { css, wxml } = await readOutput(project)
+        const declarations = readProbeDeclarations(css)
+        if (!wxml.includes('issue-1214-restored') || declarations['.w-32']?.at(-1) !== 'calc(var(--spacing)*32)') {
+          return false
+        }
+        snapshots[`override-${base}`] = declarations
+        return (session.logs().match(/\[rpx-theme\]/g) ?? []).length === 1
+      }, { timeoutMs: 60_000, pollMs: 100, message: '新增覆盖后应保留 calc 并仅提示一次', onTick: session.ensureRunning })
+      expect(session.child.pid).toBe(pid)
+    }
+    const clearedAt = Date.now()
+    await writeWatchedFilePreserveEol(project.themeFile, themeSource({ spacing: '2rpx' }), await readFile(project.themeFile, 'utf8'))
+    await verify('override-cleared', clearedAt, '64rpx', 'restored')
+    expect(session.logs().match(/\[rpx-theme\]/g)).toHaveLength(1)
     await expect(`${JSON.stringify(snapshots, null, 2)}\n`).toMatchFileSnapshot('__snapshots__/issue-1214/watch.json')
   }
   finally {

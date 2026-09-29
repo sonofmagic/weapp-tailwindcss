@@ -89,7 +89,6 @@ function makeCoreCase(kind, size) {
 }
 
 function makeExplicitCandidateCase(size) {
-  const context = getSharedContext()
   const input = coreWxml(size)
   const runtimeSet = new Set(Array.from({ length: size }, (_, index) => `u-${index}`))
   return {
@@ -99,6 +98,7 @@ function makeExplicitCandidateCase(size) {
     size,
     fresh: false,
     async create() {
+      const context = getSharedContext()
       return () => context.transformWxml(input, { runtimeSet })
     },
   }
