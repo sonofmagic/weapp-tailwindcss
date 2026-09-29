@@ -7,8 +7,11 @@ import { parse, parseAllDocuments, stringify } from 'yaml'
 import { repo } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { run } from './process.mjs'
 import { assertRegistryGraph } from './lock.mjs'
+import { diagnosticPackages } from './profiling.mjs'
 
 const fields = ['dependencies', 'devDependencies', 'optionalDependencies']
+// uni-app 保留符号链接；采用 npm 兼容的扁平安装布局，避免传递依赖从符号链接路径解析失败。
+export const installationLayout = item => item.family === 'uni' ? 'hoisted' : 'isolated'
 export const hash = value => createHash('sha256').update(value).digest('hex')
 export function parseLock(text) {
   const documents = parseAllDocuments(text)
@@ -41,6 +44,7 @@ export async function consumerManifest(item, published) {
   for (const field of fields) {
     manifest[field] = {}
     for (const [name, spec] of Object.entries(original[field] ?? {})) {
+      if (diagnosticPackages.includes(name)) continue
       const resolved = importer[field]?.[name]?.version
       if (name === 'weapp-tailwindcss') manifest[field][name] = published.version
       else if (spec.startsWith('workspace:')) {
@@ -69,7 +73,7 @@ export function withoutIntegration(manifest, { authored = false } = {}) {
 export async function writeConsumer(root, manifest, workspace) {
   await writeFile(path.join(root, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
   // 安装策略来自仓库，路径补丁只作用于隔离消费目录中的独立副本。
-  await writeFile(path.join(root, 'pnpm-workspace.yaml'), stringify({ packages: ['.'], allowBuilds: workspace.allowBuilds, minimumReleaseAge: 0, autoInstallPeers: true }))
+  await writeFile(path.join(root, 'pnpm-workspace.yaml'), stringify({ packages: ['.'], nodeLinker: workspace.nodeLinker ?? 'isolated', allowBuilds: workspace.allowBuilds, minimumReleaseAge: 0, autoInstallPeers: true }))
   // 不能带入 workspace 的 peer 快照：其中的可选 peer 会把无关框架安装到消费项目。
   // 共有直接依赖已固定确切版本；独立解析后校验共有构建工具并保存完整锁文件。
 }

@@ -36,3 +36,10 @@ it('CSS 与配置操作必须有实际消费类名及本轮可达属性', () => 
   expect(inspectExtraStyles([css.replace('#123456', '#654321')], consumed, item, 'config').theme).toBe('#654321')
   expect(() => inspectExtraStyles([css.replace('#123456', '#654321')], consumed, item, 'restore')).toThrow('恢复')
 })
+
+it('App WebView 的作者探针与既有任意值探针一致使用 px，仍拒绝旧轮次和错误单位', () => {
+  const app = { ...item, target: 'app' }
+  expect(inspectExtraStyles([css.replace('41rpx', '41px')], consumed, app, 'initial').width).toBe('41px')
+  expect(() => inspectExtraStyles([css], consumed, app, 'initial')).toThrow('本轮作者样式')
+  expect(() => inspectExtraStyles([css.replace('41rpx', '41px')], consumed, app, 'css')).toThrow('本轮作者样式')
+})

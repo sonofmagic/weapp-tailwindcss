@@ -89,6 +89,7 @@
     "@types/node": "catalog:typesNode2410",
     "@types/react": "catalog:react18",
     "babel-preset-taro": "catalog:taro4",
+    "metro-react-native-babel-preset": "catalog:metroReactNativeBabelPreset077",
     "postcss": "catalog:postcss85",
     "react-refresh": "catalog:reactRefresh018",
     "tailwindcss": "catalog:tailwindcss4",

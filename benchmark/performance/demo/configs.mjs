@@ -25,7 +25,7 @@ export async function rewriteConfiguration(source, filename, replace, { weappVit
   walk(ast.program, (node) => {
     const argument = node.type === 'ImportDeclaration' ? node.source
       : node.type === 'CallExpression' && node.callee.name === 'require' ? node.arguments[0] : undefined
-    if (argument?.type === 'StringLiteral' && specifierRE.test(argument.value)) edits.push({ start: argument.start, end: argument.end, text: JSON.stringify(replace(argument.value)) })
+    if (argument?.type === 'StringLiteral' && specifierRE.test(argument.value)) edits.push({ start: argument.start, end: argument.end, text: JSON.stringify(replace(argument.value, node.type === 'ImportDeclaration' ? 'esm' : 'cjs')) })
     if (weappVite && node.type === 'ObjectProperty' && node.key.name === 'tailwindcss' && node.value.type === 'ObjectExpression') {
       edits.push({ start: node.value.start, end: node.value.end, text: capture ? `__costCapture(${source.slice(node.value.start, node.value.end)})` : 'false' })
     }
@@ -46,25 +46,29 @@ export async function configure(consumer, mode, records = [], capturedRoot = con
     assert.ok(inside(consumer.root, file))
     const source = await readFile(file, 'utf8')
     originalFiles.set(file, source)
-    const transformed = await rewriteConfiguration(source, file, (specifier) => {
-      let wrapper = wrappers.get(specifier)
-      if (!wrapper) { wrapper = path.join(support, `module-${wrappers.size}.cjs`); wrappers.set(specifier, wrapper) }
+    const transformed = await rewriteConfiguration(source, file, (specifier, format) => {
+      const key = `${format}:${specifier}`
+      let wrapper = wrappers.get(key)?.file
+      if (!wrapper) { wrapper = path.join(support, `module-${wrappers.size}.${format === 'esm' ? 'mjs' : 'cjs'}`); wrappers.set(key, { specifier, format, file: wrapper }) }
       // 配置 module specifier 是逻辑路径；必须先完成文件系统相对路径计算。
       return relativeSpecifier(file, wrapper)
     }, { weappVite: consumer.item.family === 'weapp-vite' && path.basename(file) === 'vite.config.ts', capture: mode === 'capture' })
     await writeFile(file, transformed)
   }
-  for (const [specifier, file] of wrappers) {
+  for (const { specifier, format, file } of wrappers.values()) {
     let names
     if (specifier.endsWith('/framework')) names = ['resolveTaroPlatform', 'resolveUniPlatform', 'resolveMpxPlatform']
     else if (specifier.endsWith('/presets')) names = ['uniAppX', 'hbuilderx']
     else if (specifier.endsWith('/rspack')) names = ['patchRspackConfig']
     else if (specifier.endsWith('/gulp')) names = ['createPlugins']
     else names = [specifier.startsWith('weapp-style-injector') ? 'StyleInjector' : 'WeappTailwindcss']
-    const prefix = mode === 'capture' ? `const original = require('node:module').createRequire(${JSON.stringify(path.join(consumer.project, 'package.json'))})(${JSON.stringify(specifier)}); const {capture} = require('./capture.cjs');\n`
-      : `const {disabled} = require('./capture.cjs'); const records = ${JSON.stringify(records)}; const from = ${JSON.stringify(capturedRoot)}; const root = require('node:path').dirname(__dirname);\n`
-    await writeFile(file, prefix + names.map(name => mode === 'capture' ? `exports.${name} = capture(${JSON.stringify(specifier)}, ${JSON.stringify(name)}, original.${name});`
-      : `exports.${name} = ${name.startsWith('resolve') || ['hbuilderx', 'uniAppX'].includes(name) ? `(...args) => disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})(...args)` : `disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})`};`).join('\n'))
+    // ESM 配置会被 Vite 打包；通过真实 createRequire 加载 CJS 支持模块，避免生成无法执行的动态 require。
+    const loader = format === 'esm' ? `import { createRequire } from 'node:module'; const load = createRequire(${JSON.stringify(path.join(consumer.project, 'package.json'))});\n` : 'const load = require;\n'
+    const prefix = mode === 'capture' ? `const original = load(${JSON.stringify(specifier)}); const {capture} = load(${JSON.stringify(path.join(support, 'capture.cjs'))});\n`
+      : `const {disabled} = load(${JSON.stringify(path.join(support, 'capture.cjs'))}); const records = ${JSON.stringify(records)}; const from = ${JSON.stringify(capturedRoot)}; const root = ${JSON.stringify(consumer.project)};\n`
+    const declaration = name => format === 'esm' ? `export const ${name}` : `exports.${name}`
+    await writeFile(file, loader + prefix + names.map(name => mode === 'capture' ? `${declaration(name)} = capture(${JSON.stringify(specifier)}, ${JSON.stringify(name)}, original.${name});`
+      : `${declaration(name)} = ${name.startsWith('resolve') || ['hbuilderx', 'uniAppX'].includes(name) ? `(...args) => disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})(...args)` : `disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})`};`).join('\n'))
   }
   return async () => { for (const [file, source] of originalFiles) await writeFile(file, source) }
 }

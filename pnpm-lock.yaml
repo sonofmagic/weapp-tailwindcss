@@ -2622,6 +2622,9 @@ importers:
       babel-preset-taro:
         specifier: catalog:taro4
         version: 4.2.1(@babel/core@7.29.7(supports-color@10.2.2))(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@babel/preset-react@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@react-native/babel-preset@0.81.5(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.1(ca57b716f5ba59f42482be490eb12f21))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-refresh@0.18.0)(supports-color@10.2.2)
+      metro-react-native-babel-preset:
+        specifier: catalog:metroReactNativeBabelPreset077
+        version: 0.77.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       postcss:
         specifier: catalog:postcss85
         version: 8.5.28

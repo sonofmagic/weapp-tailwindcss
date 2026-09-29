@@ -65,7 +65,7 @@ export async function measureBuild(prepared, rows, options) {
         const output = path.join(consumer.project, commands(consumer.item).output)
         const destination = path.join(options.logs, 'failed-output', metric, mode)
         try {
-          const patterns = consumer.item.target === 'rn' ? ['**/*.js', '**/*.bundle'] : ['**/*.css', '**/*.html']
+          const patterns = consumer.item.target === 'rn' ? ['**/*.js', '**/*.bundle'] : ['**/*.{css,wxss,acss,ttss,qss,jxss,ddss}', '**/*.html']
           for (const file of await fg(patterns, { cwd: output, absolute: true })) {
             const target = path.join(destination, path.relative(output, file))
             await mkdir(path.dirname(target), { recursive: true })

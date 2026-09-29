@@ -22,7 +22,7 @@ export function inspectExtraStyles(styles, consumed, item, operation) {
       if (names.includes('bg-cost-config')) rule.walkDecls('background-color', decl => { background = decl.value.replace(/\s+/g, '') })
     })
   }
-  assert.equal(width, `${operation === 'css' ? 43 : 41}rpx`, '本轮作者样式未进入可达样式图')
+  assert.equal(width, `${operation === 'css' ? 43 : 41}${item.target === 'app' ? 'px' : 'rpx'}`, '本轮作者样式未进入可达样式图')
   if (!authored) {
     const expected = operation === 'config' ? ['#654321', 'rgb(101,67,33)'] : ['#123456', 'rgb(18,52,86)']
     assert.ok(expected.includes(background) || background === 'var(--color-cost-config)' && expected.includes(theme), '本轮配置失效／恢复样式未生效')

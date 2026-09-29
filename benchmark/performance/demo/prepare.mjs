@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { commands, coverage } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { insertProbe } from '../../../scripts/ci/demo-matrix/probe.mjs'
 import { configure } from './configs.mjs'
 import { cleanCache, compareCommonLocks, createConsumer, install, keepLockEvidence, prepareLock, seedPreparationStore } from './fixtures.mjs'
 import { modes } from './model.mjs'
 import { compileStatic, sourceFiles, stripGeneration, applySources } from './precompile.mjs'
-import { assertPublished, hash } from './published.mjs'
+import { assertPublished, hash, installationLayout } from './published.mjs'
 import { run } from './process.mjs'
 import { prepareSteps } from './steps.mjs'
 import { frameworkCompatibility } from './capture.cjs'
+import { plainRuntimeMarkers } from './runtime-marker.mjs'
 
 export async function prepareTarget(item, published, directory, logs) {
   await mkdir(logs, { recursive: true })
@@ -27,8 +29,17 @@ export async function prepareTarget(item, published, directory, logs) {
   compareCommonLocks(locks.native, locks.static)
   compareCommonLocks(locks.native, locks.enabled)
   const evidence = item.name.startsWith('style-injector-') ? { integration: 'weapp-style-injector' } : await assertPublished(consumers.enabled.project, published)
+  evidence.installationLayout = installationLayout(item)
+  evidence.profiling = 'disabled'
   const consumer = consumers.enabled
   const originals = new Map(await Promise.all((await sourceFiles(consumer)).map(async file => [file, await readFile(path.join(consumer.project, file), 'utf8')])))
+  const ordinary = await plainRuntimeMarkers(originals)
+  if ([...ordinary].some(([file, source]) => source !== originals.get(file))) {
+    // 基线移除包导入前先核验本轮发布实现，不能把未来不同语义的 helper 偷换为内建函数。
+    const require = createRequire(path.join(consumer.project, 'package.json'))
+    assert.equal(require('weapp-tailwindcss/escape').weappTwIgnore, String.raw)
+    evidence.runtimeMarker = 'weappTwIgnore === String.raw'
+  }
   const captureFile = path.join(logs, 'options.jsonl')
   const restore = await configure(consumer, 'capture')
   const command = commands(item)
@@ -53,18 +64,19 @@ export async function prepareTarget(item, published, directory, logs) {
       await applySources(consumer, change)
       steps.enabled.set(operation, new Map([...originals, ...change]))
       const compiled = await compileStatic(consumer, records, consumer.project)
-      steps.static.set(operation, new Map([...originals, ...change, ...compiled]))
+      steps.static.set(operation, await plainRuntimeMarkers(new Map([...originals, ...change, ...compiled])))
       const native = new Map([...originals, ...change])
       for (const [file, text] of native) {
         if (/\.(?:css|scss)$/.test(file)) native.set(file, stripGeneration(text))
         else if (/\.(?:vue|uvue|mpx)$/.test(file)) native.set(file, text.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/g, (_, open, css, close) => open + stripGeneration(css) + close))
       }
-      steps.native.set(operation, native)
+      steps.native.set(operation, await plainRuntimeMarkers(native))
     }
   }
   await applySources(consumer, originals)
   // 趋势只比较相同原生输入和基线依赖图；被测发布版的自身变化不放入兼容性身份。
   evidence.comparisonIdentity = {
+    installationLayout: evidence.installationLayout,
     nativeLock: hash(await readFile(path.join(consumers.native.project, 'pnpm-lock.yaml'), 'utf8')),
     staticLock: hash(await readFile(path.join(consumers.static.project, 'pnpm-lock.yaml'), 'utf8')),
     scenario: hash(JSON.stringify([...steps.native].map(([operation, sources]) => [operation, [...sources].sort(([a], [b]) => a.localeCompare(b))]))),
