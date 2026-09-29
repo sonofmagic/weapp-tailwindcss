@@ -3,6 +3,7 @@
 </template>
 
 <style lang="scss" scoped>
+	@reference "../../../../main.css";
 	$up-checkbox-icon-wrap-margin-right: 6px !default;
 
 	.issue-1095-up-checkbox {
