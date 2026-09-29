@@ -147,11 +147,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve the checked-out PR baseline
+        if: github.event_name == 'pull_request'
+        id: pr-baseline
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node benchmark/version-compare/scripts/pr-baseline.mjs
+
       - name: Run pull request performance guard
         if: github.event_name == 'pull_request'
         run: >
           pnpm perf:guard --
-          --baseline-ref "${{ github.event.pull_request.base.sha }}"
+          --baseline-ref "${{ steps.pr-baseline.outputs.baseline }}"
           --build-runs "$BENCH_BUILD_RUNS"
           --hmr-runs "$BENCH_HMR_RUNS"
           --timeout 180000

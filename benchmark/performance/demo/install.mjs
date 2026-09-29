@@ -3,6 +3,7 @@ import path from 'node:path'
 import { install } from './fixtures.mjs'
 import { modes, order } from './model.mjs'
 import { parseLock } from './published.mjs'
+import { isolateInstallConsumers } from './install-consumers.mjs'
 
 export function downloadFootprint(log) {
   const sizes = new Map()
@@ -31,7 +32,8 @@ export async function diskBytes(directory, seen = new Set()) {
   return total
 }
 
-export async function measureInstall(consumers, rows, options) {
+export async function measureInstall(buildConsumers, rows, options) {
+  const consumers = await isolateInstallConsumers(buildConsumers, path.join(options.directory, 'install-consumers'))
   const manifests = Object.fromEntries(await Promise.all(modes.map(async mode => [mode, await readFile(path.join(consumers[mode].project, 'package.json'), 'utf8')])))
   const locks = Object.fromEntries(await Promise.all(modes.map(async mode => [mode, await readFile(path.join(consumers[mode].project, 'pnpm-lock.yaml'), 'utf8')])))
   try {
@@ -74,7 +76,6 @@ export async function measureInstall(consumers, rows, options) {
     for (const mode of modes) {
       await writeFile(path.join(consumers[mode].project, 'package.json'), manifests[mode])
       await writeFile(path.join(consumers[mode].project, 'pnpm-lock.yaml'), locks[mode])
-      await install(consumers[mode], path.join(options.directory, `${mode}-store`), path.join(options.logs, `${mode}-restore-install.log`), true)
     }
   }
   for (const row of Object.values(rows)) { row.status = 'passed'; row.semanticVerified = true }

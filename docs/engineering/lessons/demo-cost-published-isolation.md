@@ -11,6 +11,9 @@ regressions:
   - benchmark/performance/demo/test/css-values.test.mjs
   - benchmark/performance/demo/test/authored.test.mjs
   - benchmark/performance/demo/test/runtime-dependency.test.mjs
+  - benchmark/performance/demo/test/install-consumers.test.mjs
+  - benchmark/performance/demo/test/browser-state.test.mjs
+  - benchmark/version-compare/test/pr-baseline.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -35,12 +38,17 @@ regressions:
 - `style-injector-mpx` 的 Babel 配置使用默认 transform-runtime，需要直接声明 `@babel/runtime`。原仓库从其他项目间接获得该包，独立安装暴露了缺失；三组共用这个框架依赖，不计为接入专属成本。
 - Webpack 样式注入器读取原始内容并输出资产，没有按 `.scss`／`.less` 扩展名运行预处理器。静态准备必须遵守实际适配器行为，不能凭扩展名增加 Sass/Less 依赖；Vite 启用预处理的分支仍执行真实编译。
 - Mpx 作用域只给出样式 sidecar 时，静态组必须在已发现且归属唯一的页面组件中显式导入它。单独修改没有消费方的 CSS 文件不能代替原插件的产物注入；连接源码之后重新生成每个操作状态并验证连续更新。
+- Taro `plugin-html@4.2.1` 的 `patchMappingElements` 在构建中改写已安装的 `runtime.js`，通过硬链接使准备 store 的对应内容失效。Linux 云端完成三组各 7 轮安装后，额外的离线恢复报 `ERR_PNPM_NO_OFFLINE_TARBALL`，继而让构建找不到 Taro。安装实验改为复制源码、manifest 与锁文件到独立目录，不复制 `node_modules`，不再删除和恢复用于构建的依赖；安装失败也不能污染后续阶段。
+- Taro Vite 首次依赖预构建触发文档重载时，浏览器观察器不能继续等待旧文档的请求。成功的新主文档响应替换请求集合和 HMR 握手身份，失败导航及 hash/history 导航不重置；新文档请求、错误和握手仍必须逐项验证，超时原因记录实际请求 URL。
+- PR Benchmark 运行 `36548103093` 的事件基准是 `887e16289`，实际 checkout 却是把 PR head 合入 `80b39395f` 的临时 merge。uni-app 的 RSS 回归经一次复测确认，但比较中包含其他 PR 的生产变化。基准改为经过 head 身份和祖先关系校验的实际 merge 第一父提交；直接 checkout head 时才使用事件基准。门槛不变，不能把错误比较对象导致的失败当成已排除的性能回归，仍需重新验收。
 
 ## 验证
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
 
 Mpx 样式注入 demo 补齐依赖后，执行 `node scripts/ci/demo-matrix/run.mjs style-injector-mpx:wx --build-only --update` 重新生成 static 基线，内容未变化；再用相同命令去掉 `--update` 验证通过。该验证是定向产物验收，不包含 IDE／设备运行。
+
+Mpx 正常采样数的本地运行在 `53b98f7e0` 上完成三组各 7 轮冷构建、热构建和启动验证；连续 HMR 在 16 轮之后的原生组发生漏更新并超时，原始样本和失败前源码／产物已保留，不能宣称 HMR 全量通过。
 
 ## 适用边界
 
