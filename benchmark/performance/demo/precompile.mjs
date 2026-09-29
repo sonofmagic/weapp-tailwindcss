@@ -7,7 +7,7 @@ import fg from 'fast-glob'
 import postcss from 'postcss'
 import { decode } from './capture.cjs'
 import { compileAuthored } from './authored.mjs'
-import { sfcBlocks } from './sfc.mjs'
+import { preprocessStyle, sfcBlocks } from './sfc.mjs'
 
 export function stripGeneration(css) {
   const root = postcss.parse(css)
@@ -70,8 +70,8 @@ export async function compileStatic(consumer, records, capturedRoot) {
           if (target === 'weapp' && block.type === 'template') content = await compiler.transformTemplate(content, snapshot)
           if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = (await compiler.transformJavaScript(content, snapshot, { filename: file })).code
           if (block.type === 'style' && /@(apply|reference|theme)/.test(content)) {
-            assert.ok(!['scss', 'sass', 'less'].includes(block.attrs.lang), `内嵌预处理样式需先通过框架预处理器生成：${file}`)
-            content = finalize((await generateStyle(content, file)).css)
+            const css = await preprocessStyle(block, path.join(consumer.project, file), require)
+            content = finalize((await generateStyle(css, file)).css)
           }
           else if (block.type === 'style' && target === 'weapp' && !block.attrs.lang) content = (await compiler.transformCss(content, snapshot)).css
           replacements.push({ offset: block.offset, length: block.length, content })
