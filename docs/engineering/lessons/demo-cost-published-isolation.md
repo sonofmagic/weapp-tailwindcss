@@ -18,6 +18,7 @@ regressions:
   - benchmark/performance/demo/test/process-group.test.mjs
   - benchmark/performance/demo/test/precompile-script.test.mjs
   - benchmark/performance/demo/test/component-ready.test.mjs
+  - benchmark/performance/demo/test/semantic-css.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -56,6 +57,10 @@ regressions:
 - Windows runner 的首个进程测试在 10 秒总期限内超时，后续四项通过。采样器本来允许 60 秒冷准备，测试却把它与 100 ms 的被测超时一起限制为 10 秒；失败日志未区分具体阶段，不能单凭该日志断言目标进程清理挂起。回归改为等待准备结束后，从 `session.startedAt` 独立断言超时及清理不超过 5 秒，外层期限容纳已有的准备上限。被测 timeout、性能预算和正式采样次数均不变。
 
 ## 验证
+
+`83fc43b` 的 Taro 小程序冷／热构建中，静态组 `.flex` 含 `-ms-flexbox`、`-webkit-flex`、`flex`，接入组含 `-ms-flexbox`、`flex`；开发启动两组均只有 `flex`。静态输入中原本只有标准 `display:flex`。真实 Autoprefixer 与该 demo 的生产 Browserslist 复现了添加旧前缀的行为，接入后的平台处理会清理该前缀。原比较器先把声明变成集合，丢失了前后覆盖关系。比较现按 AST 顺序，仅规范化同一规则中被后续同优先级标准 `flex`／`inline-flex` 覆盖的对应 WebKit 回退；不改源码或产物，原始探针规则另存于语义证据。不同规则、条件、声明顺序、优先级及真正的布局差异均保留。这里采用既有探针要求的标准 flex 支持边界，不推断不支持标准 flex 的旧浏览器。
+
+真实 Autoprefixer 回归及顺序／条件／优先级反例通过，性能工具共 59 项测试通过。Chromium 分别消费原始 CSS 与可比较 CSS，计算布局和子元素位置一致；云端仍需在当前提交重新生成静态输入并执行正式对照，不能把该最小浏览器实验当成设备验收。
 
 Windows 诊断运行 `36567931950` 的静态组已有本轮 marker、普通 CSS 与空请求队列，但缺少 `taro-view-core { display: block }`，接入组则已加载该样式。Taro `4.2.1` 的 Stencil 自定义元素在首轮渲染阶段挂载组件样式；仅检查 `document.complete` 与请求完成，会提前采到 `inline/auto` 布局。页面观察器对旧适配器等待 `componentOnReady()`；现代适配器没有该 API，必须核验元素已注册、组件声明的 CSS 已挂载在文档或 shadow root。初版只处理旧适配器，在后续入口审查中纠正，并用真实现代组件复现。检查不猜测应有的 `display`，单次等待有界，失败仍阻断。不能只检查 `hydrated` 类名，因为页面更新可以重新设置 class。每个 watcher 单独保存最后的完整样式与布局快照，避免后续进程覆盖证据。
 

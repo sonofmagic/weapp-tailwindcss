@@ -12,6 +12,7 @@ import { waitFor } from './process.mjs'
 import { inspectExtraStyles } from './style-evidence.mjs'
 import { trackBrowserState } from './browser-state.mjs'
 import { waitForTaroComponents } from './component-ready.mjs'
+import { comparableCss } from './semantic-css.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -22,8 +23,12 @@ export async function inspectOutput(consumer, output, operation, marker) {
   if (coverage(consumer.item) === 'native-build') return inspectNative(output)
   if (consumer.mode === 'native') return { marker, structure: true, styleEquivalent: false }
   let extra
-  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => { extra = inspectExtraStyles(styles, consumed, consumer.item, operation) })
-  return extra ? { probes, extra } : probes
+  let comparisonProbes
+  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => {
+    extra = inspectExtraStyles(styles, consumed, consumer.item, operation)
+    comparisonProbes = inspectStyles(styles.map(comparableCss), consumer.item, roundFor(operation), consumed)
+  })
+  return extra ? { probes, comparisonProbes: { ...probes, ...comparisonProbes }, extra } : probes
 }
 
 export async function observePage(url, session, directory) {
