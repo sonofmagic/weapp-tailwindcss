@@ -17,6 +17,7 @@ regressions:
   - benchmark/performance/demo/test/watch-lifetime.test.mjs
   - benchmark/performance/demo/test/process-group.test.mjs
   - benchmark/performance/demo/test/precompile-script.test.mjs
+  - benchmark/performance/demo/test/component-ready.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -56,9 +57,9 @@ regressions:
 
 ## 验证
 
-Windows 诊断运行 `36567931950` 的静态组已有本轮 marker、普通 CSS 与空请求队列，但缺少 `taro-view-core { display: block }`，接入组则已加载该样式。Taro `4.2.1` 的 Stencil 自定义元素在首轮渲染阶段挂载组件样式；仅检查 `document.complete` 与请求完成，会提前采到 `inline/auto` 布局。页面观察器现在等待当前 Taro 元素的 `componentOnReady()`，单次等待有界，未注册、渲染失败或迟迟未完成均继续保留失败。不能只检查 `hydrated` 类名，因为页面更新可以重新设置 class。每个 watcher 单独保存最后的完整样式与布局快照，避免后续进程覆盖证据。
+Windows 诊断运行 `36567931950` 的静态组已有本轮 marker、普通 CSS 与空请求队列，但缺少 `taro-view-core { display: block }`，接入组则已加载该样式。Taro `4.2.1` 的 Stencil 自定义元素在首轮渲染阶段挂载组件样式；仅检查 `document.complete` 与请求完成，会提前采到 `inline/auto` 布局。页面观察器对旧适配器等待 `componentOnReady()`；现代适配器没有该 API，必须核验元素已注册、组件声明的 CSS 已挂载在文档或 shadow root。初版只处理旧适配器，在后续入口审查中纠正，并用真实现代组件复现。检查不猜测应有的 `display`，单次等待有界，失败仍阻断。不能只检查 `hydrated` 类名，因为页面更新可以重新设置 class。每个 watcher 单独保存最后的完整样式与布局快照，避免后续进程覆盖证据。
 
-组件就绪回归覆盖异步渲染、未注册、拒绝和超时清理；`CI=1 pnpm test:perf:demo` 共 56 项通过。使用真实 Chromium 与发布的 `@tarojs/components@4.2.1` 做隔离组件实验，阻住懒加载模块时实测为 `inline`，释放模块并等待组件就绪后为 `block`；不支持组件告警的 Taro 事件入口在该最小实验中未启用。此实验不替代完整页面或云端验收，也不能单凭它断言此前作者 CSS 宽度异常已解决。
+组件就绪回归覆盖异步渲染、未注册、拒绝、超时清理、现代适配器与 shadow root；`CI=1 pnpm test:perf:demo` 共 57 项通过。使用真实 Chromium 与发布的 `@tarojs/components@4.2.1` 做两种适配器的隔离实验：旧适配器阻住懒加载模块，现代适配器阻住首轮渲染任务；均实测到 `inline`，释放后变成 `block`。现代组件明确没有 `componentOnReady()`，渲染前就绪检查失败、样式挂载后通过；不支持组件告警的 Taro 事件入口在最小实验中未启用。此实验不替代完整页面或云端验收，也不能单凭它断言此前作者 CSS 宽度异常已解决。
 
 定向回归入口为 `pnpm test:perf:demo`，复用清单和产物检查的兼容回归为 `pnpm test:demo:matrix`。React Vite Web 在上述 baseline 提交已完成正常采样数的三组构建、启动和连续热更新，重新生成静态输入后语义验证通过。原始报告保留在本次任务的 `.tmp/demo-cost/formal-vite-committed`；本机结果不视为云端全矩阵验收，也不冻结预算。
 
