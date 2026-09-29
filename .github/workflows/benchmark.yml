@@ -80,8 +80,12 @@ jobs:
       - name: Build workspace packages for synthetic scenarios
         run: pnpm build:pkgs
 
+      - name: Validate synthetic performance runner
+        run: pnpm --filter benchmark-performance test --update=none
+
       - name: Run synthetic performance gate
-        run: pnpm perf:synthetic:guard -- --runs 3 --warmups 2 --out-dir .tmp/performance-report
+        # 至少 21 个样本，避免三次采样把单次调度抖动当作 P95 或复杂度趋势。
+        run: pnpm perf:synthetic:guard -- --runs 21 --warmups 5 --out-dir .tmp/performance-report
 
       - name: Upload synthetic performance report
         if: always()

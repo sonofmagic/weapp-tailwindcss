@@ -55,6 +55,7 @@ describe('Issue #1214 真实 uni-app 微信 WXSS', () => {
     const project = await createProject(options)
     try {
       const build = await buildProject(project)
+      expect(`${build.stdout}\n${build.stderr}`).not.toContain('[rpx-theme]')
       process.stdout.write(`[issue-1214] ${JSON.stringify(project.versions)} ${build.stdout.match(/Compiler version[^\n]*/)?.[0]}\n`)
       const { css, wxml } = await readOutput(project)
       expect(wxml).toContain('issue-1214-initial')
@@ -78,7 +79,9 @@ describe('Issue #1214 真实 uni-app 微信 WXSS', () => {
   it.each(runtimeCases)('$name 保留运行时变量表达式', async ({ name, options, override }) => {
     const project = await createProject(options)
     try {
-      await buildProject(project)
+      const build = await buildProject(project)
+      const warnings = `${build.stdout}\n${build.stderr}`.match(/\[rpx-theme\]/g) ?? []
+      expect(warnings).toHaveLength(name === 'unresolved' ? 0 : 1)
       const { css, wxml } = await readOutput(project)
       expect(wxml).toContain('issue-1214-initial')
       const declarations = readProbeDeclarations(css)

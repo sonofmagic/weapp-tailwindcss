@@ -9,6 +9,7 @@ import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { warnFinalRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { getGroupedEntries } from '@/utils'
 import { resolveTaskConcurrency } from '../../../utils/run-tasks'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
@@ -482,6 +483,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const source = rawSource.toString()
             const finalized = finalizeWebpackCssAssetOutputSource(source, compilerOptions, isWebGeneratorTarget)
             updateAssetIfChanged(file, finalized)
+            warnFinalRpxThemeRisk(runtimeState, [finalized], compilerOptions)
           }
         },
       )

@@ -27,15 +27,17 @@ function record(key, value) {
   fs.appendFileSync(file, `${JSON.stringify({ key, value: encode(value) })}\n`)
 }
 
-function capture(module, name, original) {
+function capture(module, name, original, context) {
   if (typeof original !== 'function') return original
   return function (...args) {
     if (['WeappTailwindcss', 'createPlugins', 'StyleInjector'].includes(name)) record('options', { module, options: args[0] ?? {}, environment: captureEnvironment() })
     const result = new.target ? Reflect.construct(original, args) : original(...args)
     if (module.endsWith('/framework') || module.endsWith('/presets')) record(`helper:${name}`, result)
     if (module === 'weapp-style-injector/vite/uni-app' && name === 'StyleInjector') {
-      return [result, { name: 'demo-cost:capture-preprocess', configResolved(config) {
-        record('injector:preprocess', { root: config.root, mode: config.mode, resolve: { alias: config.resolve.alias }, css: { transformer: config.css.transformer, preprocessorMaxWorkers: config.css.preprocessorMaxWorkers, devSourcemap: false } })
+      return [result, { name: 'demo-cost:capture-preprocess', async configResolved(config) {
+        const { captureAuthoredPreprocessing } = await import(context.authoredPreprocessor)
+        // 使用本次构建的真实配置执行预处理，不把框架闭包转换为字符串或丢弃别名。
+        record('injector:preprocessed', await captureAuthoredPreprocessing(context.consumer, args[0] ?? {}, config))
       } }]
     }
     return result

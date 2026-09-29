@@ -5,6 +5,7 @@ import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions } from '@/types'
 import path from 'node:path'
 import { shouldSkipJsTransform } from '@/js/precheck'
+import { warnFinalRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { finalizeMiniProgramGeneratorCss } from '../../../../generation/generation-helpers'
 import { rewriteLocalCssImportRequestsForOutput } from '../../../../generation/local-imports'
 import { generateTailwindV4Css } from '../../../../generation/service'
@@ -128,6 +129,9 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature, sourceCandidateSignature, outputSignature),
         applyResult(source) {
           writeGulpFileAsset(file, source)
+          if (stage === 'transform') {
+            warnFinalRpxThemeRisk(runtimeState, [source], opts)
+          }
         },
         onCacheHit() {
           debug('css cache hit: %s', file.path)
@@ -218,7 +222,9 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
       const outputCss = rewriteLocalCssImportRequestsForOutput(finalized, {
         styleOutputExtension,
       })
-      writeGulpFileAsset(file, finalizeMiniProgramCssStructure(outputCss))
+      const finalCss = finalizeMiniProgramCssStructure(outputCss)
+      writeGulpFileAsset(file, finalCss)
+      warnFinalRpxThemeRisk(runtimeState, [finalCss], opts)
       debug('css adapt: %s', file.path)
     }, () => resolveGulpTransformTimingDetails('css:adapt'))
 

@@ -1663,6 +1663,9 @@ importers:
         specifier: ^3.5.41
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
+      sass-embedded:
+        specifier: catalog:sass195
+        version: 1.104.1
       '@dcloudio/uni-uts-v1':
         specifier: 3.0.0-alpha-5020220260725001
         version: 3.0.0-alpha-5020220260725001(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(supports-color@10.2.2)
@@ -3915,6 +3918,9 @@ importers:
         specifier: ^3.5.41
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
+      sass-embedded:
+        specifier: catalog:sass195
+        version: 1.104.1
       '@dcloudio/hbuilderx-cli':
         specifier: ^1.2.0
         version: 1.2.0
@@ -3988,6 +3994,9 @@ importers:
       postcss:
         specifier: catalog:postcss85
         version: 8.5.28
+      sass-embedded:
+        specifier: catalog:sass195
+        version: 1.104.1
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.3.3

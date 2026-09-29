@@ -47,6 +47,7 @@
     "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "postcss": "catalog:postcss85",
+    "sass-embedded": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",

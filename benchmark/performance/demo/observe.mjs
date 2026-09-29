@@ -52,7 +52,7 @@ export async function observePage(url, session, directory) {
         const round = roundFor(operation)
         const result = await page.evaluate(readPageSnapshot, { expected: probeClasses(consumer.item, round), round, marker, family: consumer.item.family })
         lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
-        assert.equal(pending.size, 0, `仍有模块或样式请求：${[...pending].map(request => request.url()).join(', ')}`)
+        assert.equal(pending.size, 0, `仍有页面资源请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')
         assert.ok(!result.hot || result.hot === 'idle', 'HMR 尚未完成')
         assert.deepEqual(errors, [], '浏览器运行错误')

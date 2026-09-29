@@ -8,6 +8,7 @@ import { consumerManifest, hash, inside, installationLayout, parseLock, withoutI
 import { run } from './process.mjs'
 import { assertRegistryGraph, pruneLock } from './lock.mjs'
 import { disableProfiling } from './profiling.mjs'
+import { prepareFrameworkPatches } from './framework-patches.mjs'
 
 export async function createConsumer(item, published, directory, mode) {
   await mkdir(directory, { recursive: true })
@@ -38,7 +39,12 @@ export async function createConsumer(item, published, directory, mode) {
 export async function prepareLock(consumer, store, logDir) {
   await run('pnpm', ['install', '--lockfile-only', '--no-frozen-lockfile', '--store-dir', store], { cwd: consumer.project, logFile: path.join(logDir, `${consumer.mode}-resolve.log`) })
   const file = path.join(consumer.project, 'pnpm-lock.yaml')
-  const parsed = parseLock(await readFile(file, 'utf8'))
+  let parsed = parseLock(await readFile(file, 'utf8'))
+  const patches = await prepareFrameworkPatches(consumer.project, parsed)
+  if (Object.keys(patches).length) {
+    await run('pnpm', ['install', '--lockfile-only', '--no-frozen-lockfile', '--store-dir', store], { cwd: consumer.project, logFile: path.join(logDir, `${consumer.mode}-patched-resolve.log`) })
+    parsed = parseLock(await readFile(file, 'utf8'))
+  }
   const source = stringify(pruneLock(parsed, parsed.importers['.']))
   await writeFile(file, source)
   assertRegistryGraph(parseLock(source))
@@ -56,7 +62,11 @@ export function compareCommonLocks(left, right) {
   const packages = lock => new Map(Object.entries(lock.packages ?? {}).map(([key, value]) => [key, value.resolution?.integrity]))
   const a = packages(left)
   const b = packages(right)
-  for (const [name, integrity] of a) if (b.has(name)) assert.equal(b.get(name), integrity, `相同版本的依赖完整性不一致：${name}`)
+  for (const [name, integrity] of a) {
+    if (!b.has(name)) continue
+    assert.equal(b.get(name), integrity, `相同版本的依赖完整性不一致：${name}`)
+    assert.deepEqual(left.patchedDependencies?.[name], right.patchedDependencies?.[name], `共有依赖的框架补丁不同：${name}`)
+  }
   for (const field of ['dependencies', 'devDependencies', 'optionalDependencies']) {
     for (const [name, entry] of Object.entries(left.importers['.'][field] ?? {})) {
       const counterpart = right.importers['.'][field]?.[name]
@@ -80,6 +90,8 @@ export async function cleanCache(consumer, output) {
 export async function keepLockEvidence(consumer, dir) {
   await mkdir(dir, { recursive: true })
   await cp(path.join(consumer.project, 'package.json'), path.join(dir, `${consumer.mode}-package.json`))
+  await cp(path.join(consumer.project, '.cost', 'framework-patches.json'), path.join(dir, `${consumer.mode}-framework-patches.json`))
+  await cp(path.join(consumer.project, '.cost', 'framework-patches'), path.join(dir, `${consumer.mode}-framework-patches`), { recursive: true }).catch(error => { if (error.code !== 'ENOENT') throw error })
   // 已有快照的传递依赖可能不再可达，证据保留完整锁文件便于核查。
   const lock = parseLock(await readFile(path.join(consumer.project, 'pnpm-lock.yaml'), 'utf8'))
   await writeFile(path.join(dir, `${consumer.mode}-lock.yaml`), stringify(lock))

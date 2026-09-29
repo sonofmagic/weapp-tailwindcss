@@ -5,6 +5,8 @@ import { createRequire } from 'node:module'
 import { expect, it } from 'vitest'
 import { compileAuthored, prepareInjectedCss } from '../authored.mjs'
 import { connectMpxSidecar, mpxSidecarOwner } from '../authored-mpx.mjs'
+import { hash } from '../published.mjs'
+import { preprocessInjectedCss } from '../authored-vite.mjs'
 
 it('Webpack 样式注入按原文消费，不按文件扩展名额外加载预处理器', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'cost-authored-'))
@@ -28,6 +30,29 @@ it('启用 Vite 预处理时执行真实 Sass，而不是删除预处理语法',
     const sourceAbsolutePath = path.join(directory, 'entry.scss')
     await writeFile(sourceAbsolutePath, '$space: 2px; .entry { margin: $space; }')
     expect(await prepareInjectedCss({ sourceAbsolutePath, preprocess: true }, 'weapp-style-injector/vite/uni-app', createRequire(import.meta.url), { root: process.cwd(), css: { transformer: 'postcss', preprocessorMaxWorkers: 0, devSourcemap: false } })).toContain('margin: 2px')
+  }
+  finally { await rm(directory, { recursive: true, force: true }) }
+})
+
+it('真实 Vite 配置中的闭包别名在预处理期间保持可执行', async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'cost-authored-alias-'))
+  try {
+    const file = path.join(directory, 'entry.css')
+    const target = path.join(directory, 'tokens.css')
+    await writeFile(target, '.entry { margin: 7px; }')
+    const input = '@import "custom";'
+    const require = createRequire(import.meta.url)
+    const { resolveConfig } = await import('vite')
+    let calls = 0
+    const config = await resolveConfig({ configFile: false, root: directory, resolve: { alias: [{ find: 'custom', replacement: target, customResolver() { calls++; return target } }] } }, 'build')
+    const output = await preprocessInjectedCss(input, file, require, config, true)
+    expect(output).toContain('margin: 7px')
+    expect(calls).toBeGreaterThan(0)
+    await writeFile(file, input)
+    const evidence = [{ file, inputHash: hash(input), output }]
+    expect(await prepareInjectedCss({ sourceAbsolutePath: file }, 'weapp-style-injector/vite/uni-app', require, evidence)).toBe(output)
+    await writeFile(file, input + '\n.changed{}')
+    await expect(prepareInjectedCss({ sourceAbsolutePath: file }, 'weapp-style-injector/vite/uni-app', require, evidence)).rejects.toThrow('本轮输入')
   }
   finally { await rm(directory, { recursive: true, force: true }) }
 })

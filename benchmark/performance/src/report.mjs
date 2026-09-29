@@ -27,6 +27,7 @@ export function renderReport(report, gate) {
 - Platform：${process.platform} ${process.arch}
 - CPU：${os.cpus()[0]?.model ?? 'unknown'}
 - 样本：warmup ${report.options.warmups}，runs ${report.options.runs}
+- 场景隔离：${report.options.isolation === 'process' ? '独立进程（RSS 不累积前序场景）' : '共享进程'}
 
 ## 场景结果
 

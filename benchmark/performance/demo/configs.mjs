@@ -71,7 +71,8 @@ export async function configure(consumer, mode, records = [], capturedRoot = con
     const prefix = mode === 'capture' ? `const original = load(${JSON.stringify(specifier)}); const {capture} = load(${JSON.stringify(path.join(support, 'capture.cjs'))});\n`
       : `const {disabled} = load(${JSON.stringify(path.join(support, 'capture.cjs'))}); const records = ${JSON.stringify(records)}; const from = ${JSON.stringify(capturedRoot)}; const root = ${JSON.stringify(consumer.project)};\n`
     const declaration = name => format === 'esm' ? `export const ${name}` : `exports.${name}`
-    await writeFile(file, loader + prefix + names.map(name => mode === 'capture' ? `${declaration(name)} = capture(${JSON.stringify(specifier)}, ${JSON.stringify(name)}, original.${name});`
+    const context = JSON.stringify({ consumer: { project: consumer.project, item: consumer.item }, authoredPreprocessor: new URL('./authored-capture.mjs', import.meta.url).href })
+    await writeFile(file, loader + prefix + names.map(name => mode === 'capture' ? `${declaration(name)} = capture(${JSON.stringify(specifier)}, ${JSON.stringify(name)}, original.${name}, ${context});`
       : `${declaration(name)} = ${name.startsWith('resolve') || ['hbuilderx', 'uniAppX'].includes(name) ? `(...args) => disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})(...args)` : `disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})`};`).join('\n'))
   }
   return async () => { for (const [file, source] of originalFiles) await writeFile(file, source) }

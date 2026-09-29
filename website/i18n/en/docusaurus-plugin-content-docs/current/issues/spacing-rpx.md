@@ -65,23 +65,24 @@ Opting out preserves runtime references and their WeChat rpx calc limitations. A
 ## Build-time advisory warning
 
 :::warning Advisory diagnosis, not a build failure
-When the generation target is `weapp` and configuration or framework environment identifies WeChat, the plugin inspects Tailwind CSS 4 `@theme` / `@theme inline` inputs. Custom properties containing an `rpx` value trigger a `[tailwindcss@4][rpx-theme]` warning. This includes `--spacing`, `--gap`, `--padding`, and even, negative, or fractional bases. Custom properties in ordinary style rules are outside this diagnosis.
+For a `weapp` target explicitly identified as WeChat, the plugin collects rpx custom properties from Tailwind CSS 4 `@theme` / `@theme inline` inputs. After the bundler finishes CSS calculation and unit conversion, it emits `[tailwindcss@4][rpx-theme]` only if the output still contains a related variable inside `calc` or an inline rpx `calc` expression.
 
-H5, ordinary Web, other mini programs, and builds with an unknown platform do not warn. The generic `weapp` output target alone does not identify WeChat. Diagnosis uses source and entry dependency information already available to generation; it does not scan arbitrary application CSS just to produce a warning.
+With default settings, `--spacing: 1rpx` no longer warns when it produces static lengths such as `width: 32rpx`. Unused rpx theme variables do not warn either. Local or conditional overrides, unresolved imports, and explicitly disabled calculation can leave runtime expressions and still trigger a warning.
 
-Each build session (`runtimeState`) emits at most one warning. Subsequent watch/HMR generations do not repeat it; a new session can warn again. Existing `logLevel` controls apply: `'warn'` retains it, while `'silent'` or `'error'` suppresses it. No new configuration is needed. Diagnosis does not change CSS, the class set, or the exit status.
+H5, ordinary Web, other mini programs, and unidentified platforms do not warn. Diagnosis reuses theme source information and bundler outputs without additional source scans or changes to CSS, class sets, or exit status.
+
+Each build session emits at most one actual risk warning. An initially static build does not consume that allowance: a later watch/HMR update that introduces a runtime expression can still warn. Existing `logLevel` controls apply: `'warn'` retains it, while `'silent'` or `'error'` suppresses it. No new configuration is required.
 :::
 
-The message also reports the CSS state after the shared generation pipeline. This sample can precede static evaluation of Vite's final assets:
+Vite checks after final asset calculation and unit conversion, Webpack during final CSS asset cleanup, and Gulp after `transformWxss` or `adaptWxss`. The standalone `generateWxss` stage does not warn prematurely.
 
-| Result                                                                                                     | Meaning                                                                                                                                                         |
-| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| An `rpx` theme variable was found                                                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                                                       |
-| A related `calc(var(--name) * ...)` or an inline `rpx` calculation remains at the current generation stage | Later build processing may make it static; this does not prove final WXSS retains runtime arithmetic, or that an inline expression came from the theme variable |
-| No related `calc` was detected at the current generation stage                                             | This stage may be static or may not use the variable; it does not verify final assets, every scope, or every device                                             |
-| Output diagnosis could not complete                                                                        | Output analysis is skipped without failing the build or claiming safety                                                                                         |
+| Final CSS inspection                                           | Behavior                                                                     |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Static rpx output, or no related expression                    | No warning                                                                   |
+| A related variable or inline rpx remains inside runtime `calc` | One risk warning                                                             |
+| CSS cannot be parsed                                           | Skip that asset without failing the build or consuming the warning allowance |
 
-Even when `cssCalc` successfully makes final WXSS static, an earlier warning may still report expressions at the generation stage; inspect final WXSS to determine the result. With automatic calculation disabled or the target unmatched, `@theme inline` only substitutes the literal and may leave `calc(3rpx * 8)`. Active automatic mode reduces this literal to `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
+Absence of a warning does not verify every scope or device. Later custom plugins may still change outputs. Runtime themes should explicitly use `cssOptions.cssCalc: false` to preserve their semantics and be tested on target devices for WeChat's rpx calculation limitations.
 
 ## rpx conversion can amplify errors in the base length
 

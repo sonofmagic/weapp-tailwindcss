@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { decode } from './capture.cjs'
-import { inside } from './published.mjs'
+import { hash, inside } from './published.mjs'
 import { isWeb } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { connectMpxSidecar } from './authored-mpx.mjs'
 import { preprocessInjectedCss } from './authored-vite.mjs'
@@ -13,6 +13,11 @@ export async function prepareInjectedCss(scope, module, require, preprocessConfi
   // Webpack 与 Taro Vite 的 generateSubpackageStyle 均返回原文；只有 uni Vite 显式运行预处理。
   if (module.includes('/webpack/') || module === 'weapp-style-injector/vite/taro' || scope.preprocess === false) return css
   assert.equal(module, 'weapp-style-injector/vite/uni-app', '未知的样式预处理链路')
+  if (Array.isArray(preprocessConfig)) {
+    const captured = preprocessConfig.filter(row => path.resolve(row.file) === path.resolve(scope.sourceAbsolutePath) && row.inputHash === hash(css))
+    assert.equal(captured.length, 1, '缺少本轮输入对应的真实 Vite 预处理证据')
+    return captured[0].output
+  }
   return preprocessInjectedCss(css, scope.sourceAbsolutePath, require, preprocessConfig)
 }
 
@@ -23,7 +28,7 @@ export async function compileAuthored(consumer, records, capturedRoot, sourceFil
   const config = records.filter(row => row.key === 'options')
   assert.equal(config.length, 1, '样式注入静态基线需要唯一配置')
   const options = decode(config[0].value.options, capturedRoot, consumer.project)
-  const preprocessConfig = records.filter(row => row.key === 'injector:preprocess')
+  const preprocessConfig = records.filter(row => row.key === 'injector:preprocessed')
   assert.ok(preprocessConfig.length <= 1, '同一目标存在多套样式预处理配置')
   const root = path.join(consumer.project, 'src')
   const scopes = consumer.item.family === 'uni'
