@@ -14,6 +14,12 @@ function environment(row, report) {
   return JSON.stringify(identity)
 }
 
+function comparisonIdentity(row) {
+  const identity = row.dependencies?.comparisonIdentity
+  assert.ok(identity?.nativeLock && identity?.staticLock && identity?.scenario, '缺少依赖或场景身份，不能冻结或比较历史预算')
+  return identity
+}
+
 function dimensions(row) {
   return Object.fromEntries(['ms', 'peakRssMb'].flatMap(field => {
     const enabled = row.samples.enabled.map(sample => sample[field])
@@ -55,7 +61,10 @@ export function createBudgets(first, second) {
   assert.deepEqual(validateReport(first), [], '第一批报告不完整')
   assert.deepEqual(validateReport(second), [], '第二批报告不完整')
   assert.notEqual(first.runId, second.runId, '预算需要两批独立采样')
+  assert.equal(first.sha, second.sha, '预算脚本提交不同')
   assert.equal(first.package.version, second.package.version, '预算版本不一致')
+  assert.equal(first.package.integrity, second.package.integrity, '预算发布包完整性不一致')
+  assert.deepEqual(first.settings, second.settings, '预算采样口径不同')
   assert.deepEqual([...first.expected].sort(), [...second.expected].sort(), '预算覆盖不同')
   const other = new Map(second.rows.map(row => [rowKey(row), row]))
   return {
@@ -65,9 +74,11 @@ export function createBudgets(first, second) {
       const secondRow = other.get(rowKey(raw))
       const identity = environment(raw, first)
       assert.equal(identity, environment(secondRow, second), '预算环境不一致')
+      const comparison = comparisonIdentity(raw)
+      assert.deepEqual(comparison, comparisonIdentity(secondRow), '预算依赖或场景不一致')
       const a = dimensions(raw)
       const b = dimensions(secondRow)
-      return [rowKey(raw), { environment: identity, dimensions: Object.fromEntries(Object.keys(a).map(key => {
+      return [rowKey(raw), { environment: identity, comparison, dimensions: Object.fromEntries(Object.keys(a).map(key => {
         const samples = signedMedian(a[key]) >= signedMedian(b[key]) ? a[key] : b[key]
         const median = signedMedian(samples)
         const threshold = limits(raw.metric, key.startsWith('peakRssMb'))
@@ -85,6 +96,8 @@ export function evaluateBudgets(report, budgets) {
     const budget = budgets.cases[rowKey(raw)]
     if (!budget) { failures.push(`缺少预算 ${rowKey(raw)}`); continue }
     if (budget.environment !== environment(raw, report)) { failures.push(`环境不兼容 ${rowKey(raw)}`); continue }
+    try { assert.deepEqual(comparisonIdentity(raw), budget.comparison) }
+    catch { failures.push(`依赖或场景不兼容 ${rowKey(raw)}`); continue }
     if (raw.metric === 'install.cold') continue
     for (const [key, samples] of Object.entries(dimensions(raw))) {
       const limit = budget.dimensions[key]

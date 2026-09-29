@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { difference, modes, order, selectCases, statistics, weeklyMatrix } from '../model.mjs'
 import { inside, withoutIntegration } from '../published.mjs'
 import { regression } from '../gate.mjs'
-import { rewriteConfiguration } from '../configs.mjs'
+import { relativeSpecifier, rewriteConfiguration } from '../configs.mjs'
 import { disabled } from '../capture.cjs'
 
 describe('周报数据边界', () => {
@@ -58,5 +58,11 @@ describe('周报数据边界', () => {
     expect(result).toContain('from "./capture.cjs"')
     expect(result).toContain("const text = 'weapp-tailwindcss/vite'")
     expect(result).toContain('// weapp-tailwindcss/vite')
+  })
+  it('隐藏目录不是裸模块名，捕获导入必须带相对路径前缀', () => {
+    expect(relativeSpecifier('/demo/gulpfile.ts', '/demo/.cost/module.cjs', path.posix)).toBe('./.cost/module.cjs')
+    expect(relativeSpecifier('/demo/config/index.ts', '/demo/.cost/module.cjs', path.posix)).toBe('../.cost/module.cjs')
+    expect(relativeSpecifier('C:\\demo\\gulpfile.ts', 'C:\\demo\\.cost\\module.cjs', path.win32)).toBe('./.cost/module.cjs')
+    expect(() => relativeSpecifier('C:\\demo\\gulpfile.ts', 'D:\\module.cjs', path.win32)).toThrow('同一文件系统根目录')
   })
 })

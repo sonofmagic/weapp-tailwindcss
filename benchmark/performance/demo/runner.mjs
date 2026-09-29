@@ -25,7 +25,7 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
     const rows = Object.fromEntries(report.rows.filter(row => row.demo === item.name && (row.target === item.target || row.target === '@install' && job.installCases.includes(item.id))).map(row => [row.metric, row]))
     const temporary = await mkdtemp(path.join(os.tmpdir(), 'weapp-weekly-'))
     const logs = path.join(directory, item.id.replaceAll(/[^\w.-]/g, '_'))
-    const options = { ...manifest.settings, directory: temporary, logs, timeout, reverse }
+    const options = { ...manifest.settings, directory: temporary, logs, timeout, reverse, checkpoint: () => writeReport(report, directory) }
     console.log(`开始 ${item.id}，发布版 ${manifest.package.version}`)
     try {
       const prepared = await prepareTarget(item, manifest.package, temporary, logs)
@@ -64,7 +64,9 @@ export async function mergeReports(manifest, files) {
       assert.deepEqual(report.expected, job.rows.map(rowKey), '分片缺少预期指标')
       assert.ok(report.rows.every(row => report.expected.includes(rowKey(row))), '分片提交了别的目标')
       seen.add(job.id)
-      rows.push(...report.rows)
+      rows.push(...report.rows.map(row => !report.finishedAt && row.status === 'pending'
+        ? { ...row, status: 'interrupted', error: '分片未完成（取消、超时或进程中断）；已采样数据保留，但不计算完整对照开销' }
+        : row))
     }
     catch (error) { errors.push(`${path.basename(path.dirname(file))}: ${error.message}`) }
   }

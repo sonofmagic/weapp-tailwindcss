@@ -47,6 +47,7 @@ export async function measureBuild(prepared, rows, options) {
           sample.semanticHash = await keepSemantic(result, mode, metric, round, options)
           delete sample.stdout
           rows[metric].samples[mode].push({ ...sample, round, marker, cache: metric.endsWith('cold') ? 'project-cache-cleared' : 'project-cache-retained' })
+          await options.checkpoint?.()
         }
         equivalent(results)
       }
@@ -105,6 +106,7 @@ export async function measureWatch(prepared, rows, options) {
         try {
           watcher.sample.semanticHash = await keepSemantic(watcher.result, mode, `startup.${endpoint}`, round, options)
           startup.samples[mode].push(watcher.sample)
+          await options.checkpoint?.()
           results[mode] = watcher.result.topology ?? watcher.result
         }
         finally { await watcher.close() }
@@ -139,6 +141,7 @@ export async function measureWatch(prepared, rows, options) {
             const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
             sample.semanticHash = await keepSemantic(result, mode, `hmr.${operation}.${endpoint}`, round, options)
             if (round >= 0) rows[`hmr.${operation}.${endpoint}`].samples[mode].push(sample)
+            if (round >= 0) await options.checkpoint?.()
             results[mode][operation] = result.topology ?? result
           }
           equivalent(results)

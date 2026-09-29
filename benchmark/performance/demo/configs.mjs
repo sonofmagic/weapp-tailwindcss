@@ -7,6 +7,12 @@ import fg from 'fast-glob'
 import { inside } from './published.mjs'
 
 const specifierRE = /^(?:weapp-tailwindcss\/(?:vite|webpack|rspack|gulp|framework|presets)|weapp-style-injector\/(?:vite|webpack)\/[^/]+)$/
+export function relativeSpecifier(from, file, paths = path) {
+  const relative = paths.relative(paths.dirname(from), file)
+  assert.ok(!paths.isAbsolute(relative), '捕获模块与配置文件必须处于同一文件系统根目录')
+  const logical = relative.split(paths.sep).join('/')
+  return logical.startsWith('../') ? logical : `./${logical}`
+}
 function walk(node, visit) {
   if (!node || typeof node !== 'object') return
   visit(node)
@@ -44,8 +50,7 @@ export async function configure(consumer, mode, records = [], capturedRoot = con
       let wrapper = wrappers.get(specifier)
       if (!wrapper) { wrapper = path.join(support, `module-${wrappers.size}.cjs`); wrappers.set(specifier, wrapper) }
       // 配置 module specifier 是逻辑路径；必须先完成文件系统相对路径计算。
-      const relative = path.relative(path.dirname(file), wrapper).split(path.sep).join('/')
-      return relative.startsWith('.') ? relative : `./${relative}`
+      return relativeSpecifier(file, wrapper)
     }, { weappVite: consumer.item.family === 'weapp-vite' && path.basename(file) === 'vite.config.ts', capture: mode === 'capture' })
     await writeFile(file, transformed)
   }

@@ -4,10 +4,10 @@ import path from 'node:path'
 import { commands, coverage } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { insertProbe } from '../../../scripts/ci/demo-matrix/probe.mjs'
 import { configure } from './configs.mjs'
-import { cleanCache, compareCommonLocks, createConsumer, install, keepLockEvidence, prepareLock } from './fixtures.mjs'
+import { cleanCache, compareCommonLocks, createConsumer, install, keepLockEvidence, prepareLock, seedPreparationStore } from './fixtures.mjs'
 import { modes } from './model.mjs'
 import { compileStatic, sourceFiles, stripGeneration, applySources } from './precompile.mjs'
-import { assertPublished } from './published.mjs'
+import { assertPublished, hash } from './published.mjs'
 import { run } from './process.mjs'
 import { prepareSteps } from './steps.mjs'
 
@@ -18,6 +18,7 @@ export async function prepareTarget(item, published, directory, logs) {
   for (const mode of ['enabled', 'native', 'static']) {
     const consumer = await createConsumer(item, published, directory, mode)
     consumers[mode] = consumer
+    if (mode !== 'enabled') await seedPreparationStore(path.join(directory, 'enabled-store'), path.join(directory, `${mode}-store`))
     locks[mode] = (await prepareLock(consumer, path.join(directory, `${mode}-store`), logs)).lock
     await install(consumer, path.join(directory, `${mode}-store`), path.join(logs, `${mode}-prepare-install.log`))
     await keepLockEvidence(consumer, path.join(logs, 'dependencies'))
@@ -60,6 +61,12 @@ export async function prepareTarget(item, published, directory, logs) {
     }
   }
   await applySources(consumer, originals)
+  // 趋势只比较相同原生输入和基线依赖图；被测发布版的自身变化不放入兼容性身份。
+  evidence.comparisonIdentity = {
+    nativeLock: hash(await readFile(path.join(consumers.native.project, 'pnpm-lock.yaml'), 'utf8')),
+    staticLock: hash(await readFile(path.join(consumers.static.project, 'pnpm-lock.yaml'), 'utf8')),
+    scenario: hash(JSON.stringify([...steps.native].map(([operation, sources]) => [operation, [...sources].sort(([a], [b]) => a.localeCompare(b))]))),
+  }
   await writeFile(path.join(logs, 'static-inputs.json'), JSON.stringify([...steps.static].map(([operation, sources]) => ({ operation, sources: Object.fromEntries(sources) }))))
   for (const mode of modes) await cleanCache(consumers[mode], command.output)
   assert.ok(steps.enabled.size)

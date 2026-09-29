@@ -29,6 +29,13 @@ export function boundaries() {
   return demos.map(item => ({ demo: item.name, targets: item.targets, limitation: item.limitation ?? null }))
 }
 
+export function capabilityLabel(row) {
+  if (row.target === '@install') return '发布依赖安装（按 demo 去重）'
+  const item = cases.find(item => item.name === row.demo && item.target === row.target)
+  const kind = row.coverage ?? (item ? coverage(item) : undefined)
+  return { 'authored-styles': '作者样式注入', 'native-build': '原生构建，插件默认禁用', 'webview-build': '仅构建，设备未验收', utilities: 'Tailwind 样式生成' }[kind] ?? '未确认'
+}
+
 export function metrics(item, phases = ['install', 'build', 'hmr']) {
   const result = []
   if (phases.includes('install')) result.push('install.cold', 'install.offline', 'install.incremental')
@@ -88,6 +95,7 @@ export function validateReport(report) {
   if (report.diagnostic) errors.push('缩减采样诊断不能作为正式周报或预算依据')
   if (report.schema !== schema) errors.push('未知报告格式')
   if (!report.sha || !report.runId || !report.package?.integrity || !report.package?.version) errors.push('缺少提交、批次或发布包身份')
+  if (Object.entries(defaults).some(([key, minimum]) => !Number.isInteger(report.settings?.[key]) || report.settings[key] < minimum)) errors.push('正式报告采样口径不足')
   const actual = new Set()
   const expected = new Set(report.expected ?? [])
   if (expected.size !== report.expected?.length) errors.push('预期清单重复或缺失')

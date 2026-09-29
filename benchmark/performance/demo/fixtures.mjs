@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { constants } from 'node:fs'
 import { cp, mkdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { stringify } from 'yaml'
@@ -40,6 +41,13 @@ export async function prepareLock(consumer, store, logDir) {
   await writeFile(file, source)
   assertRegistryGraph(parseLock(source))
   return { hash: hash(source), lock: parseLock(source) }
+}
+
+export async function seedPreparationStore(source, destination) {
+  assert.ok(!inside(source, destination) && !inside(destination, source), '准备 store 必须是独立目录')
+  // 只复制不计时准备阶段的已下载文件；不用硬链接，避免组间写入相互影响。
+  // 正式安装测量始终自行创建空 store，不能调用此函数。
+  await cp(source, destination, { recursive: true, mode: constants.COPYFILE_FICLONE })
 }
 
 export function compareCommonLocks(left, right) {

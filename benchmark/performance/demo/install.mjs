@@ -49,10 +49,12 @@ export async function measureInstall(consumers, rows, options) {
       cold.installedPackageInstances = (await readdir(path.join(consumer.project, 'node_modules', '.pnpm'), { withFileTypes: true })).filter(entry => entry.isDirectory() && entry.name !== 'node_modules').length
       delete cold.stdout
       rows['install.cold'].samples[mode].push(cold)
+      await options.checkpoint?.()
       await rm(path.join(consumer.project, 'node_modules'), { recursive: true, force: true })
       const offline = await install(consumer, coldStore, path.join(options.logs, `${mode}-install-offline-${round}.log`), true)
       delete offline.stdout
       rows['install.offline'].samples[mode].push(offline)
+      await options.checkpoint?.()
       await rm(path.join(consumer.project, 'node_modules'), { recursive: true, force: true })
       // 先按不接入组准备已有依赖，再计时接入；原生组对应一次无新增依赖的安装。
       await writeFile(path.join(consumer.project, 'package.json'), manifests.native)
@@ -63,6 +65,7 @@ export async function measureInstall(consumers, rows, options) {
       const incremental = await install(consumer, coldStore, path.join(options.logs, `${mode}-install-incremental-${round}.log`), true)
       delete incremental.stdout
       rows['install.incremental'].samples[mode].push(incremental)
+      await options.checkpoint?.()
       await rm(coldStore, { recursive: true, force: true })
     }
   }
