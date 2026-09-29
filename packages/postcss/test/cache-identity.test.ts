@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { fingerprintOptions } from '@/fingerprint'
 import { createStyleHandler } from '@/handler'
 import cssMacroPlugin from '@/css-macro/postcss'
+import { contentHash } from '@/utils/content-hash'
 
 function colorPlugin(color: () => string): Plugin {
   return {
@@ -75,9 +76,21 @@ describe('样式缓存输入身份', () => {
     expect((await handler('.a{color:red}')).css).toContain('color:red')
   })
   it('不同内容即使短哈希碰撞也不能复用结果', async () => {
-    const handler = createStyleHandler({ cssPreflight: false, isMainChunk: false })
-    expect((await handler('.x{z-index:19842}')).css).toContain('19842')
-    expect((await handler('.x{z-index:127198}')).css).toContain('127198')
+    const first = '.x{z-index:661068122}'
+    const second = '.x{z-index:1817992289}'
+    expect(contentHash(first)).toBe(contentHash(second))
+    const onDiagnostic = vi.fn()
+    const handler = createStyleHandler({ cssPreflight: false, isMainChunk: false, onDiagnostic })
+    for (const source of [first, second, first]) {
+      expect((await handler(source)).css).toBe(source)
+      expect(onDiagnostic.mock.calls.at(-1)?.[0].cache.hit).toBe(false)
+    }
+    expect((await handler(first)).css).toBe(first)
+    expect(onDiagnostic.mock.calls.at(-1)?.[0].cache.hit).toBe(true)
+  })
+
+  it.each([['', 0x811C9DC5], ['a', 0xE40C292C], ['hello', 0x4F9F2CAB]])('32 位哈希遵守已知 FNV-1a 向量：%s', (source, expected) => {
+    expect(contentHash(source)).toBe(expected.toString(36))
   })
 
   it('区分同名闭包并稳定识别同一函数', () => {
