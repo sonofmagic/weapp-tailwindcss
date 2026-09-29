@@ -58,6 +58,8 @@ regressions:
 
 ## 验证
 
+Taro Webpack 的诊断运行 `36587807594` 中，H5 与 Harmony 产物在同一 CSS 文件先声明 `--spacing:4px`，随后由相同具名层、等价 `:root/:host` 选择器的 `0.1rem/0.2rem` 覆盖。静态组只保留后值。比较器现在仅消除可证明被同优先级后续声明覆盖的根主题变量，保留原始探针；条件、作用域、匿名层、不同选择器和优先级都不合并。下载的 20 个真实 CSS 文件在 Chromium 中规范化前后计算尺寸一致，两目标的静态与接入探针也一致。`CI=1 pnpm test:perf:demo` 共 74 项通过；这不替代完整 demo 页面和正式云端采样验收。
+
 Linux 诊断继续暴露独立消费项目边界：分包 Taro RN 漏声明 `metro-react-native-babel-preset`，Metro 报错但外层退出 0，marker 断言正确阻断。补齐与其他 RN demo 相同的直接依赖，锁文件仅增加该 importer 的三行；`pnpm install --frozen-lockfile --offline --ignore-scripts --filter @weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4` 通过。构建当前包依赖闭包后，定向执行 `node scripts/ci/demo-matrix/run.mjs subpackage-taro-webpack-react-tailwindcss-v4:rn --build-only --update` 重新生成 static 基线（无差异），再去掉 `--update` 验证通过。
 
 uni-app 发布包实际声明且安装了 `@weapp-core/escape`。真实 Vite 5.4.21 复现确认：框架默认 `preserveSymlinks: true` 导致 pnpm 嵌套依赖无法从链接路径解析，扁平布局可解析。三组统一用 pnpm `hoisted`，不增加手工依赖或修改发布包；记录布局并纳入趋势兼容身份。去掉 `weapp-tailwindcss` 的基线还需保留页面的标签模板语义：先核验发布版 `weappTwIgnore === String.raw`，再按 AST 将基线命名导入改为内建函数，其他 API 拒绝猜测替换。

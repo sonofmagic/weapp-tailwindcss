@@ -25,11 +25,11 @@ export async function inspectOutput(consumer, output, operation, marker) {
   if (consumer.mode === 'native') return { marker, structure: true, styleEquivalent: false }
   let extra
   let comparisonProbes
-  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => {
-    extra = inspectExtraStyles(styles, consumed, consumer.item, operation)
+  const probes = await inspectFiles(output, consumer.item, roundFor(operation), (styles, consumed) => {
+    if (!browserTarget(consumer.item)) extra = inspectExtraStyles(styles, consumed, consumer.item, operation)
     comparisonProbes = inspectStyles(styles.map(comparableCss), consumer.item, roundFor(operation), consumed)
   })
-  return extra ? { probes, comparisonProbes: { ...probes, ...comparisonProbes }, extra } : probes
+  return { probes, comparisonProbes: { ...probes, ...comparisonProbes }, ...(extra ? { extra } : {}) }
 }
 
 export async function observePage(url, session, directory) {
