@@ -54,7 +54,7 @@ jobs:
     uses: ./.github/workflows/demo-performance-weekly.yml
     with:
       only: ${{ inputs.only }}
-      version: latest
+      version: '5.5.11'
 
   synthetic-performance:
     if: github.event_name != 'workflow_dispatch' || !inputs.weekly_demo_cost

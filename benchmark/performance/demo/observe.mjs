@@ -30,6 +30,7 @@ export async function observePage(url, session, directory) {
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
   const state = trackBrowserState(page)
   const { errors, pending } = state
+  let lastObservation
   try {
     await waitFor(async () => {
       const response = await fetch(url, { signal: AbortSignal.timeout(2000) })
@@ -63,6 +64,8 @@ export async function observePage(url, session, directory) {
           })
           return { computed, styles, topology, ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
         }, { expected: probeClasses(consumer.item, round), round, marker })
+        // 独立诊断分支保存浏览器实际样式，数据不作为正式性能验收样本。
+        lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
         assert.equal(pending.size, 0, `仍有模块或样式请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')
         assert.ok(!result.hot || result.hot === 'idle', 'HMR 尚未完成')
@@ -79,6 +82,7 @@ export async function observePage(url, session, directory) {
         return { computed: result.computed, topology: result.topology }
       },
       async close() {
+        await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ pid: session.pid, errors, lastObservation }))
         await writeFile(path.join(directory, 'browser-errors.json'), JSON.stringify(errors))
         await browser.close()
       },

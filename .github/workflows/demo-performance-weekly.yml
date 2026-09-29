@@ -51,7 +51,7 @@ jobs:
         env:
           COST_VERSION: ${{ inputs.version || 'latest' }}
           COST_ONLY: ${{ inputs.only || '' }}
-        run: pnpm perf:demo:report --plan --version "$COST_VERSION" --only "$COST_ONLY" --out-dir .tmp/weekly-plan
+        run: pnpm perf:demo:report --plan --diagnostic --phases hmr --runs 3 --hmr-runs 1 --warmups 0 --version "$COST_VERSION" --only "$COST_ONLY" --out-dir .tmp/weekly-plan
       - uses: actions/upload-artifact@v7
         if: always()
         with:
