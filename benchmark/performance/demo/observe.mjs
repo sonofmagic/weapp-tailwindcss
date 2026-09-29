@@ -13,6 +13,7 @@ import { inspectExtraStyles } from './style-evidence.mjs'
 import { trackBrowserState } from './browser-state.mjs'
 import { waitForTaroComponents } from './component-ready.mjs'
 import { comparableCss } from './semantic-css.mjs'
+import { readPageSnapshot } from './page-snapshot.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -34,6 +35,7 @@ export async function inspectOutput(consumer, output, operation, marker) {
 export async function observePage(url, session, directory) {
   const browser = await chromium.launch()
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
+  await page.addInitScript({ content: `globalThis.__WEAPP_DEMO_COST_COMPONENT_READY__ = (${waitForTaroComponents.toString()})` })
   const state = trackBrowserState(page)
   const { errors, pending } = state
   let lastObservation
@@ -48,29 +50,7 @@ export async function observePage(url, session, directory) {
       waitForTransport: () => waitFor(() => assert.ok(state.transportReady(), '开发更新通道尚未握手'), session),
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
-        if (consumer.item.family === 'taro') await page.evaluate(waitForTaroComponents)
-        const result = await page.evaluate(({ expected, round, marker }) => {
-          const first = document.getElementById('tw-matrix-height')
-          if (!first?.textContent.includes(marker)) throw new Error('本轮页面 marker 尚未生效')
-          const computed = {}
-          for (const [key, name] of Object.entries(expected)) {
-            const element = document.getElementById(`tw-matrix-${key}`)
-            if (!element || element.dataset.twMatrix !== round) throw new Error(`本轮节点缺失：${key}`)
-            const css = getComputedStyle(element)
-            computed[key] = { name, classes: [...element.classList], width: css.width, height: css.height, marginTop: css.marginTop, display: css.display, color: css.color, background: css.backgroundColor }
-          }
-          if (round === 'restore' && document.getElementById('tw-matrix-added')) throw new Error('移除节点仍存在')
-          const styles = []
-          for (const sheet of document.styleSheets) {
-            try { styles.push([...sheet.cssRules].map(rule => rule.cssText).join('\n')) }
-            catch { /* 不读取跨域第三方样式。 */ }
-          }
-          const topology = [...document.body.querySelectorAll('*')].filter(element => !['SCRIPT', 'STYLE'].includes(element.tagName)).map(element => {
-            const css = getComputedStyle(element)
-            return { tag: element.tagName, children: element.children.length, height: css.height, width: css.width, color: css.color, background: css.backgroundColor, display: css.display }
-          })
-          return { computed, styles, topology, ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
-        }, { expected: probeClasses(consumer.item, round), round, marker })
+        const result = await page.evaluate(readPageSnapshot, { expected: probeClasses(consumer.item, round), round, marker, family: consumer.item.family })
         lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
         assert.equal(pending.size, 0, `仍有模块或样式请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')

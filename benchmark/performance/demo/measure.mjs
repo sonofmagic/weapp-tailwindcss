@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import fg from 'fast-glob'
 import { commands } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { freePort, developmentEnvironment, assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete } from '../../../scripts/ci/demo-matrix/process.mjs'
 import { cleanCache } from './fixtures.mjs'
@@ -56,7 +57,24 @@ export async function measureBuild(prepared, rows, options) {
       rows[metric].status = 'passed'
       rows[metric].semanticVerified = true
     }
-    catch (error) { rows[metric].status = 'failed'; rows[metric].error = error.stack }
+    catch (error) {
+      rows[metric].status = 'failed'
+      rows[metric].error = error.stack
+      // 仅在计时结束后的失败路径保留原始产物，便于核验变量作用域、异步样式与原生 marker。
+      for (const [mode, consumer] of Object.entries(consumers)) {
+        const output = path.join(consumer.project, commands(consumer.item).output)
+        const destination = path.join(options.logs, 'failed-output', metric, mode)
+        try {
+          const patterns = consumer.item.target === 'rn' ? ['**/*.js', '**/*.bundle'] : ['**/*.css', '**/*.html']
+          for (const file of await fg(patterns, { cwd: output, absolute: true })) {
+            const target = path.join(destination, path.relative(output, file))
+            await mkdir(path.dirname(target), { recursive: true })
+            await cp(file, target)
+          }
+        }
+        catch (evidenceError) { rows[metric].error += `\n无法保存 ${mode} 失败产物：${evidenceError.message}` }
+      }
+    }
   }
 }
 
