@@ -7,7 +7,7 @@ import { insertProbe } from '../../../scripts/ci/demo-matrix/probe.mjs'
 import { configure } from './configs.mjs'
 import { cleanCache, compareCommonLocks, createConsumer, install, keepLockEvidence, prepareLock, seedPreparationStore } from './fixtures.mjs'
 import { modes } from './model.mjs'
-import { compileStatic, sourceFiles, stripGeneration, applySources } from './precompile.mjs'
+import { compileStatic, sourceFiles, stripSourceGeneration, applySources } from './precompile.mjs'
 import { assertPublished, hash, installationLayout } from './published.mjs'
 import { run } from './process.mjs'
 import { prepareSteps } from './steps.mjs'
@@ -68,8 +68,7 @@ export async function prepareTarget(item, published, directory, logs) {
       steps.static.set(operation, await plainRuntimeMarkers(new Map([...originals, ...change, ...compiled])))
       const native = new Map([...originals, ...change])
       for (const [file, text] of native) {
-        if (/\.(?:css|scss)$/.test(file)) native.set(file, stripGeneration(text))
-        else if (/\.(?:vue|uvue|mpx)$/.test(file)) native.set(file, text.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/g, (_, open, css, close) => open + stripGeneration(css) + close))
+        native.set(file, stripSourceGeneration(text, file))
       }
       steps.native.set(operation, await plainRuntimeMarkers(native))
     }

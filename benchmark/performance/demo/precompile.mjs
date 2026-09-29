@@ -5,6 +5,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import fg from 'fast-glob'
 import postcss from 'postcss'
+import scss from 'postcss-scss'
 import { decode } from './capture.cjs'
 import { compileAuthored } from './authored.mjs'
 import { preprocessStyle, sfcBlocks } from './sfc.mjs'
@@ -12,13 +13,26 @@ import { withCapturedEnvironment } from './prepare-environment.mjs'
 import { compileScript } from './precompile-script.mjs'
 import { cssEntries } from './options.mjs'
 
-export function stripGeneration(css) {
-  const root = postcss.parse(css)
+export function stripGeneration(css, language = 'css') {
+  assert.ok(['css', 'scss'].includes(language), `尚未验证的原生样式语法：${language}`)
+  const syntax = language === 'scss' ? scss : postcss
+  const root = syntax.parse(css)
   root.walkAtRules(rule => {
     if (['tailwind', 'theme', 'source', 'config', 'plugin', 'utility', 'custom-variant', 'apply', 'reference'].includes(rule.name)
       || (rule.name === 'import' && /["'](?:tailwindcss|weapp-tailwindcss)(?:[\/"'])/.test(rule.params))) rule.remove()
   })
-  return root.toString()
+  return root.toString(syntax.stringify)
+}
+
+export function stripSourceGeneration(source, file) {
+  if (/\.(?:css|scss)$/.test(file)) return stripGeneration(source, path.extname(file).slice(1))
+  if (!/\.(?:vue|uvue|mpx)$/.test(file)) return source
+  let result = source
+  for (const block of sfcBlocks(source, file).filter(block => block.type === 'style').reverse()) {
+    const css = stripGeneration(block.content, block.attrs.lang ?? 'css')
+    result = result.slice(0, block.offset) + css + result.slice(block.offset + block.length)
+  }
+  return result
 }
 
 export async function sourceFiles(consumer) {

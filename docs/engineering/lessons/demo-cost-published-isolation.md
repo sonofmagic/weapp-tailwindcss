@@ -58,6 +58,10 @@ regressions:
 
 ## 验证
 
+Linux 诊断 `36595321092` 在计划阶段暴露 watcher 回归自身的跨平台假设：原子保存的临时文件也可能先触发 change，`once('change')` 不能代表目标源码更新。回归改为按完整源码路径消费事件，仍断言连续四次真实保存的内容，另加临时事件先到达的确定性用例与监听器清理断言。没有放宽 marker、样式、采样或耗时预算。
+
+扩展 uni 诊断 `36595811830` 的准备阶段把 `uni.scss` 当普通 CSS 解析，遇到行注释后报 `Unknown word $uni-text-color-inverse`。原生组现在按扩展名和 SFC 样式块的 `lang` 选择 CSS／SCSS 解析器，用对应 stringifier 保留作者语法，只移除生成指令。真实 `uni.scss` 逐字保留、Sass 编译语义、SFC 多样式块均有回归；`CI=1 pnpm test:perf:demo` 共 84 项通过。该修复不改变生产生成器，也不能用准备测试代替云端框架验收。
+
 全 Linux 诊断的 React/Vue Vite、uni H5、Gulp 在快速基线组出现第二次保存无事件，接入组可能因处理更慢而未触发。Chokidar 3/5 实现均对 change 去重 50 ms，并对 remove 去重 100 ms。真实 Chokidar 5 目录 watcher 使用原子替换复现：收到首次 change 后立即再次保存，只观察到第一次；独立重建 watcher 并在事件后间隔 150 ms，两次内容均收到。测量器在上次结果已验证之后、下一次计时开始之前统一保留 150 ms 间隔，仍逐次验证新 marker 与样式；记录到样本和趋势身份。持久回归连续验证四次真实保存，不通过固定等待认定成功。该实验解释输入事件被吞的机制，完整框架修复状态仍以新提交云端报告为准。
 
 `36590396264` 的定向诊断确认分包 RN 和 uni App 构建通过，仍暴露出几类隔离准备问题。uni 示例直接声明所用 Sass；style-injector uni 同时声明 Sass Embedded 与 Less。消费项目复用根 `.pnpmfile.cjs` 对 UTS `gnu/glibc` 发布元数据的已有纠正，裁剪锁文件时保留钩子校验值；原安装日志明确记录 Linux GNU 包因 `gnu` 与 `glibc` 不匹配而被跳过。
