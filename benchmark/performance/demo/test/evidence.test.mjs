@@ -12,6 +12,7 @@ import { renderHtml, renderMarkdown } from '../report.mjs'
 import { mergeReports } from '../runner.mjs'
 import { downloadFootprint } from '../install.mjs'
 import { createBudgets, evaluateBudgets } from '../gate.mjs'
+import { sourceFiles } from '../precompile.mjs'
 
 const directories = []
 it('下载体积按已完成包去重，缺少大小不能记作零字节', () => {
@@ -27,6 +28,14 @@ it('下载体积按已完成包去重，缺少大小不能记作零字节', () =
 })
 afterEach(async () => { for (const directory of directories.splice(0)) await rm(directory, { recursive: true, force: true }) })
 async function temp() { const dir = await mkdtemp(path.join(os.tmpdir(), 'cost-test-')); directories.push(dir); return dir }
+it('静态准备不得把捕获构建产生的缓存当作源码重放', async () => {
+  const project = await temp()
+  for (const directory of ['src', '.temp', '.cache', 'dist', 'unpackage']) {
+    await mkdir(path.join(project, directory))
+    await writeFile(path.join(project, directory, 'page.js'), 'export const className = "h-8"')
+  }
+  expect(await sourceFiles({ project })).toEqual(['src/page.js'])
+})
 function example() {
   const row = { demo: 'demo', target: 'web', os: 'ubuntu-latest', node: 24, metric: 'build.cold', version: '1.2.3', semanticVerified: true, status: 'passed', samples: Object.fromEntries(modes.map(mode => [mode, Array.from({ length: 7 }, () => ({ ms: mode === 'enabled' ? 80 : 100, peakRssMb: 20, semanticHash: 'stable' }))])) }
   return { schema, sha: 'abc', runId: '1.1', package: { version: '1.2.3', integrity: 'sha512-test' }, environment: { platform: 'linux', node: 'v24', pnpm: '12', cpu: 'test' }, settings: defaults, boundaries: [], expected: [rowKey(row)], rows: [row] }
