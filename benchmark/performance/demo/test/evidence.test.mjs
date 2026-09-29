@@ -6,7 +6,7 @@ import { stringify } from 'yaml'
 import { assertRegistryGraph, pruneLock } from '../lock.mjs'
 import { createManifest, planJobs } from '../manifest.mjs'
 import { treeRss } from '../memory.mjs'
-import { defaults, modes, rowKey, schema, validateReport } from '../model.mjs'
+import { defaults, modes, rowKey, schema, summarizeRow, validateReport } from '../model.mjs'
 import { assertPublished, parseLock } from '../published.mjs'
 import { renderHtml, renderMarkdown } from '../report.mjs'
 import { mergeReports } from '../runner.mjs'
@@ -106,6 +106,16 @@ it('报告保留改善、零基线与 HTML 注入边界', () => {
   report.rows[0].error = '</td><script>alert(1)</script>'
   expect(renderHtml(report)).toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
   expect(renderMarkdown(report)).toContain('80.00 ms / N/A%')
+})
+it('语义不稳定和版本错误的样本不能进入开销排名', () => {
+  for (const mutate of [row => row.samples.enabled[0].semanticHash = 'different', row => row.version = '9.0.0']) {
+    const report = example()
+    mutate(report.rows[0])
+    const row = summarizeRow(report.rows[0], report.settings, report)
+    expect(row.comparable).toBe(false)
+    expect(row.processing).toBeNull()
+    expect(renderMarkdown(report)).not.toContain('-20.00 ms / -20.00%')
+  }
 })
 it('汇总依据独立清单，拒绝错误版本和重复分片', async () => {
   const report = { ...example(), shard: 'shard-0' }

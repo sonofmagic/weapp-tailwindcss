@@ -61,11 +61,25 @@ export function rowKey(row) {
   return JSON.stringify([row.demo, row.target, row.os, row.node, row.metric])
 }
 
-export function summarizeRow(row, settings = defaults) {
+function sampleErrors(row, settings) {
+  const errors = []
+  const key = rowKey(row)
+  const required = row.metric.startsWith('hmr.') ? settings.hmrRuns : settings.runs
+  for (const mode of modes) {
+    const samples = row.samples?.[mode]
+    if (samples?.length !== required || !statistics(samples?.map(item => item.ms) ?? [])) errors.push(`样本不足或无效 ${key}:${mode}`)
+    if (!samples?.every(sample => Number.isFinite(sample.peakRssMb) && sample.peakRssMb > 0)) errors.push(`内存样本缺失 ${key}:${mode}`)
+    if (!row.metric.startsWith('install.') && (!samples?.every(sample => sample.semanticHash) || mode !== 'native' && new Set(samples?.map(sample => sample.semanticHash)).size !== 1)) errors.push(`语义快照缺失或样本之间不稳定 ${key}:${mode}`)
+    if (row.metric === 'install.cold' && !samples?.every(sample => Number.isFinite(sample.installedBytes) && Number.isFinite(sample.packageArchiveBytes) && sample.packageArchiveBytes > 0)) errors.push(`安装空间或压缩包体积缺失 ${key}:${mode}`)
+  }
+  return errors
+}
+
+export function summarizeRow(row, settings = defaults, report) {
   const values = Object.fromEntries(modes.map(mode => [mode, statistics(row.samples?.[mode]?.map(sample => sample.ms) ?? [])]))
   const memory = Object.fromEntries(modes.map(mode => [mode, statistics(row.samples?.[mode]?.map(sample => sample.peakRssMb) ?? [])]))
-  const count = row.metric.startsWith('hmr.') ? settings.hmrRuns : settings.runs
-  const valid = row.status === 'passed' && row.semanticVerified && modes.every(mode => values[mode]?.count === count && memory[mode]?.count === count)
+  const valid = row.status === 'passed' && row.semanticVerified && !sampleErrors(row, settings).length
+    && (!report || row.version === report.package?.version)
   return { ...row, comparable: valid, summary: valid ? values : Object.fromEntries(modes.map(mode => [mode, null])), memory: valid ? memory : null, overhead: valid ? difference(values.native.median, values.enabled.median) : null, processing: valid ? difference(values.static.median, values.enabled.median) : null }
 }
 
@@ -88,14 +102,7 @@ export function validateReport(report) {
     const environment = row.environment ?? report.environment
     const platform = { 'ubuntu-latest': 'linux', 'macos-latest': 'darwin', 'windows-latest': 'win32' }[row.os]
     if (!environment?.cpu || !environment?.pnpm || environment.platform !== platform || Number(environment.node?.replace(/^v/, '').split('.')[0]) !== row.node) errors.push(`环境身份缺失或错误 ${key}`)
-    const required = row.metric.startsWith('hmr.') ? report.settings.hmrRuns : report.settings.runs
-    for (const mode of modes) {
-      const samples = row.samples?.[mode]
-      if (samples?.length !== required || !statistics(samples?.map(item => item.ms) ?? [])) errors.push(`样本不足或无效 ${key}:${mode}`)
-      if (!samples?.every(sample => Number.isFinite(sample.peakRssMb) && sample.peakRssMb > 0)) errors.push(`内存样本缺失 ${key}:${mode}`)
-      if (!row.metric.startsWith('install.') && (!samples?.every(sample => sample.semanticHash) || mode !== 'native' && new Set(samples?.map(sample => sample.semanticHash)).size !== 1)) errors.push(`语义快照缺失或样本之间不稳定 ${key}:${mode}`)
-      if (row.metric === 'install.cold' && !samples?.every(sample => Number.isFinite(sample.installedBytes) && Number.isFinite(sample.packageArchiveBytes) && sample.packageArchiveBytes > 0)) errors.push(`安装空间或压缩包体积缺失 ${key}:${mode}`)
-    }
+    errors.push(...sampleErrors(row, report.settings))
   }
   for (const key of expected) if (!actual.has(key)) errors.push(`缺失 ${key}`)
   if (!expected.size) errors.push('空矩阵不能通过')
