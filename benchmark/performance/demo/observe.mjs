@@ -50,7 +50,7 @@ export async function observePage(url, session, directory) {
       waitForTransport: () => waitFor(() => assert.ok(state.transportReady(), '开发更新通道尚未握手'), session),
       async waitForStylesheetMarker(marker) {
         const urls = await page.evaluate(() => [...document.styleSheets].map(sheet => sheet.href).filter(Boolean))
-        const texts = await state.stylesheetTexts(urls)
+        const texts = await state.linkedStyles(urls)
         assert.ok(texts.some(text => text.includes(marker)), `当前样式响应缺少本轮 marker ${marker}`)
       },
       async inspect(consumer, operation, marker) {

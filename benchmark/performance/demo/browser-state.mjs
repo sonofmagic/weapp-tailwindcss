@@ -52,8 +52,5 @@ export function trackBrowserState(page) {
         return result.text
       }))
     },
-    async stylesheetTexts(urls) {
-      return this.linkedStyles(urls)
-    },
   }
 }
