@@ -4,8 +4,15 @@ import { difference, modes, order, selectCases, statistics, weeklyMatrix } from 
 import { inside, withoutIntegration } from '../published.mjs'
 import { regression } from '../gate.mjs'
 import { rewriteConfiguration } from '../configs.mjs'
+import { disabled } from '../capture.cjs'
 
 describe('周报数据边界', () => {
+  it('禁用适配保留 Webpack 工厂与 Vite 插件集合契约', () => {
+    expect(disabled('StyleInjector', [], '', '', 'weapp-style-injector/webpack/mpx')()).toHaveProperty('apply')
+    expect(disabled('WeappTailwindcss', [], '', '', 'weapp-tailwindcss/vite')()).toEqual([])
+    const Plugin = disabled('WeappTailwindcss', [], '', '', 'weapp-tailwindcss/webpack')
+    expect(new Plugin()).toHaveProperty('apply')
+  })
   it('复用完整清单，拒绝拼错和重复的目标', () => {
     expect(selectCases()).toHaveLength(107)
     expect(weeklyMatrix().include).toHaveLength(159)

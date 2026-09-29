@@ -73,6 +73,7 @@ export function validateReport(report) {
   const errors = [...(report.collectionErrors ?? [])]
   if (report.diagnostic) errors.push('缩减采样诊断不能作为正式周报或预算依据')
   if (report.schema !== schema) errors.push('未知报告格式')
+  if (!report.sha || !report.runId || !report.package?.integrity || !report.package?.version) errors.push('缺少提交、批次或发布包身份')
   const actual = new Set()
   const expected = new Set(report.expected ?? [])
   if (expected.size !== report.expected?.length) errors.push('预期清单重复或缺失')
@@ -84,11 +85,15 @@ export function validateReport(report) {
     if (row.status !== 'passed') { errors.push(`${key}: ${row.error ?? row.status}`); continue }
     if (row.version !== report.package?.version) errors.push(`版本不一致 ${key}`)
     if (!row.semanticVerified) errors.push(`缺少语义验证 ${key}`)
+    const environment = row.environment ?? report.environment
+    const platform = { 'ubuntu-latest': 'linux', 'macos-latest': 'darwin', 'windows-latest': 'win32' }[row.os]
+    if (!environment?.cpu || !environment?.pnpm || environment.platform !== platform || Number(environment.node?.replace(/^v/, '').split('.')[0]) !== row.node) errors.push(`环境身份缺失或错误 ${key}`)
     const required = row.metric.startsWith('hmr.') ? report.settings.hmrRuns : report.settings.runs
     for (const mode of modes) {
       const samples = row.samples?.[mode]
       if (samples?.length !== required || !statistics(samples?.map(item => item.ms) ?? [])) errors.push(`样本不足或无效 ${key}:${mode}`)
       if (!samples?.every(sample => Number.isFinite(sample.peakRssMb) && sample.peakRssMb > 0)) errors.push(`内存样本缺失 ${key}:${mode}`)
+      if (!row.metric.startsWith('install.') && (!samples?.every(sample => sample.semanticHash) || mode !== 'native' && new Set(samples?.map(sample => sample.semanticHash)).size !== 1)) errors.push(`语义快照缺失或样本之间不稳定 ${key}:${mode}`)
       if (row.metric === 'install.cold' && !samples?.every(sample => Number.isFinite(sample.installedBytes) && Number.isFinite(sample.packageArchiveBytes) && sample.packageArchiveBytes > 0)) errors.push(`安装空间或压缩包体积缺失 ${key}:${mode}`)
     }
   }

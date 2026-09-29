@@ -1,4 +1,8 @@
 import { expect, it } from 'vitest'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { setTimeout as delay } from 'node:timers/promises'
 import { run, startProcess } from '../process.mjs'
 
 it('超时会结束被测进程，并保留失败原因', async () => {
@@ -12,3 +16,20 @@ it('重复停止同一个 watcher 等待同一个清理过程', async () => {
   await Promise.all([session.stop(), session.stop()])
   expect(() => session.ensureRunning()).toThrow()
 })
+
+it('超时结束自己创建的子孙进程，不碰其他进程', async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'cost-process-'))
+  const file = path.join(directory, 'child.json')
+  const source = `const {spawn}=require('node:child_process'); const child=spawn(process.execPath,['-e','setInterval(()=>{},100)'],{stdio:'ignore'}); require('node:fs').writeFileSync(process.argv[1],JSON.stringify(child.pid)); setInterval(()=>{},100)`
+  try {
+    await expect(run(process.execPath, ['-e', source, file], { timeout: 1200 })).rejects.toThrow('超时')
+    const pid = JSON.parse(await readFile(file, 'utf8'))
+    let alive = true
+    for (let attempt = 0; attempt < 30 && alive; attempt++) {
+      try { process.kill(pid, 0); await delay(100) } catch (error) { if (error.code === 'ESRCH') alive = false; else throw error }
+    }
+    expect(alive).toBe(false)
+    expect(() => process.kill(process.pid, 0)).not.toThrow()
+  }
+  finally { await rm(directory, { recursive: true, force: true }) }
+}, 10000)

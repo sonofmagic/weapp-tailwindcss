@@ -51,6 +51,7 @@ export function regression(before, after, metric, memory = false) {
 }
 
 export function createBudgets(first, second) {
+  assert.ok(!first.harnessState && !second.harnessState, '未提交测量脚本不能冻结预算')
   assert.deepEqual(validateReport(first), [], '第一批报告不完整')
   assert.deepEqual(validateReport(second), [], '第二批报告不完整')
   assert.notEqual(first.runId, second.runId, '预算需要两批独立采样')

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { mkdir, rm } from 'node:fs/promises'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { commands } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { freePort, developmentEnvironment, assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete } from '../../../scripts/ci/demo-matrix/process.mjs'
@@ -8,10 +8,19 @@ import { cleanCache } from './fixtures.mjs'
 import { modes, operations, order } from './model.mjs'
 import { browserTarget, inspectOutput, observePage } from './observe.mjs'
 import { run, startProcess, waitFor } from './process.mjs'
-import { writeStep } from './steps.mjs'
+import { planStep, writeStep } from './steps.mjs'
+import { hash } from './published.mjs'
 
 function equivalent(results) {
   assert.deepEqual(results.static, results.enabled, '静态组与接入组的实际样式或页面结构不等价')
+}
+
+async function keepSemantic(result, mode, metric, round, options) {
+  const directory = path.join(options.logs, 'semantic')
+  await mkdir(directory, { recursive: true })
+  const content = JSON.stringify(result, null, 2)
+  await writeFile(path.join(directory, `${mode}-${metric}-${round}.json`), content)
+  return hash(content)
 }
 
 export async function measureBuild(prepared, rows, options) {
@@ -35,6 +44,7 @@ export async function measureBuild(prepared, rows, options) {
           const sample = await run('pnpm', command.build, { cwd: consumer.project, env: command.env, logFile: path.join(options.logs, `${mode}-${metric}-${round}.log`), timeout: options.timeout })
           const result = await inspectOutput(consumer, path.join(consumer.project, command.output), 'initial', marker)
           results[mode] = result
+          sample.semanticHash = await keepSemantic(result, mode, metric, round, options)
           delete sample.stdout
           rows[metric].samples[mode].push({ ...sample, round, marker, cache: metric.endsWith('cold') ? 'project-cache-cleared' : 'project-cache-retained' })
         }
@@ -92,7 +102,11 @@ export async function measureWatch(prepared, rows, options) {
       const results = {}
       for (const mode of order(round, options.reverse)) {
         const watcher = await startWatcher(consumers[mode], steps[mode].get('initial'), options, round)
-        try { startup.samples[mode].push(watcher.sample); results[mode] = watcher.result.topology ?? watcher.result }
+        try {
+          watcher.sample.semanticHash = await keepSemantic(watcher.result, mode, `startup.${endpoint}`, round, options)
+          startup.samples[mode].push(watcher.sample)
+          results[mode] = watcher.result.topology ?? watcher.result
+        }
         finally { await watcher.close() }
       }
       equivalent(results)
@@ -109,17 +123,21 @@ export async function measureWatch(prepared, rows, options) {
           for (const mode of order(round + options.warmups, options.reverse)) {
             const consumer = consumers[mode]
             const watcher = watchers[mode]
+            await watcher.browser?.waitForTransport()
             const reset = operation === 'remove' ? 'add' : operation === 'restore' ? 'config' : 'initial'
             const resetMarker = `cost-${randomUUID()}`
             await writeStep(consumer, steps[mode].get(reset), resetMarker)
             await waitFor(() => watcher.check(reset, resetMarker), watcher.session, options.timeout)
+            await watcher.browser?.waitForTransport()
             const marker = `cost-${randomUUID()}`
             const offset = watcher.session.log().length
             const documents = watcher.browser?.documents()
+            const save = await planStep(consumer, steps[mode].get(operation), marker)
             const began = performance.now()
-            await writeStep(consumer, steps[mode].get(operation), marker)
+            await save()
             const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
             const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
+            sample.semanticHash = await keepSemantic(result, mode, `hmr.${operation}.${endpoint}`, round, options)
             if (round >= 0) rows[`hmr.${operation}.${endpoint}`].samples[mode].push(sample)
             results[mode][operation] = result.topology ?? result
           }

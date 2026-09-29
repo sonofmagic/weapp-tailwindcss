@@ -48,7 +48,7 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
 }
 
 export async function mergeReports(manifest, files) {
-  const errors = []
+  const errors = [...(manifest.collectionErrors ?? [])]
   const seen = new Set()
   const rows = []
   for (const file of files) {
@@ -69,5 +69,9 @@ export async function mergeReports(manifest, files) {
     catch (error) { errors.push(`${path.basename(path.dirname(file))}: ${error.message}`) }
   }
   for (const job of manifest.jobs) if (!seen.has(job.id)) errors.push(`分片缺失：${job.id} / ${job.os} / Node ${job.node} / ${job.shard}`)
+  const received = new Set(rows.map(rowKey))
+  for (const row of manifest.jobs.flatMap(job => job.rows)) {
+    if (!received.has(rowKey(row))) rows.push({ ...row, status: 'missing', error: '本轮没有收到有效结果，参见分片收集错误', version: manifest.package.version, semanticVerified: false, samples: Object.fromEntries(modes.map(mode => [mode, []])) })
+  }
   return { ...manifest, jobs: undefined, rows, collectionErrors: errors, finishedAt: new Date().toISOString() }
 }

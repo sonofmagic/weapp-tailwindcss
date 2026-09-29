@@ -1,5 +1,4 @@
 const fs = require('node:fs')
-const path = require('node:path')
 const { Transform } = require('node:stream')
 
 function encode(value) {
@@ -34,8 +33,8 @@ function decode(value, from, to) {
   return value
 }
 
-function disabled(name, records, from, root) {
-  if (name === 'WeappTailwindcss' || name === 'StyleInjector') return function () { return new.target ? { apply() {} } : [] }
+function disabled(name, records, from, root, specifier = '') {
+  if (name === 'WeappTailwindcss' || name === 'StyleInjector') return function () { return new.target || /\/(?:webpack|rspack)(?:\/|$)/.test(specifier) ? { apply() {} } : [] }
   if (name === 'patchRspackConfig') return value => value
   if (name === 'createPlugins') return () => Object.fromEntries(['adaptWxss', 'generateWxss', 'transformJs', 'transformWxml'].map(key => [key, () => new Transform({ objectMode: true, transform(file, encoding, done) { done(null, file) } })]))
   const helper = records.filter(row => row.key === `helper:${name}`)

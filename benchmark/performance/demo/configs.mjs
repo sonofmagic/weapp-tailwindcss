@@ -59,7 +59,7 @@ export async function configure(consumer, mode, records = [], capturedRoot = con
     const prefix = mode === 'capture' ? `const original = require('node:module').createRequire(${JSON.stringify(path.join(consumer.project, 'package.json'))})(${JSON.stringify(specifier)}); const {capture} = require('./capture.cjs');\n`
       : `const {disabled} = require('./capture.cjs'); const records = ${JSON.stringify(records)}; const from = ${JSON.stringify(capturedRoot)}; const root = require('node:path').dirname(__dirname);\n`
     await writeFile(file, prefix + names.map(name => mode === 'capture' ? `exports.${name} = capture(${JSON.stringify(specifier)}, ${JSON.stringify(name)}, original.${name});`
-      : `exports.${name} = ${name.startsWith('resolve') || ['hbuilderx', 'uniAppX'].includes(name) ? `(...args) => disabled(${JSON.stringify(name)}, records, from, root)(...args)` : `disabled(${JSON.stringify(name)}, records, from, root)`};`).join('\n'))
+      : `exports.${name} = ${name.startsWith('resolve') || ['hbuilderx', 'uniAppX'].includes(name) ? `(...args) => disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})(...args)` : `disabled(${JSON.stringify(name)}, records, from, root, ${JSON.stringify(specifier)})`};`).join('\n'))
   }
   return async () => { for (const [file, source] of originalFiles) await writeFile(file, source) }
 }

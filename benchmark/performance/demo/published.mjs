@@ -61,7 +61,7 @@ export async function consumerManifest(item, published) {
 
 export function withoutIntegration(manifest, { authored = false } = {}) {
   const result = structuredClone(manifest)
-  const removed = authored ? ['weapp-style-injector'] : ['weapp-tailwindcss', 'tailwindcss', '@iconify/tailwind4', '@iconify-json/mdi', '@iconify-json/svg-spinners', 'tailwindcss-config', '@tailwindcss/typography', '@tailwindcss/forms', 'tailwindcss-animate']
+  const removed = authored ? ['weapp-style-injector'] : ['weapp-tailwindcss', 'tailwindcss', '@tailwindcss/postcss', '@tailwindcss/vite', '@iconify/tailwind4', '@iconify-json/mdi', '@iconify-json/svg-spinners', 'tailwindcss-config', '@tailwindcss/typography', '@tailwindcss/forms', 'tailwindcss-animate']
   for (const field of fields) for (const name of removed) delete result[field]?.[name]
   return result
 }

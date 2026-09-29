@@ -5,6 +5,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { decode } from './capture.cjs'
 import { inside } from './published.mjs'
+import { isWeb } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 
 export async function compileAuthored(consumer, records, capturedRoot) {
   const require = createRequire(path.join(consumer.project, 'package.json'))
@@ -30,6 +31,9 @@ export async function compileAuthored(consumer, records, capturedRoot) {
     const targets = [...(scope.targetSourceFiles ?? []), ...(scope.sourceModules ?? [])]
     assert.ok(targets.length, '注入作用域没有源码目标映射，拒绝猜测输出关系')
     for (const target of targets) {
+      const name = target.styleFileName ?? target.fileName.slice(0, -path.posix.extname(target.fileName).length)
+      const output = `${name}${isWeb(consumer.item) ? '.css' : '.wxss'}`
+      if (!injector.isFileMatchedBySubpackageScope(output, scope) || !injector.isSourceFileMatchedBySubpackageScope(target.fileName, scope)) continue
       const file = target.sourceAbsolutePath
       assert.ok(inside(consumer.project, file), '注入目标越界')
       const list = additions.get(file) ?? new Set()

@@ -105,7 +105,7 @@ export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
   return { rules: result, spacing: usesSpacing ? [...variables].sort() : [] }
 }
 
-export async function inspectFiles(output, item, round) {
+export async function inspectFiles(output, item, round, inspectAdditionalStyles) {
   const files = await fg('**/*', { cwd: output, absolute: true, onlyFiles: true })
   let styleFiles = files.filter(file => /\.(?:css|wxss|acss|ttss|qss|jxss|ddss|swan\.css)$/.test(file))
   const texts = await Promise.all(files.filter(file => /\.(?:js|html|wxml|axml|ttml|qml|qxml|swan|ddml|jxml|ksml|xhsml|ux)$/.test(file)).map(async file => ({ file, text: await readFile(file, 'utf8') })))
@@ -146,6 +146,8 @@ export async function inspectFiles(output, item, round) {
     }
     relevant = [...reached]
   }
-  const result = inspectStyles(await Promise.all(relevant.map(file => readFile(file, 'utf8'))), item, round, consumed)
+  const styles = await Promise.all(relevant.map(file => readFile(file, 'utf8')))
+  const result = inspectStyles(styles, item, round, consumed)
+  await inspectAdditionalStyles?.(styles, consumed)
   return item.family === 'mpx' ? { ...result, platform: item.target } : result
 }

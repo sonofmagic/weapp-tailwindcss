@@ -9,6 +9,7 @@ import { inspectNative } from '../../../scripts/ci/demo-matrix/native.mjs'
 import { probeClasses } from '../../../scripts/ci/demo-matrix/probe.mjs'
 import { roundFor } from './steps.mjs'
 import { waitFor } from './process.mjs'
+import { inspectExtraStyles } from './style-evidence.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -18,7 +19,9 @@ export async function inspectOutput(consumer, output, operation, marker) {
   assert.ok(contents.some(text => text.includes(marker)), `缺少本轮 marker ${marker}`)
   if (coverage(consumer.item) === 'native-build') return inspectNative(output)
   if (consumer.mode === 'native') return { marker, structure: true, styleEquivalent: false }
-  return inspectFiles(output, consumer.item, roundFor(operation))
+  let extra
+  const probes = await inspectFiles(output, consumer.item, roundFor(operation), browserTarget(consumer.item) ? undefined : (styles, consumed) => { extra = inspectExtraStyles(styles, consumed, consumer.item, operation) })
+  return extra ? { probes, extra } : probes
 }
 
 export async function observePage(url, session, directory) {
@@ -27,9 +30,22 @@ export async function observePage(url, session, directory) {
   const errors = []
   const pending = new Set()
   let documents = 0
+  let transportReady = false
   page.on('pageerror', error => errors.push(error.message))
-  page.on('framenavigated', frame => { if (frame === page.mainFrame()) documents++ })
-  page.on('request', request => { if (['script', 'stylesheet'].includes(request.resourceType())) pending.add(request) })
+  page.on('websocket', socket => {
+    const version = documents
+    socket.on('framereceived', ({ payload }) => {
+      try {
+        if (version === documents && ['connected', 'ok', 'still-ok', 'warnings'].includes(JSON.parse(String(payload)).type)) transportReady = true
+      }
+      catch { /* 业务 WebSocket 不参与构建工具的握手验证。 */ }
+    })
+  })
+  page.on('request', request => {
+    // hash/history 路由变化不属于文档重载，也不能使已有 HMR 通道失效。
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) { documents++; transportReady = false }
+    if (['script', 'stylesheet'].includes(request.resourceType())) pending.add(request)
+  })
   page.on('requestfinished', request => pending.delete(request))
   page.on('requestfailed', request => { pending.delete(request); errors.push(`${request.url()}: ${request.failure()?.errorText}`) })
   try {
@@ -40,6 +56,7 @@ export async function observePage(url, session, directory) {
     await page.goto(url, { waitUntil: 'domcontentloaded' })
     return {
       documents: () => documents,
+      waitForTransport: () => waitFor(() => assert.ok(transportReady, '开发更新通道尚未握手'), session),
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
         const result = await page.evaluate(({ expected, round, marker }) => {

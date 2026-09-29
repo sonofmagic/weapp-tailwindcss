@@ -7,6 +7,7 @@ import fg from 'fast-glob'
 import postcss from 'postcss'
 import { decode } from './capture.cjs'
 import { compileAuthored } from './authored.mjs'
+import { sfcBlocks } from './sfc.mjs'
 
 export function stripGeneration(css) {
   const root = postcss.parse(css)
@@ -64,17 +65,16 @@ export async function compileStatic(consumer, records, capturedRoot) {
       if (/\.(?:vue|uvue|mpx)$/.test(file)) {
         // SFC 的模板、脚本分别转换，避免将整个 SFC 当作 JavaScript 解析。
         const replacements = []
-        for (const match of source.matchAll(/<(template|script|style)\b[^>]*>([\s\S]*?)<\/\1>/g)) {
-          const offset = match.index + match[0].indexOf('>') + 1
-          let content = match[2]
-          if (target === 'weapp' && match[1] === 'template') content = await compiler.transformTemplate(content, snapshot)
-          if (target === 'weapp' && match[1] === 'script') content = (await compiler.transformJavaScript(content, snapshot, { filename: file })).code
-          if (match[1] === 'style' && /@(apply|reference|theme)/.test(content)) {
-            assert.ok(!/lang=["'](?:scss|sass|less)/.test(match[0]), `内嵌预处理样式需先通过框架预处理器生成：${file}`)
+        for (const block of sfcBlocks(source, file)) {
+          let content = block.content
+          if (target === 'weapp' && block.type === 'template') content = await compiler.transformTemplate(content, snapshot)
+          if (target === 'weapp' && block.type === 'script' && block.attrs.type !== 'application/json') content = (await compiler.transformJavaScript(content, snapshot, { filename: file })).code
+          if (block.type === 'style' && /@(apply|reference|theme)/.test(content)) {
+            assert.ok(!['scss', 'sass', 'less'].includes(block.attrs.lang), `内嵌预处理样式需先通过框架预处理器生成：${file}`)
             content = finalize((await generateStyle(content, file)).css)
           }
-          else if (match[1] === 'style' && target === 'weapp') content = (await compiler.transformCss(content, snapshot)).css
-          replacements.push({ offset, length: match[2].length, content })
+          else if (block.type === 'style' && target === 'weapp' && !block.attrs.lang) content = (await compiler.transformCss(content, snapshot)).css
+          replacements.push({ offset: block.offset, length: block.length, content })
         }
         for (const replacement of replacements.reverse()) transformed = transformed.slice(0, replacement.offset) + replacement.content + transformed.slice(replacement.offset + replacement.length)
       }

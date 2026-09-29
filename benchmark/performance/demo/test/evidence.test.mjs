@@ -28,8 +28,8 @@ it('下载体积按已完成包去重，缺少大小不能记作零字节', () =
 afterEach(async () => { for (const directory of directories.splice(0)) await rm(directory, { recursive: true, force: true }) })
 async function temp() { const dir = await mkdtemp(path.join(os.tmpdir(), 'cost-test-')); directories.push(dir); return dir }
 function example() {
-  const row = { demo: 'demo', target: 'web', os: 'ubuntu-latest', node: 24, metric: 'build.cold', version: '1.2.3', semanticVerified: true, status: 'passed', samples: Object.fromEntries(modes.map(mode => [mode, Array.from({ length: 7 }, () => ({ ms: mode === 'enabled' ? 80 : 100, peakRssMb: 20 }))])) }
-  return { schema, sha: 'abc', runId: '1.1', package: { version: '1.2.3', integrity: 'sha512-test' }, settings: defaults, boundaries: [], expected: [rowKey(row)], rows: [row] }
+  const row = { demo: 'demo', target: 'web', os: 'ubuntu-latest', node: 24, metric: 'build.cold', version: '1.2.3', semanticVerified: true, status: 'passed', samples: Object.fromEntries(modes.map(mode => [mode, Array.from({ length: 7 }, () => ({ ms: mode === 'enabled' ? 80 : 100, peakRssMb: 20, semanticHash: 'stable' }))])) }
+  return { schema, sha: 'abc', runId: '1.1', package: { version: '1.2.3', integrity: 'sha512-test' }, environment: { platform: 'linux', node: 'v24', pnpm: '12', cpu: 'test' }, settings: defaults, boundaries: [], expected: [rowKey(row)], rows: [row] }
 }
 
 it('预算需要两批独立且同类环境，时间与 RSS 均受门禁', () => {
