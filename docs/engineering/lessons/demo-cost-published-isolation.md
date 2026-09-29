@@ -14,6 +14,8 @@ regressions:
   - benchmark/performance/demo/test/install-consumers.test.mjs
   - benchmark/performance/demo/test/browser-state.test.mjs
   - benchmark/version-compare/test/pr-baseline.test.mjs
+  - benchmark/performance/demo/test/watch-lifetime.test.mjs
+  - benchmark/performance/demo/test/process-group.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -42,6 +44,9 @@ regressions:
 - Taro Vite 首次依赖预构建触发文档重载时，浏览器观察器不能继续等待旧文档的请求。成功的新主文档响应替换请求集合和 HMR 握手身份，失败导航及 hash/history 导航不重置；新文档请求、错误和握手仍必须逐项验证，超时原因记录实际请求 URL。
 - PR Benchmark 运行 `36548103093` 的事件基准是 `887e16289`，实际 checkout 却是把 PR head 合入 `80b39395f` 的临时 merge。uni-app 的 RSS 回归经一次复测确认，但比较中包含其他 PR 的生产变化。基准改为经过 head 身份和祖先关系校验的实际 merge 第一父提交；直接 checkout head 时才使用事件基准。门槛不变，不能把错误比较对象导致的失败当成已排除的性能回归，仍需重新验收。
 - Windows 增量安装的实际样本约 335–395 ms，逐次启动 PowerShell/WMI 查询会在任务退出后才返回，RSS 成为 null。Windows 改为在计时前初始化常驻采样器，通过系统进程快照按父子关系采集目标进程树；50 ms 采样间隔仍是峰值估计，不包含采样器自身。POSIX 继续使用 `ps`。每个系统在正式测量前执行短进程内存与超时清理回归；准备采样器的时间不计入安装或 dev 启动时间。
+- 三组 watcher 同时驻留仍会产生后台监听与内存干扰，不能视作独立串行。Mpx 在这种模式下多次漏掉复位 marker，而单组连续 25 轮没有复现。诊断确认重新监听已完成，后续写入却没有对应的原生事件；尚不据此给 Node 或 Mpx 下最终根因结论。测量改为每组整批完成并关闭 watcher 后再启动下一组，每批仍保持同一进程和完整预热／采样；按分片轮换组次序，反向复测反转整批次序。真实语义与 marker 校验保持不变，串行生命周期有独立回归。
+
+- macOS 云端短进程超时清理出现 `kill EPERM`。进程退出与再次发送组信号之间存在竞态；只有独立进程快照确认目标组没有存活成员时才忽略该错误。仍有成员、快照失败或无法解析均保留原始权限错误，不扩大信号范围或提权。历史失败缺少当时的进程快照，不能断言其根因已被证明，仍需当前提交的 macOS 云端回归确认。
 
 ## 验证
 
@@ -50,6 +55,8 @@ regressions:
 Mpx 样式注入 demo 补齐依赖后，执行 `node scripts/ci/demo-matrix/run.mjs style-injector-mpx:wx --build-only --update` 重新生成 static 基线，内容未变化；再用相同命令去掉 `--update` 验证通过。该验证是定向产物验收，不包含 IDE／设备运行。
 
 Mpx 正常采样数的本地运行在 `53b98f7e0` 上完成三组各 7 轮冷构建、热构建和启动验证；连续 HMR 在 16 轮之后的原生组发生漏更新并超时，原始样本和失败前源码／产物已保留，不能宣称 HMR 全量通过。
+
+串行 watcher 的 Mpx 定向诊断完成三组、每类 2 轮预热和 20 轮连续更新，marker 与静态／接入样式等价检查通过；该诊断仅采样 1 轮启动，不能替代正式全阶段报告。进程组清理与串行生命周期加入持久回归，`CI=1 pnpm test:perf:demo` 共 51 项通过。
 
 ## 适用边界
 

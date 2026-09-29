@@ -6,6 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { execa } from 'execa'
 import { samplePosixMemory } from './memory.mjs'
 import { prepareWindowsMemory } from './windows-memory.mjs'
+import { signalProcessGroup } from './process-group.mjs'
 
 export async function startProcess(command, args, { cwd, env = {}, logFile, timeout = 600_000 } = {}) {
   let log = ''
@@ -57,10 +58,9 @@ export async function startProcess(command, args, { cwd, env = {}, logFile, time
         if (child.exitCode === null) await execa('taskkill', ['/pid', String(child.pid), '/T', '/F'], { reject: false })
       }
       else {
-        const kill = signal => { try { process.kill(-child.pid, signal) } catch (error) { if (error.code !== 'ESRCH') throw error } }
-        kill('SIGTERM')
+        await signalProcessGroup(child.pid, 'SIGTERM')
         await Promise.race([raw, delay(1500)])
-        kill('SIGKILL')
+        await signalProcessGroup(child.pid, 'SIGKILL')
       }
     }
     await raw

@@ -19,6 +19,7 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
   await mkdir(directory, { recursive: true })
   const environment = { platform: process.platform, release: os.release(), arch: process.arch, node: process.version, pnpm: (await run('pnpm', ['--version'])).stdout.trim(), cpu: os.cpus()[0]?.model, cores: os.cpus().length, memoryBytes: os.totalmem(), runner: process.env.RUNNER_NAME ?? os.hostname(), image: process.env.ImageOS, imageVersion: process.env.ImageVersion }
   environment.memorySampler = process.platform === 'win32' ? 'toolhelp32-working-set-50ms' : 'ps-rss-250ms'
+  environment.hmrExecution = 'serial-mode-batches'
   const report = { ...manifest, reverse, jobs: undefined, shard: job.id, environment, environmentKey: JSON.stringify({ ...environment, runner: undefined }), expected: job.rows.map(rowKey), rows: job.rows.map(row => ({ ...row, version: manifest.package.version, status: 'pending', semanticVerified: false, samples: Object.fromEntries(modes.map(mode => [mode, []])) })) }
   report.sampleBatchId = randomUUID()
   await writeReport(report, directory)
@@ -26,7 +27,8 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
     const rows = Object.fromEntries(report.rows.filter(row => row.demo === item.name && (row.target === item.target || row.target === '@install' && job.installCases.includes(item.id))).map(row => [row.metric, row]))
     const temporary = await mkdtemp(path.join(os.tmpdir(), 'weapp-weekly-'))
     const logs = path.join(directory, item.id.replaceAll(/[^\w.-]/g, '_'))
-    const options = { ...manifest.settings, directory: temporary, logs, timeout, reverse, checkpoint: () => writeReport(report, directory) }
+    const batchRotation = Number(job.id.match(/\d+$/)?.[0] ?? 0) % modes.length
+    const options = { ...manifest.settings, directory: temporary, logs, timeout, reverse, batchRotation, checkpoint: () => writeReport(report, directory) }
     console.log(`开始 ${item.id}，发布版 ${manifest.package.version}`)
     try {
       const prepared = await prepareIsolated(item, manifest.package, temporary, logs)

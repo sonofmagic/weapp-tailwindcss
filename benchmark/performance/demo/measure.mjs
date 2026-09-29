@@ -1,16 +1,17 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { commands } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { freePort, developmentEnvironment, assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete } from '../../../scripts/ci/demo-matrix/process.mjs'
 import { cleanCache } from './fixtures.mjs'
-import { modes, operations, order } from './model.mjs'
+import { operations, order } from './model.mjs'
 import { browserTarget, inspectOutput, observePage } from './observe.mjs'
 import { run, startProcess, waitFor } from './process.mjs'
 import { planStep, writeStep } from './steps.mjs'
 import { hash } from './published.mjs'
 import { canonicalStyleEvidence } from './css-values.mjs'
+import { withSerialWatchers } from './watch-lifetime.mjs'
 
 function equivalent(results) {
   assert.deepEqual(canonicalStyleEvidence(results.static), canonicalStyleEvidence(results.enabled), '静态组与接入组的实际样式或页面结构不等价')
@@ -116,16 +117,15 @@ export async function measureWatch(prepared, rows, options) {
     }
     startup.status = 'passed'
     startup.semanticVerified = true
-    // 保持每组 watcher 身份；只有当前组收到写入，其余组保持 idle。
-    const results = Object.fromEntries(modes.map(mode => [mode, {}]))
-    const watchers = {}
-    try {
-      for (const mode of order(0, options.reverse)) watchers[mode] = await startWatcher(consumers[mode], steps[mode].get('initial'), options, 'hmr')
-      for (let round = -options.warmups; round < options.hmrRuns; round++) {
-        for (const operation of operations.filter(operation => rows[`hmr.${operation}.${endpoint}`])) {
-          for (const mode of order(round + options.warmups, options.reverse)) {
+    // 每组在同一个 watcher 中完成整批操作；组间释放进程，避免后台扫描与内存相互干扰。
+    const completedModes = new Set()
+    const modeOrder = order(options.batchRotation ?? 0, options.reverse)
+    await withSerialWatchers(modeOrder,
+      mode => startWatcher(consumers[mode], steps[mode].get('initial'), options, 'hmr'),
+      async (mode, watcher) => {
+        for (let round = -options.warmups; round < options.hmrRuns; round++) {
+          for (const operation of operations.filter(operation => rows[`hmr.${operation}.${endpoint}`])) {
             const consumer = consumers[mode]
-            const watcher = watchers[mode]
             await watcher.browser?.waitForTransport()
             const reset = operation === 'remove' ? 'add' : operation === 'restore' ? 'config' : 'initial'
             const resetMarker = `cost-${randomUUID()}`
@@ -141,15 +141,18 @@ export async function measureWatch(prepared, rows, options) {
             const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
             const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
             sample.semanticHash = await keepSemantic(result, mode, `hmr.${operation}.${endpoint}`, round, options)
+            sample.modeOrder = modeOrder
             if (round >= 0) rows[`hmr.${operation}.${endpoint}`].samples[mode].push(sample)
             if (round >= 0) await options.checkpoint?.()
-            results[mode][operation] = result.topology ?? result
+            const counterpart = mode === 'static' ? 'enabled' : mode === 'enabled' ? 'static' : undefined
+            if (counterpart && completedModes.has(counterpart)) {
+              const previous = JSON.parse(await readFile(path.join(options.logs, 'semantic', `${counterpart}-hmr.${operation}.${endpoint}-${round}.json`), 'utf8'))
+              equivalent({ [mode]: result.topology ?? result, [counterpart]: previous.topology ?? previous })
+            }
           }
-          equivalent(results)
         }
-      }
-    }
-    finally { for (const watcher of Object.values(watchers)) await watcher.close() }
+        completedModes.add(mode)
+      })
     for (const row of Object.values(rows).filter(row => row.metric.startsWith('hmr.'))) { row.status = 'passed'; row.semanticVerified = true }
   }
   catch (error) {
