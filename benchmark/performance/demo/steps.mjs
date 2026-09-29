@@ -30,7 +30,7 @@ export async function prepareSteps(consumer, records) {
     const unit = isWeb(item) || item.target === 'app' || item.name.startsWith('web/') ? 'px' : 'rpx'
     // replace 使用预先已有的类；新增样式只属于 add 操作。
     const base = authored ? [...new Set(['initial', 'replace', ...(round === 'add' ? ['add'] : [])].flatMap(state => authoredCss(item, state).split('\n')))].join('\n') : '@source inline("h-12");'
-    const style = `${css}\n${base}\n.cost-author{width:${operation === 'css' ? 43 : 41}${unit}}\n${authored ? '' : `@theme { --color-cost-config: ${operation === 'config' ? '#654321' : '#123456'}; }`}\n`
+    const style = `${css}\n${base}\n.cost-author{width:${operation === 'css' ? 43 : 41}${unit}}\n${authored ? '' : `@theme { --color-cost-config: ${operation === 'config' ? '#654321' : '#123456'}; }`}\n/* COST_SEQUENCE */\n`
     changes.set(operation, new Map([[item.source, text], [path.relative(consumer.project, cssFile), style]]))
   }
   return changes
@@ -44,7 +44,12 @@ export async function planStep(consumer, files, marker) {
     if (await readFile(target, 'utf8').catch(error => { if (error.code === 'ENOENT') return null; throw error }) !== next) writes.push([target, next])
   }
   if (consumer.mode === 'static') writes.sort(([first], [second]) => Number(/\.(?:css|scss)$/.test(second)) - Number(/\.(?:css|scss)$/.test(first)))
-  return async () => { for (const [target, next] of writes) await replaceSourceFile(target, next) }
+  return async ({ afterWrite } = {}) => {
+    for (const [target, next] of writes) {
+      await replaceSourceFile(target, next)
+      await afterWrite?.(target)
+    }
+  }
 }
 
 export async function writeStep(consumer, files, marker) {
