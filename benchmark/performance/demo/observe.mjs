@@ -11,6 +11,7 @@ import { roundFor } from './steps.mjs'
 import { waitFor } from './process.mjs'
 import { inspectExtraStyles } from './style-evidence.mjs'
 import { trackBrowserState } from './browser-state.mjs'
+import { waitForTaroComponents } from './component-ready.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -30,6 +31,7 @@ export async function observePage(url, session, directory) {
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
   const state = trackBrowserState(page)
   const { errors, pending } = state
+  let lastObservation
   try {
     await waitFor(async () => {
       const response = await fetch(url, { signal: AbortSignal.timeout(2000) })
@@ -41,6 +43,7 @@ export async function observePage(url, session, directory) {
       waitForTransport: () => waitFor(() => assert.ok(state.transportReady(), '开发更新通道尚未握手'), session),
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
+        if (consumer.item.family === 'taro') await page.evaluate(waitForTaroComponents)
         const result = await page.evaluate(({ expected, round, marker }) => {
           const first = document.getElementById('tw-matrix-height')
           if (!first?.textContent.includes(marker)) throw new Error('本轮页面 marker 尚未生效')
@@ -63,6 +66,7 @@ export async function observePage(url, session, directory) {
           })
           return { computed, styles, topology, ready: document.readyState, hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.() }
         }, { expected: probeClasses(consumer.item, round), round, marker })
+        lastObservation = { mode: consumer.mode, operation, marker, result, url: page.url(), pending: [...pending].map(request => request.url()) }
         assert.equal(pending.size, 0, `仍有模块或样式请求：${[...pending].map(request => request.url()).join(', ')}`)
         assert.equal(result.ready, 'complete')
         assert.ok(!result.hot || result.hot === 'idle', 'HMR 尚未完成')
@@ -79,8 +83,10 @@ export async function observePage(url, session, directory) {
         return { computed: result.computed, topology: result.topology }
       },
       async close() {
-        await writeFile(path.join(directory, 'browser-errors.json'), JSON.stringify(errors))
-        await browser.close()
+        try {
+          await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ ...lastObservation, errors }))
+        }
+        finally { await browser.close() }
       },
     }
   }
