@@ -9,7 +9,13 @@ function captureEnvironment() {
 
 function encode(value) {
   if (value instanceof RegExp) return { $regexp: value.source, flags: value.flags }
-  if (typeof value === 'function') throw new Error('性能预编译尚不能持久化带闭包的插件配置，拒绝不等价对照')
+  if (typeof value === 'function') {
+    // 仅持久化语法上可证明不读取参数、闭包或全局状态的布尔常量函数，不执行配置回调探测结果。
+    const source = Function.prototype.toString.call(value).trim()
+    const constant = /^(?:\(\s*\)\s*=>\s*(true|false)|(?:\(\s*\)\s*=>|function\s*\(\s*\))\s*\{\s*return\s+(true|false)\s*;?\s*\})$/.exec(source)
+    if (constant) return { $constantFunction: (constant[1] ?? constant[2]) === 'true' }
+    throw new Error('性能预编译尚不能持久化带闭包的插件配置，拒绝不等价对照')
+  }
   if (Array.isArray(value)) return value.map(encode)
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, encode(item)]))
   return value
@@ -33,6 +39,7 @@ function capture(module, name, original) {
 
 function decode(value, from, to) {
   if (value?.$regexp) return new RegExp(value.$regexp, value.flags)
+  if (typeof value?.$constantFunction === 'boolean') return () => value.$constantFunction
   if (typeof value === 'string') return value.replaceAll(from, to)
   if (Array.isArray(value)) return value.map(item => decode(item, from, to))
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, decode(item, from, to)]))
