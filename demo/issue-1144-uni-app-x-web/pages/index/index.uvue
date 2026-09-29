@@ -115,6 +115,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@reference "../../main.css";
 .text {
 	@apply text-on-primary text-sm font-bold;
 }

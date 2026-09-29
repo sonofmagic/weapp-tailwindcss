@@ -33,6 +33,7 @@ export default {
 </template>
 
 <style>
+@reference "../../main.css";
 .issue-1160-panel {
   padding: 16px;
   background-color: #ffffff;
