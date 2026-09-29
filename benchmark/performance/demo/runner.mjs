@@ -7,7 +7,7 @@ import { coverage } from '../../../scripts/ci/demo-matrix/catalog.mjs'
 import { measureInstall } from './install.mjs'
 import { measureBuild, measureWatch } from './measure.mjs'
 import { modes, rowKey, selectCases } from './model.mjs'
-import { prepareTarget } from './prepare.mjs'
+import { prepareIsolated } from './prepare-process.mjs'
 import { writeReport } from './report.mjs'
 import { run } from './process.mjs'
 
@@ -28,7 +28,7 @@ export async function runJob(manifest, job, directory, { timeout = 600_000, reve
     const options = { ...manifest.settings, directory: temporary, logs, timeout, reverse, checkpoint: () => writeReport(report, directory) }
     console.log(`开始 ${item.id}，发布版 ${manifest.package.version}`)
     try {
-      const prepared = await prepareTarget(item, manifest.package, temporary, logs)
+      const prepared = await prepareIsolated(item, manifest.package, temporary, logs)
       for (const row of Object.values(rows)) { row.coverage = coverage(item); row.dependencies = prepared.evidence; row.environment = environment }
       if (rows['install.cold']) {
         try { await measureInstall(prepared.consumers, Object.fromEntries(Object.entries(rows).filter(([key]) => key.startsWith('install.'))), options) }

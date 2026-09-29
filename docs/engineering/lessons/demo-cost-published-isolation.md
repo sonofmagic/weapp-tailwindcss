@@ -6,6 +6,9 @@ regressions:
   - benchmark/performance/demo/test/evidence.test.mjs
   - benchmark/performance/demo/test/style-evidence.test.mjs
   - benchmark/performance/demo/test/process.test.mjs
+  - benchmark/performance/demo/test/prepare-process.test.mjs
+  - benchmark/performance/demo/test/prepare-environment.test.mjs
+  - benchmark/performance/demo/test/css-values.test.mjs
 ---
 
 # 发布版性能对照的隔离与失败证据
@@ -24,6 +27,9 @@ regressions:
 - 保存到页面就绪必须同时核对本轮 marker、实际消费类名和计算样式；HMR 握手与文档重载单独记录。修改计划在计时前准备，实际原子保存仍计时。
 - 每个样本在计时结束后保存报告，使用原子替换防止中断留下截断 JSON。合并明确标记中断；语义不稳定或版本错误的行显示 N/A，不进入开销排名。
 - npm 解析失败或计划丢失时仍生成预期清单与失败报告，不重新解析 latest 冒充同一次实验。
+- Windows 云端分片在删除消费项目时遇到已加载的 `lightningcss.node` 文件锁。准备阶段改为独立 Node 进程，序列化源码状态后等待进程退出，再进行安装与构建测量；`dispose()` 无法替代原生模块卸载，增加删除重试也不能修复进程边界。
+- Taro CLI 动态设置 `TARO_ENV=h5`，缺少这个平台环境的预生成会采用不同的 `rpx` 兼容处理。捕获器仅保存平台变量白名单，静态生成在独立进程中重放并恢复；不复制 CI 凭据与外部模块搜索路径。
+- 产物比较先统一确切相同的 RGB/十六进制颜色与数值序列化，再比较规则；原始语义快照仍保留。不得裁剪色域、四舍五入透明度或放宽页面计算尺寸校验。
 
 ## 验证
 

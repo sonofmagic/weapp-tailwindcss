@@ -8,6 +8,7 @@ import postcss from 'postcss'
 import { decode } from './capture.cjs'
 import { compileAuthored } from './authored.mjs'
 import { preprocessStyle, sfcBlocks } from './sfc.mjs'
+import { withCapturedEnvironment } from './prepare-environment.mjs'
 
 export function stripGeneration(css) {
   const root = postcss.parse(css)
@@ -25,6 +26,10 @@ export async function sourceFiles(consumer) {
 }
 
 export async function compileStatic(consumer, records, capturedRoot) {
+  return withCapturedEnvironment(records, () => compileStaticForPlatform(consumer, records, capturedRoot))
+}
+
+async function compileStaticForPlatform(consumer, records, capturedRoot) {
   if (consumer.item.name.startsWith('style-injector-')) return compileAuthored(consumer, records, capturedRoot)
   const require = createRequire(path.join(consumer.project, 'package.json'))
   const { createCompiler } = await import(pathToFileURL(require.resolve('weapp-tailwindcss/core')).href)

@@ -10,9 +10,10 @@ import { browserTarget, inspectOutput, observePage } from './observe.mjs'
 import { run, startProcess, waitFor } from './process.mjs'
 import { planStep, writeStep } from './steps.mjs'
 import { hash } from './published.mjs'
+import { canonicalStyleEvidence } from './css-values.mjs'
 
 function equivalent(results) {
-  assert.deepEqual(results.static, results.enabled, '静态组与接入组的实际样式或页面结构不等价')
+  assert.deepEqual(canonicalStyleEvidence(results.static), canonicalStyleEvidence(results.enabled), '静态组与接入组的实际样式或页面结构不等价')
 }
 
 async function keepSemantic(result, mode, metric, round, options) {
