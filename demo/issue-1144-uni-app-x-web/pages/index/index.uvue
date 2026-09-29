@@ -121,7 +121,7 @@ export default {
 }
 
 .box-class1 {
-	// bg-[linear-gradient(to_right,#6a88fd,#b4b0bb)] bg-linear-[to_right,red_5%,yellow_60%,lime_90%,teal] bg-linear-(--my-gradient)
+	/* bg-[linear-gradient(to_right,#6a88fd,#b4b0bb)] bg-linear-[to_right,red_5%,yellow_60%,lime_90%,teal] bg-linear-(--my-gradient) */
 	@apply mx-5 h-44 flex-1 items-center justify-center rounded-lg bg-[linear-gradient(to_right,#6a88fd,#b4b0bb)];
 }
 
