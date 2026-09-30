@@ -1,15 +1,13 @@
 import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises'
-import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { repo } from './catalog.mjs'
+import { rollupTestRequire } from './rollup-test-runtime.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 describe.each(['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries'])('%s Rollup', (demo) => {
-  const demoRequire = createRequire(path.join(repo, 'demo', demo, 'package.json'))
-  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const viteRequire = rollupTestRequire(demo)
   const rollupDist = path.dirname(viteRequire.resolve('rollup'))
 
   it('deduplicates identical notifications without dropping new file states', async () => {

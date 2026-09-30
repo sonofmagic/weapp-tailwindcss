@@ -430,7 +430,7 @@
     "promisify-loader-runner": "^1.0.1",
     "repoctl": "^5.5.7",
     "rimraf": "^6.1.3",
-    "rollup": "^4.63.0",
+    "rollup": "^4.63.5",
     "sass": "catalog:sass195",
     "sass-embedded": "catalog:sass195",
     "sass-true": "^10.1.0",
