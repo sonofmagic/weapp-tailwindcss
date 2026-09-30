@@ -20,6 +20,10 @@ on:
       - next
   workflow_dispatch:
     inputs:
+      weekly_demo_cost:
+        description: 手动验证当前分支的每周发布版接入成本套件
+        type: boolean
+        default: false
       baseline:
         description: npm 发布基线；auto 会按当前包版本推断 next/beta/rc/latest
         required: false
@@ -45,7 +49,15 @@ permissions:
   contents: read
 
 jobs:
+  weekly-demo-cost:
+    if: github.event_name == 'workflow_dispatch' && inputs.weekly_demo_cost
+    uses: ./.github/workflows/demo-performance-weekly.yml
+    with:
+      only: ${{ inputs.only }}
+      version: latest
+
   synthetic-performance:
+    if: github.event_name != 'workflow_dispatch' || !inputs.weekly_demo_cost
     name: Synthetic Performance Gate (ubuntu-latest, 22)
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -85,6 +97,7 @@ jobs:
           retention-days: 14
 
   benchmark-matrix:
+    if: github.event_name != 'workflow_dispatch' || !inputs.weekly_demo_cost
     name: Prepare benchmark matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -138,11 +151,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve the checked-out PR baseline
+        if: github.event_name == 'pull_request'
+        id: pr-baseline
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node benchmark/version-compare/scripts/pr-baseline.mjs
+
       - name: Run pull request performance guard
         if: github.event_name == 'pull_request'
         run: >
           pnpm perf:guard --
-          --baseline-ref "${{ github.event.pull_request.base.sha }}"
+          --baseline-ref "${{ steps.pr-baseline.outputs.baseline }}"
           --build-runs "$BENCH_BUILD_RUNS"
           --hmr-runs "$BENCH_HMR_RUNS"
           --timeout 180000
@@ -171,7 +192,7 @@ jobs:
 
   current-vs-published:
     name: Performance guard and published trend
-    if: always()
+    if: always() && (github.event_name != 'workflow_dispatch' || !inputs.weekly_demo_cost)
     needs: benchmark-shard
     runs-on: ubuntu-latest
     timeout-minutes: 5

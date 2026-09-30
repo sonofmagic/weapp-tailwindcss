@@ -20,6 +20,7 @@
     "@dcloudio/uni-uts-v1": "3.0.0-alpha-5020220260725001",
     "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5020220260725001",
     "cross-env": "catalog:crossEnv",
+    "sass-embedded": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
     "vite": "^5.4.21",
     "weapp-tailwindcss": "workspace:*"

@@ -7,6 +7,7 @@
     "dev": "cross-env WEAPP_TW_HMR_TIMING=1 mpx-cli-service serve"
   },
   "dependencies": {
+    "@babel/runtime": "catalog:babelRuntime7284",
     "@mpxjs/api-proxy": "^2.11.1",
     "@mpxjs/core": "^2.11.1",
     "@mpxjs/fetch": "^2.11.1",

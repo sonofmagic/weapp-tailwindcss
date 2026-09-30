@@ -22,22 +22,10 @@ import { isKnownPurePostcssPlugin } from './plugin-cache-policy'
 import { createInjectPreflight } from './preflight'
 import { StyleProcessorCache } from './processor-cache'
 import { captureRootCacheSnapshot, cloneRootWithCurrentSources, matchRootCacheSnapshot } from './root-cache'
+import { contentHash } from './utils/content-hash'
 
 /** CSS 结果缓存最大条目数 */
 const CSS_RESULT_CACHE_MAX = 256
-
-/**
- * 简单字符串哈希函数（FNV-1a 变体），用于生成缓存键。
- * 不依赖 crypto 模块，适合高频调用场景。
- */
-function simpleHash(str: string): string {
-  let hash = 0x811C9DC5 | 0
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i)
-    hash = (hash * 0x01000193) | 0
-  }
-  return (hash >>> 0).toString(36)
-}
 
 // createStyleHandler 提供带缓存的高阶处理器，同时暴露 getPipeline 供外部调试/扩展
 export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): StyleHandler {
@@ -172,8 +160,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     // 构建缓存键：选项指纹 + 信号 + 内容哈希
     const optsFp = fingerprintStyleOptions(resolvedOptions)
     const signalKey = signal ? signalToCacheKey(signal) : ''
-    const contentHash = simpleHash(source)
-    const cacheKey = `${optsFp}|${signalKey}|${contentHash}|${root === undefined ? 'text' : 'root'}`
+    const cacheKey = `${optsFp}|${signalKey}|${contentHash(source)}|${root === undefined ? 'text' : 'root'}`
 
     const cached = cacheable ? resultCache.get(cacheKey) : undefined
     const sameInput = cached?.source === rawSource && cached.options === optsFp

@@ -3,7 +3,7 @@ import process from 'node:process'
 import { rm } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import gulp from 'gulp'
-import type { TaskFunction, TaskFunctionCallback } from 'gulp'
+import type { TaskFunction } from 'gulp'
 import debug from 'gulp-debug'
 import gulpif from 'gulp-if'
 import plumber from 'gulp-plumber'
@@ -16,6 +16,7 @@ import gutil from 'gulp-util'
 import dartSass from 'sass'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
 import parity from '../official-postcss-parity-plugin.cjs'
+import { watchRoots } from './watch-roots.mjs'
 
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
@@ -269,10 +270,10 @@ function queueWatchHandler(type: 'changed' | 'removed' | 'add', file: string) {
 }
 
 // 监听文件
-function watchFiles() {
-  sourceWatcher = gulp.watch([
-    `${paths.src.baseDir}/**/*`,
-    `${paths.tmp.imgDir}/**/*`,
+async function watchFiles() {
+  sourceWatcher = await watchRoots(gulp.watch.bind(gulp), [
+    paths.src.baseDir,
+    paths.tmp.imgDir,
   ], {
     ignored: /[/\\]\./,
     ignoreInitial: true,
@@ -306,11 +307,7 @@ const buildTasks: TaskFunction[] = [
 ]
 
 if (isWatch) {
-  const watchTask: TaskFunction = (done: TaskFunctionCallback) => {
-    watchFiles()
-    done()
-  }
-  buildTasks.push(watchTask)
+  buildTasks.push(watchFiles as TaskFunction)
 }
 // 注册默认任务
 gulp.task('default', gulp.series(...buildTasks))
