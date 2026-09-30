@@ -114,9 +114,17 @@ async function loadCachedModule(loader: ModuleLoader, file: string): Promise<Mod
     const onDependency = (dependency: string) => {
       dependencies.add(dependency)
     }
-    let loaded = previous || !canUseCommonJsGraph(file) ? undefined : await loader.loadModule!(file, base, onDependency)
-    if (!loaded || !collectCommonJsDependencies(file, dependencies)) {
-      loaded = await loader.loadModule!(`./${path.basename(file)}`, base, onDependency)
+    let loaded: { module: unknown }
+    if (path.extname(file) === '.cjs') {
+      // CJS 必须与 require.cache 使用同一加载通道；带查询参数的 ESM 包装仍可能持有旧 exports。
+      loaded = { module: require(file) }
+      collectCommonJsDependencies(file, dependencies)
+    }
+    else {
+      const initial = previous || !canUseCommonJsGraph(file) ? undefined : await loader.loadModule!(file, base, onDependency)
+      loaded = initial && collectCommonJsDependencies(file, dependencies)
+        ? initial
+        : await loader.loadModule!(`./${path.basename(file)}`, base, onDependency)
     }
     const files = [...dependencies].sort()
     return {

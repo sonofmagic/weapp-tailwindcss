@@ -117,11 +117,13 @@ export function runIncrementalGenerateTask(
   }
   const promise = task()
   incrementalGenerateTaskCache.set(taskKey, promise)
-  promise.finally(() => {
+  const cleanup = () => {
     if (incrementalGenerateTaskCache.get(taskKey) === promise) {
       incrementalGenerateTaskCache.delete(taskKey)
     }
-  })
+  }
+  // 清理链必须消费拒绝，原始任务仍把错误交给调用方处理。
+  void promise.then(cleanup, cleanup)
   return promise
 }
 

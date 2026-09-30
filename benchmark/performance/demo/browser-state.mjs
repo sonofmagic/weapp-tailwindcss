@@ -3,6 +3,11 @@ import assert from 'node:assert/strict'
 export function trackBrowserState(page) {
   const pending = new Set()
   const errors = []
+  const messages = []
+  page.on('console', message => {
+    messages.push({ type: message.type(), text: message.text() })
+    if (messages.length > 200) messages.shift()
+  })
   let documents = 0
   let transportReady = false
   const styles = new Map()
@@ -40,7 +45,7 @@ export function trackBrowserState(page) {
       catch { /* 业务 WebSocket 不参与构建工具的握手验证。 */ }
     })
   })
-  return { pending, errors, documents: () => documents, transportReady: () => transportReady,
+  return { pending, errors, messages, documents: () => documents, transportReady: () => transportReady,
     async linkedStyles(urls) {
       return Promise.all(urls.map(async url => {
         const response = styles.get(url)

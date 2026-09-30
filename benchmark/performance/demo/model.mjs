@@ -68,7 +68,7 @@ export function rowKey(row) {
   return JSON.stringify([row.demo, row.target, row.os, row.node, row.metric])
 }
 
-function sampleErrors(row, settings) {
+export function sampleErrors(row, settings) {
   const errors = []
   const key = rowKey(row)
   const required = row.metric.startsWith('hmr.') ? settings.hmrRuns : settings.runs

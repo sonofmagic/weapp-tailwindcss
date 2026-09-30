@@ -45,6 +45,8 @@ jobs:
           cache: pnpm
       - name: 安装测量工具，消费项目另行隔离安装
         run: pnpm install --frozen-lockfile --ignore-scripts --filter weapp-tailwindcss-monorepo --filter @weapp-tailwindcss-demo/web-vue-vite7-tailwindcss-v4
+      - name: 安装样式观察回归所需的 Chromium
+        run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:perf:demo
       - id: plan
         name: 一次解析发布版与完整预期清单
