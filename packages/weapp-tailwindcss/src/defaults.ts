@@ -1,5 +1,5 @@
 import type { CssPreflightOptions, UserDefinedOptions } from './types'
-import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
+import { isAllowedClassName, MappingChars2String } from '@weapp-tailwindcss/escape'
 import { DEFAULT_PARSE_CACHE_MAX_ENTRIES, DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH } from './js/babel/cache-options'
 import { noop } from './utils'
 

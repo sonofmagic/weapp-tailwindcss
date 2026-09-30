@@ -1,7 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import { getCss } from '#test/helpers/getTwCss'
-import { MappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-tailwindcss/escape'
 import { createJsHandler } from '@/js/index'
 import { createGetCase, jsCasePath } from './util'
 

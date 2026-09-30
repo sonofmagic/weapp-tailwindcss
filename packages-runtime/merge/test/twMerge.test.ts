@@ -1,4 +1,4 @@
-import { escape as escapeClassName } from '@weapp-core/escape'
+import { escape as escapeClassName } from '@weapp-tailwindcss/escape'
 import { describe, expect, it } from 'vitest'
 import {
   create,

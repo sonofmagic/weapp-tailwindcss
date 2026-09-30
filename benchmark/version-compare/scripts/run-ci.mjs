@@ -23,6 +23,7 @@ const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
   '@weapp-core/escape',
+  '@weapp-tailwindcss/escape',
 ]
 function parseArg(name, fallback = '') {
   const index = process.argv.indexOf(name)

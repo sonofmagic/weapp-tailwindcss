@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:typesNode2410",
-    "@weapp-core/escape": "^8.0.0",
+    "@weapp-tailwindcss/escape": "workspace:^",
     "esbuild": "^0.28.2",
     "tsx": "catalog:tsx",
     "typescript": "catalog:typescript59"

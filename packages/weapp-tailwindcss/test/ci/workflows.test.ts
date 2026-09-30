@@ -871,6 +871,7 @@ describe('ci workflows', () => {
     expect(source).toContain('pnpm\', [\'view\', normalizePackageSpec(baseline), \'dependencies\', \'--json\']')
     expect(source).toContain('patchPublishedResolverDependencies(json, resolverDependencies)')
     expect(source).toContain('\'@weapp-core/escape\'')
+    expect(source).toContain('\'@weapp-tailwindcss/escape\'')
   })
 
   it('keeps local e2e:ide fail-fast and exposes focused case scripts', () => {

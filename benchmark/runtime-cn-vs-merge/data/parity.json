@@ -1,20 +1,17 @@
 {
   "env": {
-    "timestamp": "2026-09-15T01:48:01.668Z",
-    "commit": "f6ca9652d44753cbe7cb4cbc2469e6cd61ed6944",
+    "timestamp": "2026-09-30T17:12:41.838Z",
+    "commit": "bc42340685067d13e0ddc665197662848faaacfa",
     "node": "v24.18.0",
     "platform": "darwin",
-    "release": "25.6.0",
+    "release": "27.0.0",
     "arch": "arm64",
     "cpu": "Apple M4 Max",
     "totalMemoryBytes": 137438953472
   },
   "summary": {
     "total": 17,
-    "weappCnVsMergeMismatches": [
-      "rpx-text-color-keep",
-      "numeric-leading-escaped"
-    ],
+    "weappCnVsMergeMismatches": [],
     "weappSlimVsMergeMismatches": [
       "slim-excluded-fill"
     ],
@@ -153,7 +150,7 @@
       "title": "text-red 与 text-[80rpx] 是否同时保留",
       "conflict": true,
       "outputs": {
-        "weapp-cn": "text-_b80rpx_B",
+        "weapp-cn": "text-red text-_b80rpx_B",
         "weapp-merge": "text-red text-_b80rpx_B",
         "weapp-merge-slim": "text-red text-_b80rpx_B",
         "weapp-merge-lite": "text-red text-_b80rpx_B",
@@ -162,8 +159,8 @@
         "upstream-twmerge": "text-[80rpx]",
         "upstream-twmerge-clsx": "text-[80rpx]"
       },
-      "weappEqual": false,
-      "weappCnVsMerge": false,
+      "weappEqual": true,
+      "weappCnVsMerge": true,
       "weappSlimVsMerge": true,
       "upstreamEqual": true,
       "upstreamMergeEqual": true,
@@ -279,7 +276,7 @@
       "title": "已转义 2xl 数字变体",
       "conflict": true,
       "outputs": {
-        "weapp-cn": "_2xl_cp-2 _2xl_cp-4",
+        "weapp-cn": "_2xl_cp-4",
         "weapp-merge": "_2xl_cp-4",
         "weapp-merge-slim": "_2xl_cp-4",
         "weapp-merge-lite": "_2xl_cp-2 _2xl_cp-4",
@@ -288,8 +285,8 @@
         "upstream-twmerge": "_2xl_cp-2 _2xl_cp-4",
         "upstream-twmerge-clsx": "_2xl_cp-2 _2xl_cp-4"
       },
-      "weappEqual": false,
-      "weappCnVsMerge": false,
+      "weappEqual": true,
+      "weappCnVsMerge": true,
       "weappSlimVsMerge": true,
       "upstreamEqual": true,
       "upstreamMergeEqual": true,
