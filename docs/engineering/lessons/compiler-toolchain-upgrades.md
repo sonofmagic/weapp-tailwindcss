@@ -203,3 +203,16 @@ CPU profile 保留了模块加载、候选提取、文件读取和空闲等待�
 ## 规则评估
 
 不新增 AGENTS 规则；使用持久回归和可显式选择候选版本的测试入口验证升级边界。
+
+
+## 最新 head 的 CI 性能失败与独立诊断
+
+`7108ea310a92d61abe558c97117a7159b76b92c0` 的 [Benchmark attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36755689240/job/110025910261) 在 Taro Webpack 微信目标触发 `hmrPluginP95` 门禁：去除首轮后的插件样本为基线 `[1086, 1101]` ms、当前 `[1164, 1199]` ms，p95 增加 98 ms / 8.90%，两项样本均越过原门槛。构建、marker 更新和样本采集成功；这是待确认的性能失败，不是构建错误。
+
+相同基线 `bc42340685067d13e0ddc665197662848faaacfa`、相同生产源码与锁文件的[上一轮 CI](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36716014352)通过，稳态插件样本分别为 `[1471, 1394]` / `[1449, 1455]` ms。两 head 仅报告文档不同；旧结果只能说明该变化尚未稳定重复，不能替代最新 head 的验收，也不能直接归因于 runner 噪声。
+
+针对这个 CI 单一场景另做一次本地反向诊断：从上述基线和当前 head 分别导出独立消费目录，以各自 frozen lockfile 离线安装、构建所需内部包闭包，使用同一 `benchmark/version-compare/scripts/run-matrix.mjs`，按 current → base 串行采集各 3 次 build / 3 次连续 watch。准备和包构建不计时。macOS / Node 24.18.0 下，稳态插件样本为 base `[692, 705]` / current `[674, 676]` ms，原门槛评估通过；全部 marker 样本完成。此诊断与前述三组正式实验分开，不增加正式确认次数，不作为 Linux / Node 22 CI 已通过的证明。原始证据保留在 `.tmp/toolchain-evidence/ci-taro-local-reverse/`，两个云端原始 artifact 也分别保存。
+
+云端失败的 CSS 阶段从约 560 ms 增至 581–608 ms，而 JS 阶段没有同幅度、同方向的稳定变化；未取得足以定位 Oxc 或 Rolldown 因果关系的证据，因此不提交推测性生产性能补丁、不放宽门槛、不自动更新预算。
+
+同一 head 的 [Lynx iOS attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36755688568/job/110025217436) 在构建安装后查询应用容器超过 30 秒。同步 #1257 已有的指定设备就绪检查及仅一次只读查询恢复，保留原始异常与 12 项定向回归；不重跑构建、安装或样式断言。见 [iOS 容器就绪记录](lynx-ios-container-readiness.md)。新的 CI 提交仍需重新验证。
