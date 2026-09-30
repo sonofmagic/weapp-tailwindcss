@@ -130,7 +130,7 @@ catalogs:
     yaml: ^2.9.1
   compilerUtilities:
     comment-json: ^5.0.0
-    oxc-parser: ^0.151.0
+    oxc-parser: ^0.152.0
     oxc-walker: ^1.1.1
     semver: ~7.8.5
   postcssCompat:
