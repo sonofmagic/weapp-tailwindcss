@@ -7,6 +7,7 @@ regressions:
   - packages/weapp-tailwindcss/test/js/oxc-upgrade-contract.test.ts
   - scripts/ci/demo-matrix/rollup-invalidation.test.mjs
   - scripts/ci/demo-matrix/rollup-watch.test.mjs
+  - benchmark/version-compare/test/process-memory.test.mjs
 ---
 
 # 编译依赖的逐项升级验证
@@ -216,3 +217,22 @@ CPU profile 保留了模块加载、候选提取、文件读取和空闲等待�
 云端失败的 CSS 阶段从约 560 ms 增至 581–608 ms，而 JS 阶段没有同幅度、同方向的稳定变化；未取得足以定位 Oxc 或 Rolldown 因果关系的证据，因此不提交推测性生产性能补丁、不放宽门槛、不自动更新预算。
 
 同一 head 的 [Lynx iOS attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36755688568/job/110025217436) 在构建安装后查询应用容器超过 30 秒。同步 #1257 已有的指定设备就绪检查及仅一次只读查询恢复，保留原始异常与 12 项定向回归；不重跑构建、安装或样式断言。见 [iOS 容器就绪记录](lynx-ios-container-readiness.md)。新的 CI 提交仍需重新验证。
+
+### weapp-vite HMR 内存失败与采样证据补齐
+
+`4046fd0191ec97fe4aadb70715b3239fe7c6fbfa` 的 [Benchmark attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36760793833/job/110045463318) 在 weapp-vite 微信目标完成 marker 与构建采样，但 RSS 首次和唯一反向确认均超出 5% 且 64 MiB 门槛。这是已触发确认规则的内存失败，不能用此前通过记录或耗时持平覆盖。
+
+| 进程树内存，MiB | 首次基线 → 当前 | 首次增量 | 反向基线 → 当前 | 反向增量 |
+| --- | --- | --- | --- | --- |
+| HMR peak RSS | 1532.04 → 1747.01 | +214.98 / +14.03% | 1417.33 → 1536.25 | +118.92 / +8.39% |
+| HMR steady RSS | 1437.47 → 1654.92 | +217.45 / +15.13% | 1326.05 → 1447.75 | +121.70 / +9.18% |
+
+[原始 artifact](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36760793833/artifacts/11119114206) 与本地副本 `ci-weapp-rss-36760793833-attempt1` 保留两次结果。本次不再次重跑该失败集合。锁文件结构化比对确认已存在依赖的解析变化只涉及根 Rollup、weapp-tailwindcss 的 Oxc 及 tsdown 的 Rolldown 闭包；实际打包 JS 在规范化分块 hash 后只有 Oxc 版本来源注释差异，未发现新增运行时逻辑。上述事实不足以排除原生解析器或构建器内存变化。
+
+另做一次独立内存 profile，复用已准备的精确源码导出目录，current → base 串行执行。Node 24.18 / macOS 下两者分别在第 1、2 次 marker 更新等待 180 秒失败；日志显示 stateful-experimental watcher 已启动，但目标 marker 未到产物。保留每个 Node 进程的 RSS、heapUsed、external、arrayBuffers 与原生模块路径，位于 `.tmp/toolchain-evidence/ci-weapp-rss-profile`。该诊断没有形成完整对照，不能证明 RSS 改善、无退化或云端问题已修复，也没有再次执行正式性能确认。
+
+原采样器虽然临时采集了时序数据，最终只保存总峰值与末段中位数，且没有各进程明细，无法定位云端增加的内存来自哪个进程。因此补齐每次采样的 PID、父 PID、可执行文件名与 RSS，并随 `hmrMemory.samples` 保存到既有 raw artifact。仍使用原有一次系统查询、250 ms 间隔、整个进程树总量和原统计门槛；不采集命令参数。Windows 同步使用 CIM 的 Name 和 WorkingSetSize，并将遍历变量改为 processId，避免写入 PowerShell 只读的 PID 自动变量。后续 CI 必须重新验证，不把本次诊断增强标注为内存优化。
+
+持久回归 `benchmark/version-compare/test/process-memory.test.mjs` 覆盖进程树归属、空格路径、缺失根进程、时序序列化、原统计口径以及真实进程 RSS 明细对账；Benchmark 工作流运行这些回归。Windows 原生执行和本地全面设备验收仍未完成。
+
+本次本地定向验证：`CI=1 pnpm exec vitest run -c benchmark/version-compare/vitest.config.mjs --update=none` 通过 5 文件 20 项，包含真实 macOS 进程采样；ESLint 对 benchmark 使用 `--no-ignore` 显式检查，另检查 workflow；`pnpm architecture:check`、`pnpm agents:check` 与 `git diff --check` 通过。未修改生产包，不重复生产构建或已耗尽的性能确认。
