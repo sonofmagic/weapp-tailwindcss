@@ -6,6 +6,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { buildCompatibilityBundle } from './build'
 import { exampleDir, lynxIntermediateDir, repoRoot } from './catalog'
+import { resolveIosAppContainer } from './ios-container'
 import { command } from './native-command'
 import { iosPodInstallArguments, parseNativeRunArgs } from './native-options'
 import { defaultReportPath, nativeReportConclusion, validateNativeReport } from './reports'
@@ -254,8 +255,8 @@ async function runIos(hostDir: string, artifactDir: string) {
     // Podfile 已固定 Lynx 版本，CI 不需要每次刷新整个 Specs CDN。
     await command(process.env['LYNX_POD'] ?? 'pod', iosPodInstallArguments(), hostDir, 600_000)
   }
-  await command('xcrun', ['simctl', 'bootstatus', 'booted', '-b'], hostDir, 120_000)
   const deviceId = process.env['LYNX_IOS_DEVICE_ID'] ?? await bootedIosDeviceId(hostDir)
+  await command('xcrun', ['simctl', 'bootstatus', deviceId, '-b'], hostDir, 120_000)
   const derivedData = path.join(hostDir, 'DerivedData')
   await command('xcodebuild', [
     '-quiet',
@@ -276,7 +277,11 @@ async function runIos(hostDir: string, artifactDir: string) {
   ], hostDir, 1_800_000)
   const appPath = path.join(derivedData, 'Build', 'Products', 'Debug-iphonesimulator', 'LynxCompatibilityHost.app')
   await command('xcrun', ['simctl', 'install', deviceId, appPath], hostDir, 120_000)
-  const container = (await command('xcrun', ['simctl', 'get_app_container', deviceId, applicationId, 'data'], hostDir, 30_000)).trim()
+  const container = await resolveIosAppContainer(deviceId, applicationId, hostDir, async (error) => {
+    const detail = error instanceof Error ? error.stack : String(error)
+    await fs.writeFile(path.join(artifactDir, 'container-query-timeout.txt'), `${detail}\n`)
+    process.stderr.write('iOS 应用容器查询超时；已保留原始错误，等待指定模拟器就绪后仅再查询一次。\n')
+  })
   const reportPath = path.join(container, 'Library', 'Application Support', 'lynx-compat', 'report.json')
   await fs.rm(reportPath, { force: true })
   await command('xcrun', ['simctl', 'launch', '--terminate-running-process', deviceId, applicationId], hostDir, 60_000)
