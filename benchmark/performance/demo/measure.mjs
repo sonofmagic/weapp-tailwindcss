@@ -114,6 +114,16 @@ async function startWatcher(consumer, initial, options, suffix) {
   catch (error) { await browser?.close(); await session.stop(); throw error }
 }
 
+function stylesheetBarrier(mode, watcher, marker, timeout) {
+  return {
+    afterWrite: mode === 'static' && watcher.browser
+      ? async target => {
+        if (/\.(?:css|scss)$/.test(target)) await waitFor(() => watcher.browser.waitForStylesheetMarker(marker), watcher.session, timeout)
+      }
+      : undefined,
+  }
+}
+
 export async function measureWatch(prepared, rows, options) {
   const { consumers, steps } = prepared
   const endpoint = browserTarget(consumers.enabled.item) ? 'page' : 'artifact'
@@ -150,7 +160,8 @@ export async function measureWatch(prepared, rows, options) {
             const reset = operation === 'remove' ? 'add' : operation === 'restore' ? 'config' : 'initial'
             const resetMarker = `cost-${randomUUID()}`
             await pacer.beforeSave()
-            await writeStep(consumer, steps[mode].get(reset), resetMarker)
+            // 恢复状态同样要等 CSS 挂载，再保存源码；页面 marker 不能证明延迟的 CSS HMR 已结束。
+            await (await planStep(consumer, steps[mode].get(reset), resetMarker))(stylesheetBarrier(mode, watcher, resetMarker, options.timeout))
             await waitFor(() => watcher.check(reset, resetMarker), watcher.session, options.timeout)
             pacer.settled()
             await watcher.browser?.waitForTransport()
@@ -160,13 +171,7 @@ export async function measureWatch(prepared, rows, options) {
             const save = await planStep(consumer, steps[mode].get(operation), marker)
             await pacer.beforeSave()
             const began = performance.now()
-            await save({
-              afterWrite: mode === 'static' && watcher.browser
-                ? async target => {
-                  if (/\.(?:css|scss)$/.test(target)) await waitFor(() => watcher.browser.waitForStylesheetMarker(marker), watcher.session, options.timeout)
-                }
-                : undefined,
-            })
+            await save(stylesheetBarrier(mode, watcher, marker, options.timeout))
             const result = await waitFor(() => watcher.check(operation, marker, offset), watcher.session, options.timeout)
             const sample = { ms: performance.now() - began, peakRssMb: watcher.session.memory(), round, marker, interSaveQuietMs, update: watcher.browser ? watcher.browser.documents() === documents ? 'hmr' : 'reload' : 'native-watch', boundary: `save-to-validated-${endpoint}` }
             pacer.settled()

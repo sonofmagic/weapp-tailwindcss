@@ -10,7 +10,7 @@ import { modes } from './model.mjs'
 import { compileStatic, sourceFiles, stripSourceGeneration, applySources } from './precompile.mjs'
 import { assertPublished, hash, installationLayout } from './published.mjs'
 import { run } from './process.mjs'
-import { prepareSteps } from './steps.mjs'
+import { prepareSteps, styleSavePolicy } from './steps.mjs'
 import { frameworkCompatibility } from './capture.cjs'
 import { plainRuntimeMarkers } from './runtime-marker.mjs'
 import { interSaveQuietMs } from './save-pacing.mjs'
@@ -30,6 +30,11 @@ export async function prepareTarget(item, published, directory, logs) {
   compareCommonLocks(locks.native, locks.static)
   compareCommonLocks(locks.native, locks.enabled)
   const evidence = item.name.startsWith('style-injector-') ? { integration: 'weapp-style-injector' } : await assertPublished(consumers.enabled.project, published)
+  return prepareInstalledTarget(item, consumers, locks, logs, evidence)
+}
+
+// 安装身份由调用方验证；发布版入口仍强制执行 assertPublished。
+export async function prepareInstalledTarget(item, consumers, locks, logs, evidence) {
   evidence.installationLayout = installationLayout(item)
   evidence.profiling = 'disabled'
   evidence.pageObservation = { version: 2, linkedStyles: 'browser-response-body', topology: item.family === 'nuxt' ? 'application-and-teleports-excluding-recorded-nuxt-devtools' : 'body' }
@@ -80,6 +85,7 @@ export async function prepareTarget(item, published, directory, logs) {
   evidence.comparisonIdentity = {
     pageObservation: evidence.pageObservation,
     interSaveQuietMs,
+    styleSavePolicy,
     installationLayout: evidence.installationLayout,
     nativeLock: hash(await readFile(path.join(consumers.native.project, 'pnpm-lock.yaml'), 'utf8')),
     staticLock: hash(await readFile(path.join(consumers.static.project, 'pnpm-lock.yaml'), 'utf8')),

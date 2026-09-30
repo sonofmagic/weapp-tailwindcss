@@ -14,6 +14,7 @@ import { trackBrowserState } from './browser-state.mjs'
 import { waitForTaroComponents } from './component-ready.mjs'
 import { comparableCss } from './semantic-css.mjs'
 import { readPageSnapshot } from './page-snapshot.mjs'
+import { assertStylesheetMarker } from './stylesheet-marker.mjs'
 
 export const browserTarget = item => isWeb(item) || item.name.startsWith('web/')
 
@@ -48,11 +49,7 @@ export async function observePage(url, session, directory) {
     return {
       documents: state.documents,
       waitForTransport: () => waitFor(() => assert.ok(state.transportReady(), '开发更新通道尚未握手'), session),
-      async waitForStylesheetMarker(marker) {
-        const urls = await page.evaluate(() => [...document.styleSheets].map(sheet => sheet.href).filter(Boolean))
-        const texts = await state.linkedStyles(urls)
-        assert.ok(texts.some(text => text.includes(marker)), `当前样式响应缺少本轮 marker ${marker}`)
-      },
+      waitForStylesheetMarker: marker => assertStylesheetMarker(page, state, marker),
       async inspect(consumer, operation, marker) {
         const round = roundFor(operation)
         const result = await page.evaluate(readPageSnapshot, { expected: probeClasses(consumer.item, round), round, marker, family: consumer.item.family })
@@ -75,7 +72,14 @@ export async function observePage(url, session, directory) {
       },
       async close() {
         try {
-          await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ ...lastObservation, errors }))
+          // 计时结束后保存当前 DOM/HMR 状态，避免失败报告只有上一次成功观察。
+          const finalState = await page.evaluate(() => ({
+            url: location.href,
+            markerText: document.getElementById('tw-matrix-height')?.textContent,
+            hot: globalThis.__WEAPP_TW_MATRIX_HMR_STATUS__?.(),
+            links: [...document.querySelectorAll('link[rel=stylesheet]')].map(link => ({ href: link.href, disabled: link.disabled, loaded: link.isLoaded, visited: link.visited })),
+          })).catch(error => ({ error: error.message }))
+          await writeFile(path.join(directory, `browser-observation-${session.pid}.json`), JSON.stringify({ ...lastObservation, errors, messages: state.messages, finalState, stylesheetObservation: state.lastStylesheets }))
         }
         finally { await browser.close() }
       },

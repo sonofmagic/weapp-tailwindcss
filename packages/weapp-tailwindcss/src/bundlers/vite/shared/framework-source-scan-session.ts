@@ -68,8 +68,8 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
   })
   let sourceScanEntries: SourceScanResult['entries']
-  let sourceScanMatcher: ReturnType<typeof createSourceCandidateEligibilityMatcher>
-  let sourceScanBoundaryMatcher: ReturnType<typeof createSourceCandidateEligibilityMatcher>
+  let sourceScanMatcher: ReturnType<typeof createSourceCandidateEligibilityMatcher> | undefined
+  let sourceScanBoundaryMatcher: ReturnType<typeof createSourceCandidateEligibilityMatcher> | undefined
   let sourceScanRoots: ReturnType<typeof collectRoots> = []
   let sourceScanOutDir: string | undefined
   let sourceScanEligibleFiles = new Set<string>()

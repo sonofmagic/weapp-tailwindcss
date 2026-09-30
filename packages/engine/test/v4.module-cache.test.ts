@@ -112,6 +112,44 @@ describe('生成模块缓存', () => {
     }
   })
 
+  it('并发入口刷新共享 CJS 对象，删除和恢复不能回退到 ESM 包装中的旧值', async () => {
+    const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'generation-shared-cjs-')))
+    const helper = path.join(root, 'colors.cjs')
+    const sources: Awaited<ReturnType<typeof resolveTailwindV4Source>>[] = []
+    try {
+      await fs.writeFile(helper, 'module.exports = { brand: "#123456" }')
+      for (const name of ['first', 'second']) {
+        await fs.writeFile(path.join(root, `${name}.cjs`), 'module.exports = { theme: { colors: require("./colors.cjs") } }')
+        sources.push(await resolveTailwindV4Source({
+          projectRoot: path.resolve(import.meta.dirname, '..'),
+          base: root,
+          css: `@config "./${name}.cjs"; @tailwind utilities;`,
+        }))
+      }
+      const generate = async () => Promise.all(sources.map(async (source) => {
+        const session = createTailwindGenerationSession(source)
+        try {
+          return (await session.generate({ candidates: ['bg-brand'] })).fragments[0]!.root.toString()
+        }
+        finally { session.dispose() }
+      }))
+      expect((await generate()).every(css => css.includes('#123456'))).toBe(true)
+      await fs.writeFile(helper, 'module.exports = { brand: "#654321" }')
+      expect((await generate()).every(css => css.includes('#654321') && !css.includes('#123456'))).toBe(true)
+      await fs.rm(helper)
+      // 等待所有失败请求结束，再恢复依赖，避免测试本身制造文件恢复竞态。
+      const failed = await Promise.allSettled(sources.map(async (source) => {
+        const session = createTailwindGenerationSession(source)
+        try { return await session.generate({ candidates: ['bg-brand'] }) }
+        finally { session.dispose() }
+      }))
+      expect(failed.map(result => result.status)).toEqual(['rejected', 'rejected'])
+      await fs.writeFile(helper, 'module.exports = { brand: "#123456" }')
+      expect((await generate()).every(css => css.includes('#123456'))).toBe(true)
+    }
+    finally { await fs.rm(root, { recursive: true, force: true }) }
+  })
+
   it('保留已有模块 hook，且不接管引擎调用之外的请求', async () => {
     const hooks = globalThis as typeof globalThis & { __tw_load?: (url: string) => unknown }
     const previous = hooks.__tw_load

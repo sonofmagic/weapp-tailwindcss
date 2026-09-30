@@ -36,17 +36,33 @@ export async function prepareSteps(consumer, records) {
   return changes
 }
 
+const savedStyles = new WeakMap()
+export const styleSavePolicy = 'changed-input-only-v2'
+
 export async function planStep(consumer, files, marker) {
+  let previousStyles = savedStyles.get(consumer)
+  if (!previousStyles) {
+    previousStyles = new Map()
+    savedStyles.set(consumer, previousStyles)
+  }
   const writes = []
   for (const [file, content] of files) {
     const target = path.join(consumer.project, file)
+    const style = /\.(?:css|scss)$/.test(target)
+    // 静态预编译会剥离源码注释，标识必须在预编译之后加到实际保存的样式上。
     const next = content.replaceAll('COST_SEQUENCE', marker)
-    if (await readFile(target, 'utf8').catch(error => { if (error.code === 'ENOENT') return null; throw error }) !== next) writes.push([target, next])
+      + (consumer.mode === 'static' && style ? `\n/*! weapp-demo-cost:${marker} */\n` : '')
+    const current = await readFile(target, 'utf8').catch(error => { if (error.code === 'ENOENT') return null; throw error })
+    const previous = previousStyles.get(target)
+    // 文本操作只更新源码 marker；不能为了观察完成而人为触发一次 CSS 构建。
+    if (previous?.content === content && previous.output === current) continue
+    if (current !== next) writes.push([target, next, content])
   }
   if (consumer.mode === 'static') writes.sort(([first], [second]) => Number(/\.(?:css|scss)$/.test(second)) - Number(/\.(?:css|scss)$/.test(first)))
   return async ({ afterWrite } = {}) => {
-    for (const [target, next] of writes) {
+    for (const [target, next, content] of writes) {
       await replaceSourceFile(target, next)
+      if (/\.(?:css|scss)$/.test(target)) previousStyles.set(target, { content, output: next })
       await afterWrite?.(target)
     }
   }
