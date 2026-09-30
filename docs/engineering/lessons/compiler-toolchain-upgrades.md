@@ -3,6 +3,7 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1256
 baseline: bc42340685067d13e0ddc665197662848faaacfa
 regressions:
+  - packages/postcss/test/rolldown-build-contract.test.ts
   - packages/weapp-tailwindcss/test/js/oxc-upgrade-contract.test.ts
   - scripts/ci/demo-matrix/rollup-invalidation.test.mjs
   - scripts/ci/demo-matrix/rollup-watch.test.mjs
@@ -22,12 +23,15 @@ Oxc parser 从 0.151.0 升至 0.152.0，保留其他调用方的旧版本。官�
 
 因此保留补丁并迁移到 4.63.5 的确切源码。旧补丁能在宽松应用实验中成功，但 pnpm 严格应用拒绝第三个 hunk，不能直接复制旧文件作为交付。重新生成上下文后 frozen install 和相同 18 项回归通过。只有未补丁版本通过完整 watcher 回归后才移除；不降低断言或调整 watcher 等待来接受升级。
 
+Rolldown 仅通过 `tsdown@0.23.0>rolldown: 1.2.11` 在调用方允许的 `~1.2.7` 范围内升级，保留其他框架版本。官方[发布说明](https://github.com/rolldown/rolldown/releases/tag/v1.2.11)包含 sourcemap names 和 watcher 事件修复，但没有声称修复本仓库的 CJS 多入口 panic。将语法入口重新并入 CJS 主构建后，1.2.7 与 1.2.11 均在 `generator.rs:111:52` 报 `no entry found for key`，所以保留独立语法入口构建。新增真实全入口产物回归；只有两个格式的产物和实现分块映射均通过才接受升级。纯重导出入口允许没有自己的 map，不误判为丢失源码映射。
+
 ## 验证
 
 Node 24.18.0、pnpm 12.6.0、macOS arm64。Oxc、Rolldown 要求 Node ^20.19.0 或 >=22.12.0，符合当前工具链。官方 registry 本机 TLS 主机名校验失败，使用 HTTPS npmmirror 下载，保留 package integrity；没有禁用 TLS。
 
 - Oxc 升级后主包闭包构建通过；JS/Babel 定向测试 288 项通过、2 项条件跳过；新增映射与 Unicode 契约 2 项通过。
 - Rollup 未补丁候选：12 通过、6 失败。迁移补丁后的实际根依赖：18 通过；frozen install 通过。
+- Rolldown 1.2.11 的 frozen install、主包完整运行时闭包构建（含声明）通过；真实多入口、ESM/CJS 映射、颜色 parser 隔离、自定义插件及来源信息 11 项通过。无绕行的 panic 实验前后均失败，日志保留。
 - 曾因新 worktree 尚未构建内部 exports、以及候选副本未链接 native 运行时导致实验失败，日志保留；它们是实验准备问题，不能当作产品兼容回归。
 
 复现候选版本回归：

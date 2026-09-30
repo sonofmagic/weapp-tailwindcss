@@ -104,6 +104,7 @@ versioning:
     storage: repository
 
 overrides:
+  tsdown@0.23.0>rolldown: 1.2.11
   jiti: 2.7.0
   weapp-vite>weapp-tailwindcss: workspace:*
 
