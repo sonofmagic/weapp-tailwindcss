@@ -4924,9 +4924,6 @@ importers:
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.6.1(postcss@8.5.28)
-      es-toolkit:
-        specifier: catalog:postcssUtilities
-        version: 1.52.0
       lru-cache:
         specifier: catalog:buildUtilities
         version: 11.5.3

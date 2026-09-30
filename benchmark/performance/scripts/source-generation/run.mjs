@@ -14,11 +14,14 @@ const { values } = parseArgs({ options: {
   before: { type: 'string' }, after: { type: 'string' }, only: { type: 'string' },
   'out-dir': { type: 'string' }, diagnostic: { type: 'boolean' },
   phases: { type: 'string', default: 'build,hmr' }, confirmation: { type: 'boolean' },
+  'dependency-changes': { type: 'string' },
+  registry: { type: 'string', default: 'https://registry.npmjs.org/' },
 } })
 assert.ok(values.before && values.after && values.only && values['out-dir'], '需要前后 tarball 清单、明确目标和报告目录')
 const phases = values.phases.split(',')
 assert.ok(phases.length && new Set(phases).size === phases.length && phases.every(phase => ['build', 'startup', 'hmr'].includes(phase)), '源码实验阶段仅支持 build、startup、hmr')
 const artifacts = Object.fromEntries(await Promise.all(['before', 'after'].map(async variant => [variant, JSON.parse(await readFile(values[variant], 'utf8'))])))
+const dependencyChanges = values['dependency-changes'] ? JSON.parse(await readFile(values['dependency-changes'], 'utf8')) : []
 assert.equal(artifacts.before.version, artifacts.after.version, '源码实验应保持依赖版本，仅改变实现')
 assert.deepEqual(Object.keys(artifacts.before.packages).sort(), Object.keys(artifacts.after.packages).sort(), '源码依赖闭包不同')
 const output = path.resolve(values['out-dir'])
@@ -26,6 +29,9 @@ await mkdir(output, { recursive: true })
 const settings = values.diagnostic ? { runs: 1, hmrRuns: 1, warmups: 0 } : defaults
 const report = { schema: 'weapp-source-demo-comparison/v1', scope: '源码打包产物；不是 npm 稳定版周报', diagnostic: Boolean(values.diagnostic), confirmation: Boolean(values.confirmation), settings, phases, artifacts, environment: { node: process.version, platform: process.platform, arch: process.arch, cpu: os.cpus()[0]?.model, runner: os.hostname() }, batches: [], errors: [] }
 const checkpoint = () => writeFile(path.join(output, 'report.json'), JSON.stringify(report, null, 2))
+report.dependencyChanges = dependencyChanges
+report.registry = values.registry
+report.dependencyEvidence = {}
 for (const item of selectCases(values.only)) {
   const temporary = await mkdtemp(path.join(os.tmpdir(), 'weapp-source-comparison-'))
   const prepared = {}
@@ -37,11 +43,11 @@ for (const item of selectCases(values.only)) {
       await mkdir(directory, { recursive: true })
       const response = path.join(directory, 'prepared.bin')
       const request = path.join(directory, 'request.json')
-      await writeFile(request, JSON.stringify({ item, directory, logs, artifacts: artifacts[variant], response }))
+      await writeFile(request, JSON.stringify({ item, directory, logs, artifacts: artifacts[variant], response, registry: values.registry }))
       await run(process.execPath, [fileURLToPath(new URL('./prepare.mjs', import.meta.url)), request], { logFile: path.join(output, key, `${variant}-prepare.log`), timeout: 1_800_000 })
       prepared[variant] = deserialize(await readFile(response))
     }
-    assertSameRegistryDependencies(prepared.before.locks, prepared.after.locks)
+    report.dependencyEvidence[item.id] = assertSameRegistryDependencies(prepared.before.locks, prepared.after.locks, dependencyChanges)
     // 两批使用相反的版本顺序；每个版本内保持三组串行轮换。
     for (const [batch, order] of values.confirmation ? [['confirmation', ['before', 'after']]] : [['first', ['before', 'after']], ['second', ['after', 'before']]]) {
       const results = {}

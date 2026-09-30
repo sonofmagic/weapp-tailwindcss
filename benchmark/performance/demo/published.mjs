@@ -59,7 +59,8 @@ export async function consumerManifest(item, published) {
     }
   }
   delete manifest.pnpm
-  delete manifest.packageManager
+  const rootManifest = JSON.parse(await readFile(path.join(repo, 'package.json'), 'utf8'))
+  manifest.packageManager = rootManifest.packageManager
   return { manifest, workspace, sourceLock: lock, importer }
 }
 
