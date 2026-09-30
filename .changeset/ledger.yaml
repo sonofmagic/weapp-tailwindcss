@@ -58,6 +58,10 @@
   dir: packages/engine
   intents:
     - bounded-build-caches
+"@weapp-tailwindcss/engine@0.1.4":
+  dir: packages/engine
+  intents:
+    - scoped-generation-invalidation
 "@weapp-tailwindcss/example-react-lynx-promo@0.0.0":
   dir: examples/react-lynx-promo
   intents:
@@ -181,6 +185,10 @@
     - cache-input-identity
     - fluffy-poets-float
     - orange-pumas-shake
+"@weapp-tailwindcss/postcss@3.3.11":
+  dir: packages/postcss
+  intents:
+    - fast-css-content-hash
 "@weapp-tailwindcss/postcss@3.3.2":
   dir: packages/postcss
   intents:
@@ -448,6 +456,11 @@ weapp-tailwindcss@5.5.11:
     - orange-pumas-shake
     - vite-state-ownership
     - webpack-css-content-identity
+weapp-tailwindcss@5.5.12:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - gentle-tigers-hug
+    - scoped-generation-invalidation
 weapp-tailwindcss@5.5.2:
   dir: packages/weapp-tailwindcss
   intents:

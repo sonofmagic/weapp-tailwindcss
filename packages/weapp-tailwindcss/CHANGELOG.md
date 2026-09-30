@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.5.12
+
+### Patch Changes
+
+- 将微信 rpx 主题警告延后到构建器最终样式阶段：已静态化或未使用的主题不再提示，仅在仍有相关运行时 calc 时警告。安全构建不消耗提示额度，后续 watch 引入风险仍能提示一次；保持平台与日志级别边界。Refs #1214
+
+- 按实际生成依赖局部失效会话，保留无关入口的编译状态；依赖归属未知、生成失败、仍在执行和仅做过候选校验时继续保守失效。修复共享 `.cjs` 配置在刷新或删除后的旧模块读取，并避免生成失败的清理链产生未处理的 Promise 拒绝。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/engine@0.1.4
+  - @weapp-tailwindcss/postcss@3.3.11
+
 ## 5.5.11
 
 ### Patch Changes
