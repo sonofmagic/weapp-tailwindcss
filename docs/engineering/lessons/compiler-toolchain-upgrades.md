@@ -8,6 +8,7 @@ regressions:
   - scripts/ci/demo-matrix/rollup-invalidation.test.mjs
   - scripts/ci/demo-matrix/rollup-watch.test.mjs
   - benchmark/version-compare/test/process-memory.test.mjs
+  - packages/weapp-tailwindcss/test/bundlers/vite-root-coverage-reuse.test.ts
 ---
 
 # 编译依赖的逐项升级验证
@@ -245,3 +246,16 @@ CPU profile 保留了模块加载、候选提取、文件读取和空闲等待�
 本轮验证：`CI=1 pnpm install --frozen-lockfile --offline`、escape 包构建、核心 Oxc/自定义映射/CI 与打包契约 5 文件 78 项、Rollup watch/invalidation 18 项、PostCSS 真实多入口构建契约 1 项、进程内存工具 20 项，以及 `pnpm architecture:check`、`pnpm agents:check` 通过。Oxc 测试文件使用 `eslint --no-ignore` 显式验证；测试输入中的模板插值按源码文本保留。
 
 锁文件保留主线 escape workspace 迁移及本 PR 的 Oxc、Rollup 和 scoped Rolldown 升级归属。未重新采集已耗尽的正式性能样本，历史 RSS 与 HMR 失败不被覆盖；本轮定向回归不代表设备或全端验收。规则未变更。
+### Taro Vite 根样式覆盖索引的重复解析
+
+同步 main 后，`db18844f34150a5addacda852bf5716b0e62fa2c` 的 [Benchmark attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36844691455/job/110314006918) 在 Taro Vite 微信目标触发四项耗时门禁：HMR median / p95 分别增加 11.14% / 16.17%，插件 median / p95 增加 37.65% / 40.80%。样本和 marker 完整，主要增量在 `tasks.css`；这不能直接归因为 Oxc。
+
+一次独立 CPU 诊断显示两侧共同热点包含 PostCSS 解析/遍历、Rollup AST 和 GC。该诊断有明显 profiler 开销，每侧只保存前 10 段，第三轮 CPU 未完整覆盖；不能替代原 Linux CI 失败或给出性能通过结论。原始日志、20 份 profile 和边界说明保留在 `.tmp/toolchain-evidence/taro-vite-cpu-diagnostic/`，不重复正式确认。
+
+沿调用链发现一项确定的重复工作：`removeCssCoveredByRootStyleAssets` 对每个页面/组件都重新解析相同根 CSS 并建立覆盖索引。新增 [批次复用回归](../../../packages/weapp-tailwindcss/test/bundlers/vite-root-coverage-reuse.test.ts) 在修改前实测 12 个产物解析根样式 12 次，期望 1 次而失败。修复把索引限制在单次产物处理调用内，按实际根 CSS 内容复用；回调改变来源或内容就重建，下次构建重新计算。PostCSS 继续拥有解析和覆盖判断，bundler 只负责批次生命周期。独立分包跳过规则及 CSS 输出语义不变，没有全局缓存或预算调整。
+
+定向验证：上述回归及 `vite-content-init-coverage`、`vite-processed-css-assets.unit` 共 3 文件 54 项通过；PostCSS 相关 3 文件 49 项通过；包闭包构建、源文件与测试显式 lint、architecture:check、agents:check 和 git diff --check 通过。pnpm release status 已确认两包 patch intent，未发布。隔离微基准使用 128 条根规则、12 个产物，预热 5 对，交替执行 15 对；PostCSS 覆盖清理中位数从 5.126 ms 到 1.924 ms，所有结果逐项检查相等。该数字仅反映索引复用，不是整体构建/HMR 提速结论。
+
+`CI=1 pnpm e2e:demo:matrix taro-vite-react-tailwindcss-v4:weapp taro-vite-react-tailwindcss-v4:alipay --update --build-only` 重新生成两个项目目标的 static 基线，无文件差异；随后去掉更新和仅构建参数执行原矩阵，两个目标 production / initial / replace / add / restore 全部通过。日志与产物保留在 `.tmp/toolchain-evidence/root-coverage-*`。这是本机 Node 24 的两个小程序 CLI 目标验证，不包含 IDE/设备验收，也不代表云端性能门禁已修复。仍须等待新 head 的全部适用 CI。
+
+规则评估：沿用既有解析所有权、缓存生命周期和性能证据边界，不新增规则。

@@ -1,3 +1,4 @@
+import type { ComparableCssCoverage } from './coverage'
 import postcss from 'postcss'
 import { removeUnusedMiniProgramContentInit } from '../mini-program-css'
 import { hasNonCommentCss } from '../processed-css/cleanup'
@@ -65,7 +66,8 @@ export function removeScopedTailwindPreflightCss(css: string, options?: { preser
   return removeScopedCssCoveredByRootStyleSources(css, [], options?.preserveRuntimeProperties)
 }
 
-export function removeCssCoveredByRootStyleSources(css: string, rootSources: string[]) {
+/** 预计算索引必须对应当前 rootSources；该函数只读取索引，不保留调用方状态。 */
+export function removeCssCoveredByRootStyleSources(css: string, rootSources: string[], preparedCoverage?: ComparableCssCoverage) {
   if (css.trim().length === 0) {
     return css
   }
@@ -77,7 +79,7 @@ export function removeCssCoveredByRootStyleSources(css: string, rootSources: str
   ) {
     return css
   }
-  const coverage = collectRootScopedComparableCssCoverage(rootSources)
+  const coverage = preparedCoverage ?? collectRootScopedComparableCssCoverage(rootSources)
   let nextCss = css
   try {
     const root = postcss.parse(css)
