@@ -4,7 +4,7 @@
 
 2026-10-02 已将主仓库从 `sonofmagic/weapp-tailwindcss` 转移到 [weapp-tailwindcss/weapp-tailwindcss](https://github.com/weapp-tailwindcss/weapp-tailwindcss)。仓库名称与公开属性、npm 包名及所有权、文档域名和独立模板仓库保持不变。
 
-代码准备基线为 `0bfb23912f59cfaf0b58b00353d7f08122d1f8f1`。维护者本轮要求开始迁移，已采用“先转移 GitHub、保持 npm 发布暂停”的分阶段交付。**GitHub Transfer 已完成；发布接通尚未完成。** npm 的实际信任配置和发布 Token 对组织仓库的访问权尚未核实，Cloudflare Git 集成与 Codecov 的组织授权也尚未核实。
+代码准备基线为 `0bfb23912f59cfaf0b58b00353d7f08122d1f8f1`。维护者本轮要求开始迁移，已采用“先转移 GitHub、保持 npm 发布暂停”的分阶段交付。**GitHub Transfer 与 30 个 npm 包的 Trusted Publisher 迁移均已完成；发布恢复尚未完成。** npm 信任配置已逐包回读核验。发布 Token 对组织仓库的访问权、Cloudflare Git 集成与 Codecov 的组织授权仍待核实。
 
 Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Templates 原本即为 `disabled_manually`，保持原状。PR #1266 保存地址和元数据变更，待后台条件具备后经正常审核合并；不得直接触发 npm 发布。
 
@@ -43,7 +43,7 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 
 ### npm Trusted Publisher
 
-每个发布包分别核实以下字段，不能只核对 `weapp-tailwindcss` 主包：
+2026-10-02 已使用 npm 11.16.0 官方 `trust` 命令完成全部 30 个发布包的配置迁移，并逐包回读核验：
 
 | 字段 | 迁移后目标 |
 | --- | --- |
@@ -51,46 +51,48 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 | Organization or user | `weapp-tailwindcss` |
 | Repository | `weapp-tailwindcss` |
 | Workflow filename | `release.yml` |
-| Environment | 当前工作流未声明 environment，配置应与其一致 |
-| 发布权限 | 满足 repoctl 使用的直接发布及 dist-tag 操作；保留已有必要权限 |
+| Environment | 当前工作流和全部 30 个包均未配置 environment |
+| 发布权限 | 保留原有 `createPackage` 与 `createStagedPackage`，未扩大权限 |
 | 运行环境 | GitHub-hosted runner、Node 24、OIDC、provenance |
 
-本机 Chrome 原生入口多次返回 `timeoutReached`，实际迁移本轮复查仍未恢复；备用浏览器入口此前返回 `Codex auth token is unavailable`，尚未进入 npm 后台。以下各包均不能标记为已配置：
+通过 `npm trust list` 保存原配置，再逐包执行 `npm trust github` 添加新身份、回读确认、使用 `npm trust revoke --id=...` 撤销原身份，最后再次回读。全部包最终均仅保留新仓库身份，工作流仍为 `release.yml`，无 environment 限制，两种原有发布权限保持不变。npm 短时认证过期时由维护者完成官方网页 2FA，再从当前包继续；未再自动启动浏览器。
+
+原配置和最终配置分别保存在本工作树忽略目录 `node_modules/.cache/organization-transfer/npm-trust-before.json`、`npm-trust-after.json`，包含包名、信任 ID、配置与核验时间，不包含 Token 或 OTP。最终核验完成时间为 `2026-10-01T19:06:20.013Z`（UTC）。
 
 | 包 | Trusted Publisher 核实状态 |
 | --- | --- |
-| `@weapp-tailwindcss/cli` | 待后台核实 |
-| `@weapp-tailwindcss/cn` | 待后台核实 |
-| `@weapp-tailwindcss/cva` | 待后台核实 |
-| `@weapp-tailwindcss/debug-uni-app-x` | 待后台核实 |
-| `@weapp-tailwindcss/engine` | 待后台核实 |
-| `@weapp-tailwindcss/escape` | 待后台核实 |
-| `@weapp-tailwindcss/experimental` | 待后台核实 |
-| `@weapp-tailwindcss/hbuilderx-runner` | 待后台核实 |
-| `@weapp-tailwindcss/init` | 待后台核实 |
-| `@weapp-tailwindcss/logger` | 待后台核实 |
-| `@weapp-tailwindcss/lynx` | 待后台核实 |
-| `@weapp-tailwindcss/merge` | 待后台核实 |
-| `@weapp-tailwindcss/postcss` | 待后台核实 |
-| `@weapp-tailwindcss/postcss-calc` | 待后台核实 |
-| `@weapp-tailwindcss/react-native` | 待后台核实 |
-| `@weapp-tailwindcss/reset` | 待后台核实 |
-| `@weapp-tailwindcss/runtime` | 待后台核实 |
-| `@weapp-tailwindcss/shared` | 待后台核实 |
-| `@weapp-tailwindcss/source-scan` | 待后台核实 |
-| `@weapp-tailwindcss/typography` | 待后台核实 |
-| `@weapp-tailwindcss/ui` | 待后台核实 |
-| `@weapp-tailwindcss/variants` | 待后台核实 |
-| `tailwindcss-config` | 待后台核实 |
-| `tailwindcss-core-plugins-extractor` | 待后台核实 |
-| `tailwindcss-injector` | 待后台核实 |
-| `theme-transition` | 待后台核实 |
-| `weapp-style-injector` | 待后台核实 |
-| `weapp-tailwindcss` | 待后台核实 |
-| `weapp-tw` | 待后台核实 |
-| `wetw` | 待后台核实 |
+| `@weapp-tailwindcss/cli` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/cn` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/cva` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/debug-uni-app-x` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/engine` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/escape` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/experimental` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/hbuilderx-runner` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/init` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/logger` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/lynx` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/merge` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/postcss` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/postcss-calc` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/react-native` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/reset` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/runtime` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/shared` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/source-scan` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/typography` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/ui` | 已迁移并回读核验 |
+| `@weapp-tailwindcss/variants` | 已迁移并回读核验 |
+| `tailwindcss-config` | 已迁移并回读核验 |
+| `tailwindcss-core-plugins-extractor` | 已迁移并回读核验 |
+| `tailwindcss-injector` | 已迁移并回读核验 |
+| `theme-transition` | 已迁移并回读核验 |
+| `weapp-style-injector` | 已迁移并回读核验 |
+| `weapp-tailwindcss` | 已迁移并回读核验 |
+| `weapp-tw` | 已迁移并回读核验 |
+| `wetw` | 已迁移并回读核验 |
 
-恢复发布前记录并核对当前发布身份；在保持发布暂停的窗口内更新为上述组织身份。若后台支持并使用多个 Trusted Publisher，可先添加新身份并在成功验收后移除旧身份；不能假定所有包已经配置或共享同一配置。仓库 Secret 中的旧 `NPM_TOKEN` 不得注入发布步骤作为失败兜底。
+本次验收仅证明 30 个包的新信任配置已保存、旧身份已移除；未执行 `npm publish`、版本变更或 dist-tag 修改。下一次计划内真实发布仍需验证 OIDC 鉴权与新仓库来源的 provenance。Release 保持 `disabled_manually`，仓库 Secret 中的旧 `NPM_TOKEN` 不得注入发布步骤作为失败兜底。认证交接与浏览器清理的复盘见 [npm Trusted Publisher 迁移与认证交接](lessons/npm-trusted-publisher-migration.md)。
 
 ### Cloudflare 与 Codecov
 
@@ -102,7 +104,7 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 
 ## 后续恢复顺序
 
-1. 恢复 npm、Cloudflare 和 Codecov 后台访问，逐包核实并更新上述新组织身份，核实发布 Token 对新仓库的访问权及文档域名。整个过程中保持 Release 停用。
+1. npm Trusted Publisher 已全部迁移并核验；继续核实 Cloudflare 和 Codecov 的组织集成、发布 Token 对新仓库的访问权及文档域名。整个过程中保持 Release 停用。
 2. 完成既有发布修复 PR #1261，并将地址变更 PR #1266 经正常门禁审核合并到 `main`；不得绕过审核或手工修改 `release/pnpm-version`。
 3. 后台身份与权限核对通过后，仅恢复切换前原本启用的 Release 工作流。通过 repoctl 的 prepare 流程重新生成发布 PR #1255，不能直接发布旧生成分支的产物。
 4. 下一次计划内真实发布逐包核对 npm 版本与 dist-tag、Git tag、GitHub Release 及新组织来源的 provenance。dry-run 不是发布认证成功证据；部分成功时使用 repoctl 恢复缺失项，不能重发已发布版本。
@@ -119,7 +121,8 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 - 修改过的 TypeScript/TSX 文件通过定向 `pnpm exec eslint`；未使用自动修复。
 - 30 个非私有包逐项核对通过：仓库元数据与根配置一致，包名、版本、导出、依赖及其他非地址字段保持不变。
 - `CI=1 pnpm agents:check` 与 `git diff --check`：准备阶段通过；本次迁移记录更新后重新验证。
-- 本次只更新迁移记录，没有修改前一轮已验证的代码。未运行全仓多端测试或实际 npm 发布；PR 的远端检查结果以当前 head 为准，不将运行中、排队或跳过的检查标记为通过。
+- 本次 npm 管理命令逐包回读核验 30/30 通过：目标仓库、workflow、environment、权限及旧身份移除均符合预期；前后快照包名集合完全一致。
+- 本次只更新迁移记录和认证复盘，没有修改前一轮已验证的产品代码。未运行全仓多端测试或实际 npm 发布；PR 的远端检查结果以当前 head 为准，不将运行中、排队或跳过的检查标记为通过。
 
 本轮不新增 AGENTS 规则；使用现有发布、隔离和验收约束。
 
