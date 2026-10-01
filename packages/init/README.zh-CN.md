@@ -17,3 +17,5 @@ await init({ cwd: process.cwd() })
 ## 官网
 
 更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.weapp.dev)。
+
+依赖版本按目标主版本范围选择最高稳定版，不依赖 registry 返回顺序。没有匹配稳定版时，初始化会在写入项目文件前报错，不回退到其他主版本或预发布版。

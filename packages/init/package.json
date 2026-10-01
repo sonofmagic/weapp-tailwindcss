@@ -47,6 +47,7 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "fs-extra": "catalog:buildUtilities",
     "npm-registry-fetch": "^20.0.1",
-    "pathe": "catalog:buildUtilities"
+    "pathe": "catalog:buildUtilities",
+    "semver": "catalog:compilerUtilities"
   }
 }

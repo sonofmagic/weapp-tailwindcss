@@ -1,5 +1,6 @@
 import type { Options } from 'npm-registry-fetch'
 import { defu } from '@weapp-tailwindcss/shared'
+import semver from 'semver'
 
 export type FetchOptions = Options
 /**
@@ -28,12 +29,16 @@ export async function getLatestVersion(packageName: string, options?: FetchOptio
 }
 
 export async function getLatestVersionInRange(packageName: string, versionRange: string, options?: FetchOptions) {
+  if (!semver.validRange(versionRange)) {
+    throw new Error(`Invalid version range for ${packageName}: ${versionRange}`)
+  }
   const response = await fetchPackage(packageName, options)
-  const versions = Object.keys(response.versions)
-  // 过滤出符合指定版本范围的版本
-  const filteredVersions = versions.filter(version => version.startsWith(versionRange))
-  // 找到符合条件的最新版本
-  return filteredVersions.at(-1) ?? response['dist-tags'].latest
+  const versions = Object.keys(response.versions).filter(version => semver.valid(version) && !semver.prerelease(version))
+  const version = semver.maxSatisfying(versions, versionRange)
+  if (!version) {
+    throw new Error(`No stable version of ${packageName} satisfies ${versionRange}`)
+  }
+  return version
 }
 
 export type InitMode = 'v4' | 'legacy'
