@@ -97,7 +97,7 @@ export function renderWeappComparisonReport(parity: ParityFile, bundle: BundleFi
     '| 包 | 运行时依赖 | 入口 |',
     '| --- | --- | --- |',
     '| `cn` | `@weapp-tailwindcss/runtime`、`cn` | 仅 `.` |',
-    '| `merge` | `@weapp-tailwindcss/runtime`、`tailwind-merge`、`@weapp-core/escape` | `.` / `./slim` / `./lite` |',
+    '| `merge` | `@weapp-tailwindcss/runtime`、`tailwind-merge`、`@weapp-tailwindcss/escape` | `.` / `./slim` / `./lite` |',
     '',
     '消费者打包体积（esbuild minify，含传递依赖）：',
     '',

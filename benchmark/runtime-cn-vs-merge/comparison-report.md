@@ -5,14 +5,14 @@
 ## 一句话结论
 
 - `cn()` 是 shadcn 风格单函数，日常 last-wins / clsx / 普通 rpx 宽度冲突与 `twMerge()` 一致。
-- 当前对拍里 **2 处不等价**：`rpx-text-color-keep`、`numeric-leading-escaped`。需要 rpx 长度与颜色共存、已转义数字变体合并、`create` / slim / lite 时用 `@weapp-tailwindcss/merge`。
+- 当前对拍里 **0 处不等价**：无。需要 rpx 长度与颜色共存、已转义数字变体合并、`create` / slim / lite 时用 `@weapp-tailwindcss/merge`。
 
 ## 测量环境
 
-- 时间：2026-09-15T01:48:01.668Z
-- Commit：`f6ca9652d44753cbe7cb4cbc2469e6cd61ed6944`
+- 时间：2026-09-30T17:12:41.838Z
+- Commit：`bc42340685067d13e0ddc665197662848faaacfa`
 - Node：v24.18.0
-- OS：darwin 25.6.0 (arm64)
+- OS：darwin 27.0.0 (arm64)
 - CPU：Apple M4 Max
 - 内存：131072.00 MiB
 
@@ -66,7 +66,7 @@
 
 共 17 个静态 case。
 
-- `weapp-cn` vs `weapp-merge`：`rpx-text-color-keep`、`numeric-leading-escaped`
+- `weapp-cn` vs `weapp-merge`：无
 - `weapp-merge-slim` vs `weapp-merge`：`slim-excluded-fill`
 - 上游 `cn` vs `twMerge(clsx)`：无
 
@@ -78,13 +78,13 @@
 | refinement-padding | `p-3 px-5` | `p-3 px-5` | `p-3 px-5` | `p-3 px-5` | `p-3 px-5` | `p-3 px-5` | 是 |
 | rpx-width | `w-_b24rpx_B` | `w-_b24rpx_B` | `w-_b24rpx_B` | `w-_b10rpx_B w-_b24rpx_B` | `w-[24rpx]` | `w-[24rpx]` | 是 |
 | rpx-text-length | `text-_b24rpx_B` | `text-_b24rpx_B` | `text-_b24rpx_B` | `text-_b12rpx_B text-_b24rpx_B` | `text-[24rpx]` | `text-[24rpx]` | 是 |
-| rpx-text-color-keep | `text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-[80rpx]` | `text-[80rpx]` | **否** |
+| rpx-text-color-keep | `text-red text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-red text-_b80rpx_B` | `text-[80rpx]` | `text-[80rpx]` | 是 |
 | escaped-modifier | `hover_cp-4` | `hover_cp-4` | `hover_cp-4` | `hover_cp-2 hover_cp-4` | `hover_cp-2 hover_cp-4` | `hover_cp-2 hover_cp-4` | 是 |
 | stacked-modifiers | `focus_chover_cp-4` | `focus_chover_cp-4` | `focus_chover_cp-4` | `hover_cfocus_cp-2 focus_chover_cp-4` | `focus:hover:p-4` | `focus:hover:p-4` | 是 |
 | important-postfix | `p-4_e p-5` | `p-4_e p-5` | `p-4_e p-5` | `p-3_e p-4_e p-5` | `p-4! p-5` | `p-4! p-5` | 是 |
 | custom-plus-tailwind | `custom-card p-2` | `custom-card p-2` | `custom-card p-2` | `custom-card p-4 p-2` | `custom-card p-2` | `custom-card p-2` | 是 |
 | arbitrary-variant | `_b_n_cnth-child_p3_P_B_cpy-4` | `_b_n_cnth-child_p3_P_B_cpy-4` | `_b_n_cnth-child_p3_P_B_cpy-4` | `_b_n_cnth-child_p3_P_B_cpy-0 _b_n_cnth-child_p3_P_B_cpy-4` | `[&:nth-child(3)]:py-4` | `[&:nth-child(3)]:py-4` | 是 |
-| numeric-leading-escaped | `_2xl_cp-2 _2xl_cp-4` | `_2xl_cp-4` | `_2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | **否** |
+| numeric-leading-escaped | `_2xl_cp-4` | `_2xl_cp-4` | `_2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | `_2xl_cp-2 _2xl_cp-4` | 是 |
 | slim-excluded-fill | `fill-blue-500` | `fill-blue-500` | `fill-red-500 fill-blue-500` | `fill-red-500 fill-blue-500` | `fill-blue-500` | `fill-blue-500` | 是 |
 | long-list | `flex-col md_cflex-row gap-3 md_cgap-4 font-semibold shadow-md border ...` | `flex-col md_cflex-row gap-3 md_cgap-4 font-semibold shadow-md border ...` | `flex-col md_cflex-row gap-3 md_cgap-4 font-semibold shadow-md border ...` | `flex flex-col md_cflex-row gap-3 md_cgap-4 px-4 py-2 text-sm font-sem...` | `flex-col md:flex-row gap-3 md:gap-4 font-semibold shadow-md border gr...` | `flex-col md:flex-row gap-3 md:gap-4 font-semibold shadow-md border gr...` | 是 |
 | component-call | `rounded-md px-4 py-2 text-sm bg-primary text-white` | `rounded-md px-4 py-2 text-sm bg-primary text-white` | `rounded-md px-4 py-2 text-sm bg-primary text-white` | `rounded-md px-4 py-2 text-sm bg-primary text-white` | `rounded-md px-4 py-2 text-sm bg-primary text-white` | `rounded-md px-4 py-2 text-sm bg-primary text-white` | 是 |
@@ -103,18 +103,18 @@
 | 包 | 运行时依赖 | 入口 |
 | --- | --- | --- |
 | `cn` | `@weapp-tailwindcss/runtime`、`cn` | 仅 `.` |
-| `merge` | `@weapp-tailwindcss/runtime`、`tailwind-merge`、`@weapp-core/escape` | `.` / `./slim` / `./lite` |
+| `merge` | `@weapp-tailwindcss/runtime`、`tailwind-merge`、`@weapp-tailwindcss/escape` | `.` / `./slim` / `./lite` |
 
 消费者打包体积（esbuild minify，含传递依赖）：
 
 | 受试者 | raw | gzip9 | brotli |
 | --- | --- | --- | --- |
-| @weapp-tailwindcss/cn | 30.4 KiB | 12.6 KiB | 11.1 KiB |
-| @weapp-tailwindcss/merge | 34.5 KiB | 11.5 KiB | 10.1 KiB |
-| @weapp-tailwindcss/merge/slim | 24.8 KiB | 9.2 KiB | 8.3 KiB |
-| @weapp-tailwindcss/merge/lite | 11.1 KiB | 4.8 KiB | 4.3 KiB |
-| cn() | 25.4 KiB | 10.4 KiB | 9.2 KiB |
-| cn.twMerge | 25.4 KiB | 10.4 KiB | 9.2 KiB |
+| @weapp-tailwindcss/cn | 32.9 KiB | 13.8 KiB | 12.2 KiB |
+| @weapp-tailwindcss/merge | 34.8 KiB | 11.6 KiB | 10.2 KiB |
+| @weapp-tailwindcss/merge/slim | 25.1 KiB | 9.4 KiB | 8.4 KiB |
+| @weapp-tailwindcss/merge/lite | 11.4 KiB | 4.9 KiB | 4.4 KiB |
+| cn() | 25.5 KiB | 10.5 KiB | 9.3 KiB |
+| cn.twMerge | 25.5 KiB | 10.5 KiB | 9.3 KiB |
 | tailwind-merge twMerge | 26.8 KiB | 8.4 KiB | 7.3 KiB |
 | clsx + tailwind-merge | 27.1 KiB | 8.5 KiB | 7.4 KiB |
 

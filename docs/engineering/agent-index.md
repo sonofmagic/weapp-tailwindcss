@@ -41,6 +41,7 @@
 - [packages/tailwindcss-core-plugins-extractor/AGENTS.md](../../packages/tailwindcss-core-plugins-extractor/AGENTS.md)
 - [packages/tailwindcss-injector/AGENTS.md](../../packages/tailwindcss-injector/AGENTS.md)
 - [packages/test-helper/AGENTS.md](../../packages/test-helper/AGENTS.md)
+- [packages/escape/AGENTS.md](../../packages/escape/AGENTS.md)
 - [packages/weapp-style-injector/AGENTS.md](../../packages/weapp-style-injector/AGENTS.md)
 - [packages/weapp-tailwindcss/AGENTS.md](../../packages/weapp-tailwindcss/AGENTS.md)
 - [packages/weapp-tailwindcss/src/compiler/AGENTS.md](../../packages/weapp-tailwindcss/src/compiler/AGENTS.md)

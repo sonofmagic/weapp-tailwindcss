@@ -1429,9 +1429,9 @@ importers:
       '@types/node':
         specifier: catalog:typesNode2410
         version: 26.6.2
-      '@weapp-core/escape':
-        specifier: ^8.0.0
-        version: 8.0.0
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:^
+        version: link:../../packages/escape
       esbuild:
         specifier: ^0.28.2
         version: 0.28.2
@@ -4557,9 +4557,9 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
     devDependencies:
-      '@weapp-core/escape':
-        specifier: ^8.0.0
-        version: 8.0.0
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:^
+        version: link:../../packages/escape
       tsd:
         specifier: ^0.33.0
         version: 0.33.0
@@ -4575,9 +4575,9 @@ importers:
 
   packages-runtime/merge:
     dependencies:
-      '@weapp-core/escape':
-        specifier: ^8.0.0
-        version: 8.0.0
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:^
+        version: link:../../packages/escape
       '@weapp-tailwindcss/runtime':
         specifier: workspace:*
         version: link:../runtime
@@ -4591,9 +4591,9 @@ importers:
 
   packages-runtime/runtime:
     dependencies:
-      '@weapp-core/escape':
-        specifier: ^8.0.0
-        version: 8.0.0
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:^
+        version: link:../../packages/escape
       clsx:
         specifier: catalog:clsx
         version: 2.1.1
@@ -4713,6 +4713,9 @@ importers:
       '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
         version: link:../debug-uni-app-x
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:*
+        version: link:../escape
       '@weapp-tailwindcss/experimental':
         specifier: workspace:*
         version: link:../experimental
@@ -4824,6 +4827,12 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.3.3
 
+  packages/escape:
+    devDependencies:
+      escape-published:
+        specifier: npm:@weapp-core/escape@8.0.0
+        version: '@weapp-core/escape@8.0.0'
+
   packages/experimental:
     dependencies:
       '@weapp-tailwindcss/postcss':
@@ -4906,12 +4915,12 @@ importers:
       '@csstools/css-tokenizer':
         specifier: catalog:csstools
         version: 4.0.2
-      '@weapp-core/escape':
-        specifier: ~8.0.0
-        version: 8.0.0
       '@weapp-tailwindcss/engine':
         specifier: workspace:*
         version: link:../engine
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:~
+        version: link:../escape
       '@weapp-tailwindcss/postcss-calc':
         specifier: workspace:*
         version: link:../postcss-calc
@@ -5147,12 +5156,12 @@ importers:
       '@vue/compiler-dom':
         specifier: catalog:vue3
         version: 3.5.43
-      '@weapp-core/escape':
-        specifier: ~8.0.0
-        version: 8.0.0
       '@weapp-tailwindcss/engine':
         specifier: workspace:*
         version: link:../engine
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:~
+        version: link:../escape
       '@weapp-tailwindcss/logger':
         specifier: workspace:*
         version: link:../logger
@@ -5606,9 +5615,9 @@ importers:
       '@csstools/css-tokenizer':
         specifier: catalog:csstools
         version: 4.0.1
-      '@weapp-core/escape':
-        specifier: ~8.0.0
-        version: 8.0.0
+      '@weapp-tailwindcss/escape':
+        specifier: workspace:~
+        version: link:../../packages/escape
       colorette:
         specifier: ^2.0.20
         version: 2.0.20

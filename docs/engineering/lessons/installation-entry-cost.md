@@ -203,3 +203,14 @@ RSS 为 250 ms 轮询得到的进程树采样峰值。HMR 同一 watcher 的累�
 ## 规则评估
 
 不新增 AGENTS 规则。使用可执行回归约束异步采样回收、包管理器固定和依赖实验范围；继续区分微基准、源码 tarball 与 npm 发布版周报。
+
+
+### 2026-10-01：整合主线后定向重验
+
+整合主线 `0bfb23912` 的 escape workspace 迁移，无文本冲突。锁文件相对新主线仍仅移除 PostCSS 的 es-toolkit importer 依赖；原安装与性能数字属于报告记录的旧实验基线，本轮没有重采样或更新这些数字。
+
+本轮 `CI=1 pnpm install --frozen-lockfile --offline`、escape 构建与 120 项测试、核心自定义映射/CI 与打包契约 57 项、性能工具 113 项、native watch 诊断 2 项、`pnpm --filter weapp-tailwindcss... run build`、架构和规则检查均通过。
+
+用户要求同步 main 后重新验证，因此对新整合树串行运行一次 `CI=1 DEMO_MATRIX_PROCESS_DIAGNOSTICS=1 DEMO_MATRIX_WATCH_DIAGNOSTICS=1 DEMO_MATRIX_ARTIFACT_DIR=.tmp/main-sync-weapp-macos pnpm e2e:demo:matrix weapp-vite-tailwindcss-v4:weapp`：生产构建、initial/replace/add/restore 均通过，日志和产物保存在对应 artifact 目录。没有修改 demo 源码或 static 基线，没有重跑已耗尽的正式性能采样。
+
+此单组通过不证明此前 macOS 原生监听丢事件缺陷已修复；上游监听实现没有变化，原始失败和连续保存失败证据继续有效。远端应验证新 head，本地定向结果不代替 Node 22 hosted CI、连续事件可靠性或全端设备验收。规则未变更。

@@ -41,6 +41,13 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
       - name: Build package dependency closure
         run: pnpm ci:memory --label pr-gate-build --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
+
+      - name: Verify core escape package
+        run: |
+          pnpm --filter @weapp-tailwindcss/escape typecheck
+          pnpm --filter @weapp-tailwindcss/escape tsd
+          pnpm --filter @weapp-tailwindcss/escape test:package
+
       - name: Upload package build artifacts
         uses: actions/upload-artifact@v7
         with:
