@@ -99,7 +99,7 @@ async function runPatch() {
 
 async function runStatus(options: CliOptions) {
   const payload = { required: false, status: 'unnecessary', message: PATCH_COMMAND_OBSOLETE_NOTICE }
-  if (toBoolean(options.json, false)) {
+  if (toBoolean(options['json'], false)) {
     logger.log(JSON.stringify(payload, null, 2))
     return
   }
@@ -110,7 +110,7 @@ async function runStatus(options: CliOptions) {
 async function runVscodeEntry(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const baseDir = resolvedCwd ?? process.cwd()
-  const cssEntry = readStringOption('css', options.css)
+  const cssEntry = readStringOption('css', options['css'])
   if (!cssEntry) {
     throw new Error('Option "--css" is required.')
   }
@@ -118,9 +118,9 @@ async function runVscodeEntry(options: CliOptions) {
   const result = await generateVscodeIntellisenseEntry({
     baseDir,
     cssEntry,
-    output: readStringOption('output', options.output),
-    sources: readStringArrayOption('source', options.source),
-    force: toBoolean(options.force, false),
+    output: readStringOption('output', options['output']),
+    sources: readStringArrayOption('source', options['source']),
+    force: toBoolean(options['force'], false),
   })
   logger.success(`VS Code helper generated -> ${formatOutputPath(result.outputPath, resolvedCwd)}`)
 }
@@ -128,8 +128,8 @@ async function runVscodeEntry(options: CliOptions) {
 async function runDoctor(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const report = createDoctorReport({ cwd: resolvedCwd })
-  logger.log(toBoolean(options.json, false) ? JSON.stringify(report, null, 2) : formatDoctorReport(report))
-  if (hasDoctorFailure(report, toBoolean(options.strict, false))) {
+  logger.log(toBoolean(options['json'], false) ? JSON.stringify(report, null, 2) : formatDoctorReport(report))
+  if (hasDoctorFailure(report, toBoolean(options['strict'], false))) {
     process.exitCode = 1
   }
 }

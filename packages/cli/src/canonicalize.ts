@@ -126,7 +126,7 @@ export async function runCanonicalize(argv: string[]) {
     throw new Error('No candidate groups provided')
   }
   const records = inputs.map(input => record(designSystem, input))
-  const output = format === 'json' ? JSON.stringify(records, null, 2) : format === 'jsonl' ? records.map(JSON.stringify).join('\n') : records.map(item => item.output).join('\n')
+  const output = format === 'json' ? JSON.stringify(records, null, 2) : format === 'jsonl' ? records.map(item => JSON.stringify(item)).join('\n') : records.map(item => item.output).join('\n')
   process.stdout.write(`${output}\n`)
   return 0
 }
