@@ -117,7 +117,7 @@
     "types": "./dist/index.d.mts"
   },
   "dependencies": {
-    "@weapp-tailwindcss/escape": "workspace:^",
+    "@weapp-tailwindcss/escape": "workspace:*",
     "@weapp-tailwindcss/runtime": "workspace:*",
     "tailwind-merge": "catalog:tailwindMerge"
   },
