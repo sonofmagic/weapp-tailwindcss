@@ -15,12 +15,12 @@ keywords:
 
 # Skill publishing and synchronization
 
-`sonofmagic/weapp-tailwindcss` by `skills/` is the only source of truth for official Skill content. The `sonofmagic/skills` installed and used by users is an aggregation warehouse, and copies are not manually maintained here.
+`weapp-tailwindcss/weapp-tailwindcss` by `skills/` is the only source of truth for official Skill content. The `sonofmagic/skills` installed and used by users is an aggregation warehouse, and copies are not manually maintained here.
 
 ## Synchronization relationship
 
 ```text
-sonofmagic/weapp-tailwindcss@main:skills/
+weapp-tailwindcss/weapp-tailwindcss@main:skills/
   -> sonofmagic/skills@main:skills/weapp-tailwindcss/
 ```
 

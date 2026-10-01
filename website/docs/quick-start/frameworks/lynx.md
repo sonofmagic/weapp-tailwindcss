@@ -86,7 +86,7 @@ Tailwind 能生成 CSS 不代表 Lynx 支持每个属性和选择器。当前 Ly
 
 ## 验证与示例
 
-仓库中的完整示例位于 [`examples/react-lynx`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples/react-lynx)，可以用来对照项目结构和 CSS 入口。你的 Rspeedy 项目应使用自己的开发或构建命令。
+仓库中的完整示例位于 [`examples/react-lynx`](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/examples/react-lynx)，可以用来对照项目结构和 CSS 入口。你的 Rspeedy 项目应使用自己的开发或构建命令。
 
 示例固定 Tailwind CSS `4.3.3`、Lynx Engine `4.0.1`、bundle `engineVersion: '3.9'` 与 `@lynx-js/css-defines` `0.0.16`。catalog 使用代表值覆盖官方 utility 功能族、variant、指令和任意语法分支。
 

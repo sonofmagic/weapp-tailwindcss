@@ -53,7 +53,7 @@ export function getOrganizationJsonLd(locale: SiteLocale) {
       'url': 'https://github.com/sonofmagic',
     },
     'sameAs': [
-      'https://github.com/sonofmagic/weapp-tailwindcss',
+      'https://github.com/weapp-tailwindcss/weapp-tailwindcss',
       'https://www.npmjs.com/package/weapp-tailwindcss',
     ],
   } as const
@@ -85,12 +85,12 @@ export function getSoftwareJsonLd(locale: SiteLocale) {
     '@id': softwareId,
     'name': siteName,
     'url': siteUrl,
-    'codeRepository': 'https://github.com/sonofmagic/weapp-tailwindcss',
+    'codeRepository': 'https://github.com/weapp-tailwindcss/weapp-tailwindcss',
     'description': getDefaultMetaDescription(locale),
     'inLanguage': ['TypeScript', 'JavaScript'],
     'programmingLanguage': ['TypeScript', 'JavaScript'],
     'runtimePlatform': ['Node.js', 'Web', 'Mini Apps', 'React Native', 'Lynx'],
-    'license': 'https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE',
+    'license': 'https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/main/LICENSE',
     'author': { '@id': organizationId },
     'isPartOf': { '@id': websiteId },
   } as const

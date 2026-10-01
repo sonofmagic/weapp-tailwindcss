@@ -195,7 +195,7 @@ const homepageCopy = {
         icon: 'icon-[logos--openai-icon]',
       },
       {
-        href: 'https://github.com/sonofmagic/weapp-tailwindcss/discussions',
+        href: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions',
         label: 'Community',
         description: 'Join GitHub Discussions and share framework-specific issues.',
         icon: 'icon-[mdi--account-group-outline]',
@@ -222,7 +222,7 @@ const homepageCopy = {
       primaryCta: 'Start setup',
       aiEntry: 'AI entry',
       communityEntry: 'Join the tech community',
-      communityHref: 'https://github.com/sonofmagic/weapp-tailwindcss/discussions',
+      communityHref: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions',
     },
     factsAria: 'Support matrix',
     capabilitiesTitle: 'Keep firm engineering boundaries and own generation plus transforms',

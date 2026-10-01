@@ -147,5 +147,5 @@ StyleInjector({
 
 ## Demo and Documentation
 
-- [Built-in Style Injector subpackage isolation demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/subpackage-uni-app-vite-tailwindcss-v4)
+- [Built-in Style Injector subpackage isolation demo](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/demo/subpackage-uni-app-vite-tailwindcss-v4)
 - [Tailwind CSS multi-entry and subpackage isolation guide](https://tw.weapp.dev/docs/quick-start/independent-pkg)

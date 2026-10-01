@@ -73,7 +73,7 @@ const config: Config = {
           sidebarPath: 'sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website',
+          editUrl: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/website',
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
           ],

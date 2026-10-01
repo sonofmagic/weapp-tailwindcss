@@ -20,7 +20,7 @@ keywords:
 
 `weapp-tailwindcss` 官方 Skill 面向业务项目使用者。它把当前 v5 的接入、迁移、排障和高级能力拆成独立工作流，避免一个大 Skill 同时维护所有框架与 API。
 
-本项目使用 [`vercel-labs/skills`](https://github.com/vercel-labs/skills) 安装 Skill。`sonofmagic/weapp-tailwindcss` 是内容事实源，`sonofmagic/skills` 是面向用户的聚合安装仓库。
+本项目使用 [`vercel-labs/skills`](https://github.com/vercel-labs/skills) 安装 Skill。`weapp-tailwindcss/weapp-tailwindcss` 是内容事实源，`sonofmagic/skills` 是面向用户的聚合安装仓库。
 
 ## 安装完整套件
 

@@ -35,7 +35,7 @@ function getGitCommitHash(): string {
   }
 }
 
-const repoUrl = `https://github.com/sonofmagic/weapp-tailwindcss/blob/${getGitCommitHash()}/`
+const repoUrl = `https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/${getGitCommitHash()}/`
 const groupSlugMap: Record<string, string> = {
   重要配置: 'important',
   文件匹配: 'matchers',

@@ -68,8 +68,8 @@ See the [CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli) for source map
 ## Community and support
 
 - [Documentation](https://tw.weapp.dev/)
-- [GitHub Issues](https://github.com/sonofmagic/weapp-tailwindcss/issues)
-- [GitHub Discussions](https://github.com/sonofmagic/weapp-tailwindcss/discussions)
+- [GitHub Issues](https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues)
+- [GitHub Discussions](https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions)
 
 ## License
 

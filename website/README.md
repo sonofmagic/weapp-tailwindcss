@@ -78,7 +78,7 @@ pnpm showcase:update
 - `SHOWCASE_SKIP_IMAGES=1`：仅更新文案，跳过图片下载（比如在无外网的环境调试）。
 - `SHOWCASE_IMAGE_TIMEOUT=20000`：单张图片的超时时间，单位 ms。
 - `SHOWCASE_IMAGE_RETRY=3`：下载失败时的重复次数。
-- `SHOWCASE_REPO`、`SHOWCASE_ISSUE`：若需要同步其他仓库/Issue，可覆盖默认值 `sonofmagic/weapp-tailwindcss` 与 `270`。
+- `SHOWCASE_REPO`、`SHOWCASE_ISSUE`：若需要同步其他仓库/Issue，可覆盖默认值 `weapp-tailwindcss/weapp-tailwindcss` 与 `270`。
 - `SHOWCASE_PROXY`：需要走代理抓取 GitHub API/图片时设置，例如 `SHOWCASE_PROXY=http://127.0.0.1:7890`。若未设置则会自动默认 `http://127.0.0.1:7890`，再依次尝试读取 `HTTPS_PROXY` / `HTTP_PROXY`。
 
 ### 手动控制展示的作品 & 图片

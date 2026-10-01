@@ -19,16 +19,16 @@
   <a href="https://tw.weapp.dev/docs/intro">Docs</a> ·
   <a href="https://tw.weapp.dev/docs/quick-start/install">Quick Start</a> ·
   <a href="https://tw.weapp.dev/docs/tools/weapp-tw-cli">CLI</a> ·
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo">Examples</a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/demo">Examples</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/stargazers"><img src="https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss" alt="GitHub stars"></a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/stargazers"><img src="https://badgen.net/github/stars/weapp-tailwindcss/weapp-tailwindcss" alt="GitHub stars"></a>
   <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/dm/weapp-tailwindcss" alt="npm downloads"></a>
   <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/license/weapp-tailwindcss" alt="license"></a>
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml"><img src="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://codecov.io/gh/sonofmagic/weapp-tailwindcss"><img src="https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt" alt="codecov"></a>
-  <a href="https://deepwiki.com/sonofmagic/weapp-tailwindcss"><img src="https://deepwiki.com/badge.svg" alt="DeepWiki"></a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/ci.yml"><img src="https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss"><img src="https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt" alt="codecov"></a>
+  <a href="https://deepwiki.com/weapp-tailwindcss/weapp-tailwindcss"><img src="https://deepwiki.com/badge.svg" alt="DeepWiki"></a>
 </p>
 
 ## What It Is
@@ -160,8 +160,8 @@ See the complete [weapp-tw CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-c
 - [Multi-platform guide](https://tw.weapp.dev/docs/multi-platform)
 - [API reference](https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions)
 - [CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli)
-- [Framework examples](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo)
-- [React Native and Lynx examples](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples)
+- [Framework examples](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/demo)
+- [React Native and Lynx examples](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/examples)
 - [Mirror documentation](https://ice-tw.netlify.app/)
 
 ## AI Skills
@@ -199,4 +199,4 @@ Issues, reproducible bug reports, framework examples, documentation improvements
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=weapp-tailwindcss/weapp-tailwindcss&type=Date)](https://star-history.com/#weapp-tailwindcss/weapp-tailwindcss&Date)
