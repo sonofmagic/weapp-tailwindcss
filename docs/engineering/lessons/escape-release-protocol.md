@@ -26,9 +26,20 @@ npm 的 [trust 命令前提](https://docs.npmjs.com/cli/v11/commands/npm-trust)�
 - `pnpm install --frozen-lockfile --ignore-scripts --offline` 通过；锁文件仅五个 importer 的协议变化。
 - `pnpm release status` 确认 escape 首次版本仍为 0.0.1，消费者版本沿用已有中文迁移 intent。
 
+## 首次发布与信任配置结果
+
+2026-10-02 在用户明确授权首次初始化例外后完成：
+
+- npm 文档描述 `npm stage publish` 可为新包创建 `0.0.0-stage` 占位，但本轮实际请求返回 `404 Package not found`，registry 复查仍为 404；没有将文档能力当成初始化成功证据。
+- 用户进一步授权 `@weapp-tailwindcss/escape@0.0.1` 的账号首次发布。pnpm 原生发布客户端在完成 2FA 后发生网络发送错误，复查精确版本仍为 404；随后 `pnpm exec npm publish --access=public --registry=https://registry.npmjs.org` 成功。没有向 Release 工作流写入 token。
+- registry 精确版本接口返回 200，tarball SHA-1 为 `c0d226329d691279d35810c2791c1f56e8684404`，与本轮发布产物一致。包聚合元数据曾短暂返回缓存的 404，未因此重复发布。
+- `pnpm exec npm trust github @weapp-tailwindcss/escape --repo sonofmagic/weapp-tailwindcss --file release.yml --allow-publish --yes` 成功。随后 `pnpm exec npm trust list @weapp-tailwindcss/escape --json` 读回 GitHub、`release.yml`、`sonofmagic/weapp-tailwindcss`，配置 ID 为 `5df04c63-50c8-4e38-8d1e-12d9dd64a6db`，权限包括 `createPackage` 与 npm 自动包含的 `createStagedPackage`。
+- `CI=1 pnpm --filter @weapp-tailwindcss/escape test`：11 个文件、120 项通过；与前述发布契约共 167 项定向测试通过。
+- 首次版本使用用户账号认证，没有 OIDC provenance。这里验证的是包已发布和后续 OIDC 信任已配置，不能宣称已经完成一次 OIDC 实际发布。
+
 ## 适用边界
 
-本记录验证发布准备契约，不宣称 npm 已发布或 OIDC 信任已建立。未运行全仓、多端或设备测试，也未手工修改生成的 `release/pnpm-version` 分支。真正发布仍需在 main 修复后由 repoctl 重新生成版本 PR，并完成 npm 初始化、认证和信任核验。
+本记录验证发布准备契约、首次账号发布与 npm 信任配置，未运行全仓、多端或设备测试，也未手工修改生成的 `release/pnpm-version` 分支。后续正常发布仍需在 main 修复后由 repoctl 重新生成版本 PR；本地定向验证和信任配置不能代替真实 OIDC 发布执行证据。
 
 ## 规则评估
 

@@ -29,6 +29,10 @@
 
 打包检查在 workspace 外加载 tarball，验证新包名的 ESM/CJS、双端类型及消费者依赖范围。实际验证记录见下方。
 
+## 首次发布结果（2026-10-02）
+
+`@weapp-tailwindcss/escape@0.0.1` 已完成账号初始化发布。npm 的 stage 新包初始化请求实际返回 404，用户随后明确授权本轮首次发布例外；该版本没有 OIDC provenance。后续已通过 `npm trust` 建立并读回 `sonofmagic/weapp-tailwindcss` / `release.yml` 的 GitHub Actions 发布权限。实际命令、失败边界与产物校验见[发布复盘](../../docs/engineering/lessons/escape-release-protocol.md)。
+
 ## 本次验证记录
 
 以下验证针对迁移与改名涉及的包，未启动全仓或多端 E2E。
