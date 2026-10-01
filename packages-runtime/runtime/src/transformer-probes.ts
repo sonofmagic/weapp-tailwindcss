@@ -1,4 +1,4 @@
-import { MappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-tailwindcss/escape'
 
 type Transformer = (value: string) => string
 type Probe = (value: string) => boolean
