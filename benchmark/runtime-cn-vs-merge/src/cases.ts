@@ -1,4 +1,4 @@
-import { escape as escapeClassName } from '@weapp-core/escape'
+import { escape as escapeClassName } from '@weapp-tailwindcss/escape'
 
 const LONG_BASE = [
   'flex flex-col md:flex-row gap-3 md:gap-4',

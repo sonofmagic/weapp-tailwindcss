@@ -1,5 +1,5 @@
 import type { Rule } from 'postcss'
-import { escape } from '@weapp-core/escape'
+import { escape } from '@weapp-tailwindcss/escape'
 import postcss from 'postcss'
 
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i

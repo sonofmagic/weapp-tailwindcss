@@ -61,6 +61,13 @@ const config = createMonorepoEslintConfig(
     },
   },
   {
+    // 迁入的基础包保留旧运行环境兼容性，不将 hasOwnProperty 改成较新的 Object.hasOwn。
+    files: ['packages/escape/src/mapping.ts'],
+    rules: {
+      'e18e/prefer-object-has-own': 'off',
+    },
+  },
+  {
     files: ['apps/**/*.{ts,js}', 'demo/**/*.{ts,js}'],
     languageOptions: {
       globals: {

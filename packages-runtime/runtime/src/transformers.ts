@@ -1,10 +1,10 @@
-import type { EscapeOptions, UnescapeOptions } from '@weapp-core/escape'
+import type { EscapeOptions, UnescapeOptions } from '@weapp-tailwindcss/escape'
 import type { CreateOptions, Transformers } from './types'
 import {
   escape as escapeSelectors,
   MappingChars2String,
   unescape as unescapeSelectors,
-} from '@weapp-core/escape'
+} from '@weapp-tailwindcss/escape'
 import { registerTransformProbe } from './transformer-probes'
 
 const identity = (value: string) => value

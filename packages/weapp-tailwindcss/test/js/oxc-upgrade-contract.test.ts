@@ -1,4 +1,4 @@
-import { MappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-tailwindcss/escape'
 import { describe, expect, it } from 'vitest'
 import { createJsHandler } from '@/js'
 import { jsHandler } from '@/js/babel'
@@ -15,6 +15,7 @@ describe('Oxc 升级的字面量位置与回退契约', () => {
   }
 
   it('非 BMP 字符之后仍按源码位置转换 TSX、模板和转义字面量', () => {
+    // eslint-disable-next-line no-template-curly-in-string -- 保留待解析源码中的模板插值，不能由测试进程提前求值。
     const source = 'const title = "中文😀"; const value = <view className="w-[100px] h-[20px]"/>; const text = `😀 ${title} w-[100px]`;'
     const fast = oxcJsHandler(source, options)
     expect(fast).toBeDefined()

@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import { getCss } from '#test/helpers/getTwCss'
 
-import { MappingChars2String } from '@weapp-core/escape'
+import { MappingChars2String } from '@weapp-tailwindcss/escape'
 import { isCI } from 'ci-info'
 // import punycode from 'node:punycode'
 import { getCompilerContext } from '@/context'

@@ -236,3 +236,12 @@ CPU profile 保留了模块加载、候选提取、文件读取和空闲等待�
 持久回归 `benchmark/version-compare/test/process-memory.test.mjs` 覆盖进程树归属、空格路径、缺失根进程、时序序列化、原统计口径以及真实进程 RSS 明细对账；Benchmark 工作流运行这些回归。Windows 原生执行和本地全面设备验收仍未完成。
 
 本次本地定向验证：`CI=1 pnpm exec vitest run -c benchmark/version-compare/vitest.config.mjs --update=none` 通过 5 文件 20 项，包含真实 macOS 进程采样；ESLint 对 benchmark 使用 `--no-ignore` 显式检查，另检查 workflow；`pnpm architecture:check`、`pnpm agents:check` 与 `git diff --check` 通过。未修改生产包，不重复生产构建或已耗尽的性能确认。
+
+
+### 2026-10-01：整合主线 escape 迁移
+
+整合主线 `0bfb23912` 后，新增的 Oxc 升级回归仍引用 `@weapp-core/escape`，定向验证报 `Cannot find package`。改为与主线一致的 `@weapp-tailwindcss/escape`，保留所有源码位置、转译与 source map 断言；未恢复旧包生产依赖。首次失败日志保留在本轮 `main-sync-core-tests.log`。
+
+本轮验证：`CI=1 pnpm install --frozen-lockfile --offline`、escape 包构建、核心 Oxc/自定义映射/CI 与打包契约 5 文件 78 项、Rollup watch/invalidation 18 项、PostCSS 真实多入口构建契约 1 项、进程内存工具 20 项，以及 `pnpm architecture:check`、`pnpm agents:check` 通过。Oxc 测试文件使用 `eslint --no-ignore` 显式验证；测试输入中的模板插值按源码文本保留。
+
+锁文件保留主线 escape workspace 迁移及本 PR 的 Oxc、Rollup 和 scoped Rolldown 升级归属。未重新采集已耗尽的正式性能样本，历史 RSS 与 HMR 失败不被覆盖；本轮定向回归不代表设备或全端验收。规则未变更。

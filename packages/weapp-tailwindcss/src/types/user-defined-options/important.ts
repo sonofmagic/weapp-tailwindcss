@@ -119,7 +119,7 @@ export interface UserDefinedOptionsImportantPart {
    *
    * @group 0.重要配置
    * @remarks
-   * 默认策略会将小程序不允许的字符映射为等长度的替代字符串，因此无法通过结果反推出原始类名。如需完全自定义，可传入 `Record<string, string>`，只需确保生成的类名不会与已有样式冲突。示例参考 [dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)。
+   * 默认策略会将小程序不允许的字符映射为等长度的替代字符串，因此无法通过结果反推出原始类名。如需完全自定义，可传入 `Record<string, string>`，只需确保生成的类名不会与已有样式冲突。示例参考 [constants.ts](https://github.com/sonofmagic/weapp-tailwindcss/blob/main/packages/escape/src/constants.ts)。
    * @default MappingChars2String
    */
   customReplaceDictionary?: Record<string, string> | undefined
