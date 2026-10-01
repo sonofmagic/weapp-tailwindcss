@@ -37,16 +37,27 @@ pnpm build
 
 <https://tw.weapp.dev/>
 
+## GitHub Actions 生产部署
+
+网站构建和上传由 `.github/workflows/docs.yml`（Deploy Docs Worker）执行。`main` 每次推送自动运行，也可在 Actions 页面从 `main` 手动重部署。生产 Worker 仍为 `weapp-tailwindcss`，主域名仍为 `https://tw.weapp.dev`；预览 Worker 本次不自动部署。
+
+工作流使用 Node 24、根目录声明的 pnpm 和锁定版本的 Wrangler，在 GitHub runner 中完成受众检查、关键词检查、中英文构建、SEO 严格检查、本地 Worker 路由测试及 dry-run，再直接上传产物。该过程不使用 Cloudflare Builds 构建额度。
+
+维护者需完成以下配置：
+
+- 组织级 `CLOUDFLARE_ACCOUNT_ID` 和 `CLOUDFLARE_API_TOKEN` 对本仓库开放，并移除仓库中这两项同名旧 Secret，避免仓库值覆盖组织值。Token 需要目标账户的 Worker 上传及现有 Custom Domain 管理权限；仅有 Builds 权限不足以部署。
+- 在生产及预览 Worker 的 **Settings → Builds** 停用自动构建或断开 Git 构建连接，保留 Worker、域名及线上版本，避免恢复额度后重复部署。Actions 部署不需要 Cloudflare GitHub App。
+- Cloudflare 凭据仅传给上传步骤。缺少凭据、远端 main 无法读取或任何质量检查失败都会阻止上传。过期提交跳过部署；固定并发组保证一次只有一个生产部署，且不会取消进行中的上传。
+
+上传步骤日志记录部署前的 Worker 版本和 Wrangler 返回的新版本。随后 `verify:deployment` 核对中英文页面、canonical、站点地图、机器可读内容、301/404，以及线上 CSS/社交图片与本次构建的 SHA-256。只有上传和验收都成功，才算部署完成。手动运行同样只能部署最新 `main`。
+
+若上传后验收失败，先停用 Deploy Docs Worker 工作流阻止后续上传，再根据日志定位问题；必要时使用 Wrangler 将生产 Worker 回退到上传前版本，修复并验证后再启用 Actions，不恢复 Connected Builds。
+
+本地构建及部署命令保持可用：先执行 `pnpm build:docs:cloudflare` 完成生产构建与检查，再执行 `pnpm deploy:docs:cloudflare` 上传并验收。`pnpm deploy:docs:cloudflare:next` 为独立的手动预览入口，使用前需单独确认预览域名和权限。
+
 ## Cloudflare 域名迁移
 
-生产 Worker 通过 `wrangler.jsonc` 的 Custom Domain 使用 `tw.weapp.dev`，预览 Worker 使用 `next.tw.weapp.dev`。旧 hostname 保持 Cloudflare 代理和证书，在 Cloudflare **Rules → Redirect Rules** 中配置以下永久重定向，并开启保留 query string：
-
-Cloudflare Connected Builds 必须按 Worker 拆分部署入口，不能在绑定生产 Worker 的构建中继续部署预览 Worker，否则平台会把预览配置强制覆盖到生产 Worker：
-
-```text
-weapp-tailwindcss      -> pnpm run deploy:docs:cloudflare
-weapp-tailwindcss-next -> pnpm run deploy:docs:cloudflare:next
-```
+生产 Worker 通过 `wrangler.jsonc` 的 Custom Domain 使用 `tw.weapp.dev`。配置中的预览域名为 `next.tw.weapp.dev`，本次不接通预览部署。旧 hostname 保持 Cloudflare 代理和证书，在 Cloudflare **Rules → Redirect Rules** 中配置以下永久重定向，并开启保留 query string：
 
 ```text
 http*://tw.icebreaker.top/*     -> https://tw.weapp.dev/${2}       (301)

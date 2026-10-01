@@ -4,7 +4,7 @@
 
 2026-10-02 已将主仓库从 `sonofmagic/weapp-tailwindcss` 转移到 [weapp-tailwindcss/weapp-tailwindcss](https://github.com/weapp-tailwindcss/weapp-tailwindcss)。仓库名称与公开属性、npm 包名及所有权、文档域名和独立模板仓库保持不变。
 
-代码准备基线为 `0bfb23912f59cfaf0b58b00353d7f08122d1f8f1`。维护者本轮要求开始迁移，已采用“先转移 GitHub、保持 npm 发布暂停”的分阶段交付。**GitHub Transfer 与 30 个 npm 包的 Trusted Publisher 迁移均已完成；发布恢复尚未完成。** npm 信任配置已逐包回读核验。发布 Token 对组织仓库的访问权、Cloudflare Git 集成与 Codecov 的组织授权仍待核实。
+代码准备基线为 `0bfb23912f59cfaf0b58b00353d7f08122d1f8f1`。维护者本轮要求开始迁移，已采用“先转移 GitHub、保持 npm 发布暂停”的分阶段交付。**GitHub Transfer 与 30 个 npm 包的 Trusted Publisher 迁移均已完成；发布恢复尚未完成。** npm 信任配置已逐包回读核验。发布 Token 对组织仓库的访问权、Cloudflare Actions 真实部署与 Codecov 的组织授权仍待核实。
 
 Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Templates 原本即为 `disabled_manually`，保持原状。PR #1266 保存地址和元数据变更，待后台条件具备后经正常审核合并；不得直接触发 npm 发布。
 
@@ -98,18 +98,18 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 
 - 2026-10-02 复测：Wrangler OAuth 可读取生产和预览 Worker。生产最近一次部署为 `2026-09-15T13:04:28Z`，版本 `63b304b1-4ca4-46c7-bae9-0faec5852c86`；预览最近一次部署为 `2026-08-26T07:03:16Z`，版本 `7cc1fd48-82f9-4e15-a0af-59fda1701d10`。没有据此宣称组织迁移后已经成功部署。
 - 主站 HTTP 冒烟检查 28/28 通过：中英文首页与简介、canonical 和结构化数据、CSS/JS、robots 与双语 sitemap、LLM 索引/文本、组件 registry、站内 301/404，以及两个旧生产域名的路径和查询参数保留跳转。报告保存于本工作树忽略目录 `node_modules/.cache/organization-transfer/cloudflare-live-http.json`，核验时间为 `2026-10-01T19:17:35.753Z`（UTC）。此前直接 HTTP 返回 403 的结果已被本次成功访问更新；本次没有做浏览器视觉验收，也未比对远端文件与当前 main 构建的哈希。
-- GitHub 组织存在 `CLOUDFLARE_ACCOUNT_ID`、`CLOUDFLARE_API_TOKEN`，可见性均为 `all`；仓库仍保留同名 Secret。GitHub Actions 使用同名 Secret 时，仓库级配置优先于组织级配置，因此不能据组织 Secret 已添加就宣称已使用新值；本次没有读取、展示或删除任何 Secret 值。
-- 当前远端 `main` 的 `.github/workflows/docs.yml` 仅做构建与 `deploy:worker:dry-run`，未引用 Cloudflare 部署 Secret，也不执行远端部署。仓库记录的实际部署入口为 Cloudflare Connected Builds，GitHub 组织 Secret 不会替代其 Git 集成授权或构建 Token。
-- `GET /orgs/weapp-tailwindcss/installations` 返回 `total_count: 0`，新组织尚未安装 Cloudflare GitHub App。需在 Cloudflare Worker 的 Settings → Builds 中连接新组织仓库，并完成组织的 GitHub App 授权，之后才能验证新仓库来源的自动部署。
-- 本机 OAuth 对 Workers Builds triggers/builds API 返回 403，无法读取原 Git 绑定、触发构建或验证构建 Token。需要具备 Workers Builds Configuration 权限的用户级 API Token，或已登录的 Cloudflare 后台；本次不把部署记录可读或 dry-run 当作构建链路已接通。
+- GitHub 组织存在 `CLOUDFLARE_ACCOUNT_ID`、`CLOUDFLARE_API_TOKEN`，可见性均为 `all`。维护者确认统一使用组织密钥后，已删除仓库两项同名旧 Secret 并回读确认，避免旧值覆盖组织配置；未读取或展示 Secret 值。新 Token 的真实上传权限仍需首次 Actions 部署证明。
+- 原远端 `main` 的 `.github/workflows/docs.yml` 仅做构建与 `deploy:worker:dry-run`，不执行上传。由于 Cloudflare Builds 额度耗尽，维护者决定将生产构建和部署改由 GitHub Actions 完成；PR #1266 已准备 `Deploy Docs Worker`，仅由目标仓库的 `main` 推送或手动运行，使用 Node 24 和锁定的 pnpm/Wrangler，检查成功后直接上传现有生产 Worker。部署前拒绝过期提交，固定并发组不取消进行中的部署；部署后核对当前构建资源哈希。预览部署不启用。
+- `GET /orgs/weapp-tailwindcss/installations` 返回 `total_count: 0`。新方案不再依赖 Cloudflare GitHub App 或 Connected Builds 的仓库授权，不需要为此重连 Git 构建。
+- 本机 OAuth 对生产及预览 Worker 的 Builds triggers API 复查仍返回 403，无法停用自动触发。已请维护者在两者的 Settings → Builds 停用自动构建或断开 Git 连接，保留 Worker 和域名；尚未收到完成确认，不将额度用完或组织 App 缺失视为触发已关闭。
 - `next.tw.weapp.dev` 本机 DNS 查询返回 `ENOTFOUND`，Cloudflare Workers Domains API 也没有该域名或任何 `weapp-tailwindcss-next` 的自定义域名绑定。该预览入口未通过验收；生产域名及两个旧生产域名的绑定均启用。本次未修改 DNS、域名绑定或生产内容。
 - Codecov 旧仓库 API 可读取，但这不证明其 GitHub App 已获组织授权。迁移后必须验证新仓库身份和上报。
 - GitHub Pages 的 `gh-pages:/` 来源已保留，新站点地址为 `https://weapp-tailwindcss.github.io/weapp-tailwindcss/`，API 状态为 `built`，没有自定义域名。旧地址 `sonofmagic.github.io/weapp-tailwindcss/` 不随仓库重定向；继续以 `tw.weapp.dev` 为主入口，不在旧仓库位置创建同名仓库。
 
 ## 后续恢复顺序
 
-1. npm Trusted Publisher 已全部迁移并核验，文档主域名 HTTP 验收通过；先完成 Cloudflare GitHub App 的组织授权、Connected Builds 仓库重连及一次真实部署验收，并补齐预览域名绑定。继续核实 Codecov 集成及发布 Token 对新仓库的访问权，保持 Release 停用。
-2. 完成既有发布修复 PR #1261，并将地址变更 PR #1266 经正常门禁审核合并到 `main`；不得绕过审核或手工修改 `release/pnpm-version`。
+1. npm Trusted Publisher 已全部迁移并核验，文档主域名 HTTP 验收通过。确认生产和预览 Connected Builds 自动触发均已停用；预览域名不在本次 Actions 迁移范围。继续核实 Codecov 集成及发布 Token 对新仓库的访问权，保持 Release 停用。
+2. 地址和 Actions 部署变更 PR #1266 须经一次审核及 `SEO Quality Gate` 合并到 `main`，由 Actions 完成首次真实生产上传和当前构建资源哈希验收，记录提交、run 和 Worker 版本。当前尚缺审核，未绕过保护或实际上传。另行完成既有发布修复 PR #1261；不得手工修改 `release/pnpm-version`。网站上传后验收失败时按 [网站部署说明](../../website/README.md) 停止后续部署并按需回退 Worker 版本。
 3. 后台身份与权限核对通过后，仅恢复切换前原本启用的 Release 工作流。通过 repoctl 的 prepare 流程重新生成发布 PR #1255，不能直接发布旧生成分支的产物。
 4. 下一次计划内真实发布逐包核对 npm 版本与 dist-tag、Git tag、GitHub Release 及新组织来源的 provenance。dry-run 不是发布认证成功证据；部分成功时使用 repoctl 恢复缺失项，不能重发已发布版本。
 5. Sync Templates 原本停用，本次不恢复。若今后单独启用，先验证 `TEMPLATE_SYNC_SSH_KEY` 对独立模板仓库的权限。
@@ -126,8 +126,9 @@ Release 工作流在转移前停用，当前保持 `disabled_manually`。Sync Te
 - 30 个非私有包逐项核对通过：仓库元数据与根配置一致，包名、版本、导出、依赖及其他非地址字段保持不变。
 - `CI=1 pnpm agents:check` 与 `git diff --check`：准备阶段通过；本次迁移记录更新后重新验证。
 - 本次 npm 管理命令逐包回读核验 30/30 通过：目标仓库、workflow、environment、权限及旧身份移除均符合预期；前后快照包名集合完全一致。
-- Cloudflare 本轮验证：生产 HTTP 28/28 通过；预览 DNS/自定义域名未通过，组织 GitHub App 授权缺失，Builds API 因权限返回 403，真实部署及组织 Secret 值的可用性尚未验证。未启动新 Chrome，也未触发可能被误当作部署成功的远端 dry-run。
-- 本次只更新迁移记录和认证复盘，没有修改前一轮已验证的产品代码。未运行全仓多端测试或实际 npm 发布；PR 的远端检查结果以当前 head 为准，不将运行中、排队或跳过的检查标记为通过。
+- Cloudflare 线上检查：生产 HTTP 28/28 通过；预览 DNS/自定义域名未通过。后续 Actions 切换已移除仓库同名密钥；Builds API 仍返回 403，停用触发、真实部署及组织 Token 上传权限尚未验收。未启动新 Chrome。
+- Actions 切换：部署门禁回归 18 项和现有 CI/发布回归 67 项通过；`actionlint .github/workflows/docs.yml .github/workflows/website-seo-quality.yml` 与新增 TypeScript 定向 ESLint 通过。`CI=1` 下按顺序运行网站 `check:docs-audience`、`seo:few-keywords`、`build`、`seo:quality:strict`、`test:worker`、`deploy:worker:dry-run` 全部通过，完成双语构建及本地 200/301/404/cache 检查。日志保存在忽略目录 `node_modules/.cache/organization-transfer/actions-docs-build.log`，没有据 dry-run 声称真实上传成功。
+- 本次修改生产部署工作流、部署门禁、PR 门禁回归与维护文档，没有调整 npm 发布流程。未运行全仓多端测试或实际 npm 发布；PR 的远端检查结果以当前 head 为准，不将运行中、排队或跳过的检查标记为通过。切换边界见 [Cloudflare 构建额度与 Actions 部署](lessons/cloudflare-actions-deployment.md)。
 
 本轮不新增 AGENTS 规则；使用现有发布、隔离和验收约束。
 
