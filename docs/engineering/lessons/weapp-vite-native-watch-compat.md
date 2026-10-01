@@ -28,6 +28,7 @@ PR #1257 的 macOS Node 24 job `110315805179` 首次 replace 缺少当前 render
 - `CI=1 pnpm exec vitest run -c scripts/ci/demo-matrix/vitest.config.mts scripts/ci/demo-matrix/weapp-vite-engine-compat.test.mjs scripts/ci/demo-matrix/version-contract.test.mjs --update=none`：20 项通过。包含同一引擎实例、上游 CJS 拒绝未绕过、宿主 require/live exports/模块图调用、POSIX/Windows/相对 chunk 名称，以及真实拆包构建的动态导入执行。
 - `CI=1 pnpm e2e:demo:matrix weapp-vite-tailwindcss-v4:weapp --update --build-only`：重生成对应 static 基线，无差异。
 - 原 demo 矩阵 production/initial/replace/add/restore 通过。随后固定依赖，在同一个服务进程扩展为六组 replace/add/restore，18 次保存全部验证当前标记；保持原断言及 180 秒上限。串行验证，没有作为性能采样。
+- 后续复查原始 session.log 发现上述真实 demo 已由框架自动降级到 classic：1.2.12 runtime 未满足框架的 `common runtime helpers` 契约。因此这些更新结果仅证明 classic 链路；此前若将它们解读为状态保持 HMR 的完整验收，该解读不成立。ESM/CJS 转换测试只覆盖转换边界，状态保持运行时及设备行为仍未验证。保留原日志，不把自动降级记作状态保持通过。
 - `CI=1 pnpm --filter weapp-tailwindcss... run build`、新测试显式 ESLint、`pnpm agents:check`、`pnpm architecture:check`、`git diff --check` 通过；真实 restore 快照的 18 个 JS 产物全部可按宿主脚本解析。
 - 原始失败日志、首次候选日志、固定依赖日志和六组结果保留在任务 artifacts。最新 head 的远端 CI 仍须单独核对。
 
