@@ -186,8 +186,8 @@ catalogs:
     gulp-rename: ^2.1.0
     gulp-typescript: ^6.0.0-alpha.1
   csstools:
-    '@csstools/css-color-parser': ^4.2.3
-    '@csstools/css-parser-algorithms': ^4.0.0
+    '@csstools/css-color-parser': ^4.2.5
+    '@csstools/css-parser-algorithms': ^4.0.2
     '@csstools/css-tokenizer': ^4.0.1
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
@@ -201,7 +201,7 @@ catalogs:
     '@iconify-json/bi': ^1.2.7
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.14
-    '@iconify-json/lucide': ^1.2.136
+    '@iconify-json/lucide': ^1.2.138
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
@@ -225,7 +225,7 @@ catalogs:
     postcss-rpx-transform: ^1.0.1
   postcssUtilities:
     es-toolkit: ^1.52.0
-    postcss-preset-env: ^11.5.3
+    postcss-preset-env: ^11.5.5
   prettier371:
     prettier: ^3.9.9
   react18:
@@ -241,21 +241,21 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.2.9
-    '@rsbuild/plugin-react': ^2.1.0
+    '@rsbuild/core': ^2.2.11
+    '@rsbuild/plugin-react': ^2.1.1
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
-    sass: ^1.105.0
-    sass-embedded: ^1.104.1
+    sass: ^1.105.1
+    sass-embedded: ^1.105.1
   storybook:
-    '@storybook/addon-a11y': ^10.6.0
-    '@storybook/react': ^10.6.0
-    '@storybook/react-vite': ^10.6.0
-    storybook: ^10.6.0
+    '@storybook/addon-a11y': ^10.6.1
+    '@storybook/react': ^10.6.1
+    '@storybook/react-vite': ^10.6.1
+    storybook: ^10.6.1
   stylelint1625:
-    stylelint: ^17.15.0
+    stylelint: ^17.16.0
   swc:
-    '@swc/core': ^1.16.2
+    '@swc/core': ^1.16.13
   tailwindMerge:
     tailwind-merge: ^3.7.0
   tailwindMerge2:
@@ -332,7 +332,7 @@ catalogs:
   tsx:
     tsx: ^4.23.15
   typesNode2410:
-    '@types/node': ^26.6.2
+    '@types/node': ^26.6.4
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:
@@ -364,7 +364,7 @@ catalogs:
   vitest:
     '@vitest/coverage-v8': ~5.0.0
     '@vitest/ui': ~5.0.0
-    vitest: ~5.0.1
+    vitest: ~5.0.3
   vue2:
     vue: ^2.7.16
   vue3:
@@ -378,9 +378,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^6.1.8
+    weapp-ide-cli: ^6.1.9
   weappVite:
-    weapp-vite: ^7.3.0
+    weapp-vite: ^7.4.0
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
     '@types/webpack-env': ^1.18.8
