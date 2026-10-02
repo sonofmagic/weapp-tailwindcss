@@ -1,11 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { resolveFilePath, validateBuildPaths } from './paths'
 
 export interface BuildArgs {
   cwd: string
-  input?: string
-  output?: string
+  input?: string | undefined
+  output?: string | undefined
   watch: false | true | 'always'
   watchMode: 'native' | 'poll'
   pollInterval: number
@@ -119,7 +120,7 @@ export function parseBuildArgs(argv: string[]): BuildArgs {
       throw new Error(`Unknown option: ${arg}`)
     }
   }
-  const resolvePath = (file: string | undefined) => file && file !== '-' ? path.resolve(cwd, file) : file
+  const resolvePath = (file: string | undefined) => file && file !== '-' ? resolveFilePath(file, cwd) : file
   input = resolvePath(input)
   output = resolvePath(output)
   if (typeof map === 'string') {
@@ -134,5 +135,6 @@ export function parseBuildArgs(argv: string[]): BuildArgs {
   if (target === 'weapp' && map) {
     throw new Error('Option "--map" is only supported when "--target web" is used.')
   }
+  validateBuildPaths({ input, output, map })
   return { cwd, input, output, watch, watchMode, pollInterval, minify, optimize, map, silent, target }
 }

@@ -4874,6 +4874,9 @@ importers:
       pathe:
         specifier: catalog:buildUtilities
         version: 2.0.3
+      semver:
+        specifier: catalog:compilerUtilities
+        version: 7.8.5
 
   packages/logger:
     dependencies:

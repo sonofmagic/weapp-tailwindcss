@@ -126,6 +126,12 @@ export function assertViteWatchBuildComplete(log, offset = 0) {
   assert.ok(completed && completed.index > current.lastIndexOf('build started...'), 'Vite has not finished writing this build')
 }
 
+export function assertWeappViteWatchReady(log) {
+  const current = stripVTControlCharacters(log)
+  const completed = current.lastIndexOf('小程序初次构建完成')
+  assert.ok(completed >= 0 && current.lastIndexOf('开发服务已就绪：') > completed, 'weapp-vite has not completed its initial build and watcher setup')
+}
+
 export function assertTaroWatchBuildComplete(log, offset = 0) {
   if (log.includes('watching for file changes')) {
     return assertViteWatchBuildComplete(log, offset)
