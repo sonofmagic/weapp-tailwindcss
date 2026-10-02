@@ -15,7 +15,7 @@ vi.mock('@weapp-tailwindcss/logger', () => ({
 describe('cli helpers', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    delete process.env.WEAPP_TW_DEBUG
+    delete process.env['WEAPP_TW_DEBUG']
     process.exitCode = undefined
   })
 
@@ -54,7 +54,7 @@ describe('cli helpers', () => {
 
   it('logs stack traces only when debug mode is enabled', async () => {
     const { commandAction } = await import('@/helpers')
-    process.env.WEAPP_TW_DEBUG = '1'
+    process.env['WEAPP_TW_DEBUG'] = '1'
     const error = new Error('debug failure')
     error.stack = 'debug stack'
     const action = commandAction(async () => {

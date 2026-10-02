@@ -11,3 +11,5 @@ Use `mode: 'legacy'` explicitly when maintaining a Tailwind 3 project that still
 ## Website
 
 For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.weapp.dev).
+
+Dependency versions are selected as the highest stable versions within the requested major ranges, regardless of registry response order. If no stable version matches, initialization fails before writing project files; it does not fall back to another major version or a prerelease.

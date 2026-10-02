@@ -37,6 +37,8 @@ pnpm e2e:demo:matrix issue-uview-plus-cssentries:mp-alipay
 
 运行器临时向已登记源码插入探针，在 finally 中恢复。不要在同一 demo 上并发运行测试或编辑。`--build-only` 仅供本地诊断，不能当作完整通过，CI 禁止使用它和 `--update`。
 
+weapp-vite 的首轮产物写出早于监听初始化完成；首次修改前必须等到“小程序初次构建完成”和“开发服务已就绪”日志，不能仅凭探针产物存在发起修改。后续轮次仍核验本轮标识、类名和样式产物，不使用额外延时或重试修改掩盖丢失事件。
+
 源码修改先完整写入同目录临时文件，再原子替换目标文件，保留现有权限。真实 watcher 回归检查连续替换时只读到完整版本，避免文件截断与写入之间触发编译。
 
 锁文件中的 Rollup 4.63.0 使用 [watcher 补丁](../../../patches/rollup@4.63.0.patch)：同一构建任务共用文件 watcher，transform dependency 单独记录失效语义。原版在 Linux 对普通模块和 transform dependency 重复监听同一文件，原子替换后会停止响应后续修改。[CJS/ESM 回归](./rollup-watch.test.mjs) 同时检查直接导入、虚拟模块消费方、连续修改与删除后重建。补丁仅随本仓库冻结依赖应用，不随 weapp-tailwindcss npm 包安装；后续升级 Rollup 时必须复验并评估移除，不能只改版本号。

@@ -10,7 +10,7 @@ import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './
 import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
-import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertWeappViteWatchReady, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
 import { snapshotOutput } from './snapshot.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
@@ -147,6 +147,10 @@ async function runCase(item) {
         }
         else if (item.family === 'mpx') {
           assertMpxWatchBuildComplete(session.log(), buildLogOffset)
+        }
+        else if (item.family === 'weapp-vite' && round === 'initial') {
+          // 首轮文件可在监听初始化前写出，必须等待服务就绪后才能开始修改。
+          assertWeappViteWatchReady(session.log())
         }
         const snapshotDir = path.join(artifactDir, round)
         // 构建器可能在下一轮清理产物；检查归档副本，避免结果与证据分属不同轮次。

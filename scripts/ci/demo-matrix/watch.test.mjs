@@ -3,7 +3,16 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { expect, it } from 'vitest'
 import { repo } from './catalog.mjs'
-import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, developmentEnvironment } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, assertWeappViteWatchReady, developmentEnvironment } from './process.mjs'
+
+it('weapp-vite 首轮产物写出后仍须等待监听初始化完成', () => {
+  const outputWritten = '[info] [分包] 分包产物已写出\n'
+  const built = `${outputWritten}[success] 小程序初次构建完成，耗时：15051ms\n`
+  expect(() => assertWeappViteWatchReady(outputWritten)).toThrow()
+  expect(() => assertWeappViteWatchReady(built)).toThrow()
+  expect(() => assertWeappViteWatchReady(`${built}[success] 开发服务已就`)).toThrow()
+  expect(() => assertWeappViteWatchReady(`${built}\u001B[32m[success] 开发服务已就绪：\u001B[0m\n`)).not.toThrow()
+})
 
 it('Mpx 必须完成当前编译才能归档产物，旧轮次与失败状态不能放行', () => {
   const initial = '[info] Compiling Ali-development\n'

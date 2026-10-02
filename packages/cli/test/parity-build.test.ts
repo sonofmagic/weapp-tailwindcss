@@ -110,19 +110,26 @@ describe('Tailwind CLI build parity', () => {
     }
   })
 
-  test('rebuilds in native watch mode by default', async () => {
+  test('rebuilds after repeated idle periods in native watch mode', async () => {
     const project = await fixture({
       'input.css': '@import "tailwindcss" source(none);\n@source "./index.html";\n',
       'index.html': '<div class="flex"></div>',
     })
     const child = spawnCli(project.root, ['-i', 'input.css', '-o', 'out.css', '--watch', '--silent'])
+    let stderr = ''
+    child.stderr.on('data', chunk => { stderr += chunk.toString() })
     try {
       await retryAssertion(async () => expect(await project.read('out.css')).toContain('.flex'))
-      await project.write('index.html', '<div class="grid"></div>')
-      await retryAssertion(async () => expect(await project.read('out.css')).toContain('.grid'))
+      for (const candidate of ['grid', 'underline', 'block']) {
+        await project.write('index.html', `<div class="${candidate}"></div>`)
+        await retryAssertion(async () => expect(await project.read('out.css')).toContain(`.${candidate}`))
+      }
+      expect(stderr).not.toContain('falling back to polling')
     }
     finally {
+      const exited = new Promise<void>(resolve => child.once('exit', () => resolve()))
       child.kill('SIGTERM')
+      await exited
     }
   })
 

@@ -5,6 +5,7 @@ import process from 'node:process'
 import { transform } from 'lightningcss'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
 import { parseBuildArgs } from './build/args'
+import { validateBuildPaths } from './build/paths'
 import { watchBuildInputs } from './build/watch'
 import { runCanonicalize } from './canonicalize'
 
@@ -28,6 +29,7 @@ function sourceMapComment(value: string) {
 }
 
 async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: string) {
+  validateBuildPaths(options)
   const inputCss = options.input === '-'
     ? (stdinCss ?? await drainStdin())
     : options.input
@@ -61,20 +63,20 @@ async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: 
         sourceMap: Boolean(options.map),
       })
       css = Buffer.from(transformed.code).toString()
-      map = transformed.map
+      map = transformed.map || undefined
     }
     if (options.map && map) {
       if (options.map === true) {
         css += `\n${sourceMapComment(`data:application/json;base64,${Buffer.from(map).toString('base64')}`)}`
       }
       else {
-        await writeFile(options.map, map)
         const mapBase = options.output && options.output !== '-' ? path.dirname(options.output) : options.cwd
         css += `\n${sourceMapComment(path.relative(mapBase, options.map))}`
       }
     }
     return {
       css,
+      map,
       dependencies: new Set([
         ...(options.input && options.input !== '-' ? [options.input] : []),
         ...source.dependencies,
@@ -90,12 +92,16 @@ async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: 
 async function runBuild(argv: string[]) {
   const options = parseBuildArgs(argv)
   if (!options.silent) {
-    process.stderr.write(`tailwindcss v${process.env.npm_package_version ?? ''}\n\n`)
+    process.stderr.write(`tailwindcss v${process.env['npm_package_version'] ?? ''}\n\n`)
   }
   const stdinCss = options.input === '-' ? await drainStdin() : undefined
   let previous = ''
   const rebuild = async () => {
     const result = await buildOnce(options, stdinCss)
+    validateBuildPaths(options)
+    if (typeof options.map === 'string' && result.map) {
+      await writeFile(options.map, result.map)
+    }
     if (result.css !== previous) {
       if (options.output && options.output !== '-') {
         await writeFile(options.output, result.css)
@@ -115,7 +121,7 @@ async function runBuild(argv: string[]) {
     cwd: options.cwd,
     interval: options.pollInterval,
     mode: options.watchMode,
-    output: options.output,
+    outputs: [options.output, typeof options.map === 'string' ? options.map : undefined].filter((file): file is string => Boolean(file && file !== '-')),
     rebuild,
   })
   return 0
