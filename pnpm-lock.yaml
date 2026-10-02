@@ -790,7 +790,7 @@ patchedDependencies:
   rollup@4.63.0: 4f732dcaad5986ffbe82caa0236c5ece50738873705cb399aa2f0a4dd15ed375
   rollup@4.63.1: c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0
   rollup@4.63.5: 618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6
-  weapp-vite@7.4.0: 7e132a8dd47f259c0908baa15c401dfece52d4771f4bf8c4db06f3381d0eb75e
+  weapp-vite@7.4.0: dc8d77006a4374ba1e6f3656abe2dafccd2c6d91654da26f46d359aece5e2585
 
 importers:
 
@@ -4024,7 +4024,7 @@ importers:
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
         specifier: catalog:weappVite
-        version: 7.4.0(patch_hash=7e132a8dd47f259c0908baa15c401dfece52d4771f4bf8c4db06f3381d0eb75e)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4))(@oxc-project/types@0.152.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1)
+        version: 7.4.0(patch_hash=dc8d77006a4374ba1e6f3656abe2dafccd2c6d91654da26f46d359aece5e2585)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4))(@oxc-project/types@0.152.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1)
 
   demo/web/nuxt-vite-tailwindcss-v4:
     dependencies:
@@ -5609,7 +5609,7 @@ importers:
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
         specifier: catalog:weappVite
-        version: 7.4.0(patch_hash=7e132a8dd47f259c0908baa15c401dfece52d4771f4bf8c4db06f3381d0eb75e)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(webpack@5.105.4))(@oxc-project/types@0.149.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1)
+        version: 7.4.0(patch_hash=dc8d77006a4374ba1e6f3656abe2dafccd2c6d91654da26f46d359aece5e2585)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(webpack@5.105.4))(@oxc-project/types@0.149.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1)
 
   tools/weapp-tailwindcss-scripts:
     dependencies:
@@ -78401,7 +78401,7 @@ snapshots:
       - supports-color
       - tsx
 
-  weapp-vite@7.4.0(patch_hash=7e132a8dd47f259c0908baa15c401dfece52d4771f4bf8c4db06f3381d0eb75e)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4))(@oxc-project/types@0.152.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1):
+  weapp-vite@7.4.0(patch_hash=dc8d77006a4374ba1e6f3656abe2dafccd2c6d91654da26f46d359aece5e2585)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4))(@oxc-project/types@0.152.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1):
     dependencies:
       '@babel/preset-env': 8.0.6(@babel/core@8.0.6)
       '@babel/preset-typescript': 8.0.1(@babel/core@8.0.6)
@@ -78494,7 +78494,7 @@ snapshots:
       - vitest
       - yaml
 
-  weapp-vite@7.4.0(patch_hash=7e132a8dd47f259c0908baa15c401dfece52d4771f4bf8c4db06f3381d0eb75e)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(webpack@5.105.4))(@oxc-project/types@0.149.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1):
+  weapp-vite@7.4.0(patch_hash=dc8d77006a4374ba1e6f3656abe2dafccd2c6d91654da26f46d359aece5e2585)(@babel/core@8.0.6)(@mpxjs/webpack-plugin@2.11.1(supports-color@10.2.2)(webpack@5.105.4))(@oxc-project/types@0.149.0)(@swc/helpers@0.5.23)(@types/node@26.6.4)(esbuild@0.28.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.5(patch_hash=618e46f264569db024ce086e1f1476e9bba0e6814413dc29febeaf4c22932fa6))(sass-embedded@1.105.1)(sass@1.105.1)(srvx@1.0.4)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(tailwindcss@4.3.3)(terser@5.51.2)(tsx@4.23.15)(vitest@5.0.3)(yaml@2.9.1):
     dependencies:
       '@babel/preset-env': 8.0.6(@babel/core@8.0.6)
       '@babel/preset-typescript': 8.0.1(@babel/core@8.0.6)

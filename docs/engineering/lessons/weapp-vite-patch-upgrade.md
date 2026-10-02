@@ -35,6 +35,8 @@ regressions:
 - 原始产物与日志保留在本 worktree 的 `e2e/.artifacts/demo-matrix/weapp-vite-tailwindcss-v4-weapp/`；新增回归与配置的 ESLint 通过。
 - 收尾发现框架留下资产监听租约及 `project.private.config.json` 的 `watchOptions`。核对租约原文与测试前提交一致、当前配置与租约安装值一致后，恢复本轮配置并删除该租约；未操作账号存储。这是本轮人工收尾，不能声称框架已自动清理该租约。
 
+该残留随后独立复现并修复，根因、自动恢复证据及补丁移除条件见[开发服务退出的资源归属复盘](weapp-vite-shutdown-ownership.md)。
+
 ## 适用边界
 
 本次是 macOS 上的框架产物、启动与监听回归，不代表 Windows/Linux 重验、IDE 页面、真实设备或性能门禁通过。完整扩展矩阵仍受本轮全端预检阻塞，不能以这些定向结果放行。
