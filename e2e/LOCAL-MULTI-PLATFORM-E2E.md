@@ -18,7 +18,11 @@ pnpm e2e:preflight prepare
 
 目标必须唯一：优先使用已有设备变量；多个目标时指定 `E2E_HBUILDERX_ANDROID_DEVICE_ID`、`E2E_HBUILDERX_IOS_DEVICE_ID`、`E2E_HBUILDERX_HARMONY_DEVICE_ID`。微信探针默认使用仓库微信项目的授权 AppID；使用其他有权限的项目时通过 `E2E_PREFLIGHT_WECHAT_APPID` 覆盖。微信非默认安装位置通过 `E2E_PREFLIGHT_WECHAT_CLI` 配置；Windows 指向官方 `cli.bat`。HBuilderX 使用 `HBUILDERX_CLI_PATH`、`HBUILDERX_CHANNEL` 和 `HBUILDERX_HOST`。
 
-预检可安全启动目标明确的 HBuilderX、微信 IDE 和指定 iOS 模拟器。Android/Harmony 无在线目标时，由 AI 用当前 computer use 在已安装的 Android Studio/DevEco 中启动明确的模拟器，再重新 prepare；不能安装新设备或猜测多个候选中的一个。登录、授权、组件安装或用户会话冲突交给用户处理。微信使用本轮独立的临时原生探针项目，显式采用 DevTools provider；不会使用 headless runtime 替代 IDE，也不全局关闭 IDE。
+预检可安全启动目标明确的 HBuilderX 和指定 iOS 模拟器。微信 IDE 必须由用户预先打开、确认登录并开启服务端口；E2E 不自动启动或重启 IDE。Android/Harmony 无在线目标时，由 AI 用当前 computer use 在已安装的 Android Studio/DevEco 中启动明确的模拟器，再重新 prepare；不能安装新设备或猜测多个候选中的一个。登录、授权、组件安装或用户会话冲突交给用户处理。微信使用本轮独立的临时原生探针项目，显式采用 DevTools provider。
+
+微信入口统一使用 `scripts/wechat/`：只读官方安装元数据和 `.ide` / `.ide-status` 服务标记，通过已有 HTTP 服务的 `/v2/isLogin`、`/v2/auto`、`/v2/close` 操作本轮项目。`E2E_PREFLIGHT_WECHAT_CLI` 仅用于识别安装，绝不执行；Linux、旧版或非标准安装可显式设置 `E2E_PREFLIGHT_WECHAT_HTTP_PORT`。IDE 配置 CLI token 时通过 `WECHAT_DEVTOOLS_CLI_TOKEN` 传入，不写入报告。服务不可用时直接阻断，无 CLI 回退。
+
+所有 E2E 禁止退出登录、切换账号、读取/替换/刷新登录票据、清 session/all 缓存、删除用户配置或终止共享 IDE。允许编译缓存操作但不降级为全量清理。打开项目时记录原 HTTP 端口，清理只断开自己的连接并关闭原服务上的本轮项目；认证或服务失败后不再发项目请求，保留未清理现场并报告。服务端自然过期或撤销票据仍可能令 IDE 自行退出，测试不得伪造/恢复这些凭据；用户恢复后重新 prepare。根因与证据见[微信登录态保护复盘](../docs/engineering/lessons/wechat-login-preservation.md)。
 
 ### 当前会话的 computer use 证据
 

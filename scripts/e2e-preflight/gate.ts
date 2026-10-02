@@ -33,11 +33,12 @@ export function bindingEnvironment(bindings: Record<string, Record<string, strin
   const ios = bindings.ios?.device
   const harmony = bindings.harmony?.device
   const hx = bindings.hbuilderx
-  if (!android || !ios || !harmony || !hx?.command || !hx.host || !hx.channel) {
+  if (!android || !ios || !harmony || !hx?.command || !hx.host || !hx.channel || !bindings.wechat?.httpPort) {
     throw new Error('预检缺少目标绑定。')
   }
   return {
     E2E_PREFLIGHT_WECHAT_CLI: bindings.wechat!.command!,
+    E2E_PREFLIGHT_WECHAT_HTTP_PORT: bindings.wechat!.httpPort!,
     E2E_HBUILDERX_CHROME_PATH: bindings.web!.hbuilderxBrowser ?? bindings.web!.command!,
     WEAPP_VITE_E2E_RUNTIME_PROVIDER: 'devtools',
     E2E_SKIP_OPEN_AUTOMATOR: '0',
