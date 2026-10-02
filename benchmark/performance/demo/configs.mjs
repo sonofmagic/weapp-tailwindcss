@@ -43,7 +43,7 @@ export async function configure(consumer, mode, records = [], capturedRoot = con
     // runner 与 bundle 两种 ESM 配置加载器均不应内联 CJS 捕获实现。
     await writeFile(path.join(support, 'options.mjs'), `import { createRequire } from 'node:module'; const load = createRequire(${JSON.stringify(path.join(consumer.project, 'package.json'))});\nexport const { captureOptions } = load(${JSON.stringify(path.join(support, 'capture.cjs'))});\n`)
   }
-  const files = await fg(['**/*config*.{ts,js,mjs,cjs}', '**/config/**/*.{ts,js,mjs,cjs}', '**/gulpfile.ts', 'demo/web/shared/*.{ts,mjs}'], { cwd: consumer.root, absolute: true, ignore: ['**/node_modules/**', '**/dist/**', '**/.cost/**'] })
+  const files = await fg(['**/*config*.{ts,js,mjs,cjs}', '**/config/**/*.{ts,js,mjs,cjs}', '**/gulpfile.{ts,mts,mjs}', 'demo/web/shared/*.{ts,mjs}'], { cwd: consumer.root, absolute: true, ignore: ['**/node_modules/**', '**/dist/**', '**/.cost/**'] })
   const wrappers = new Map()
   const originalFiles = new Map()
   for (const file of files) {

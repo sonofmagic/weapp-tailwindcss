@@ -223,6 +223,7 @@ describe('starter build smoke', () => {
     await clearBuildState(root)
     const build = await runPnpm(item.command.slice(1), root)
     if (item.starter === 'gulp') {
+      expect(build.all, `${item.name} should complete its ESM task graph`).toContain('Finished \'default\'')
       expect(build.all, `${item.name} should load its TypeScript runtime without fallback failures`).not.toMatch(/Failed to (?:preload|load) external module:/)
     }
 

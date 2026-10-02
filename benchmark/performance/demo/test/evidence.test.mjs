@@ -47,6 +47,9 @@ it('静态准备不得把捕获构建产生的缓存当作源码重放', async (
     await mkdir(path.join(project, directory))
     await writeFile(path.join(project, directory, 'page.js'), 'export const className = "h-8"')
   }
+  for (const extension of ['ts', 'mts', 'mjs']) {
+    await writeFile(path.join(project, `gulpfile.${extension}`), 'export const tasks = []')
+  }
   expect(await sourceFiles({ project })).toEqual(['src/page.js'])
 })
 function example() {

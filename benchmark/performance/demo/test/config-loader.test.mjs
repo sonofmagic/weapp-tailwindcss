@@ -8,6 +8,25 @@ import { build } from 'esbuild'
 import { expect, it, vi } from 'vitest'
 import { configure } from '../configs.mjs'
 
+it('Gulp 的 ESM TypeScript 任务参与配置捕获并能恢复原文', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'cost-gulp-config-'))
+  try {
+    const entry = path.join(root, 'gulpfile.mjs')
+    const tasks = path.join(root, 'gulpfile.mts')
+    const bootstrap = 'await import(\'./gulpfile.mts\')\n'
+    const source = 'import { createPlugins } from "weapp-tailwindcss/gulp"; export const plugins = createPlugins({})'
+    await writeFile(entry, bootstrap)
+    await writeFile(tasks, source)
+    const restore = await configure({ root, project: root, item: { family: 'gulp' } }, 'capture')
+    expect(await readFile(entry, 'utf8')).toBe(bootstrap)
+    expect(await readFile(tasks, 'utf8')).toContain('./.cost/module-0.mjs')
+    expect(await readFile(path.join(root, '.cost', 'module-0.mjs'), 'utf8')).toContain('export const createPlugins')
+    await restore()
+    expect(await readFile(tasks, 'utf8')).toBe(source)
+  }
+  finally { await rm(root, { recursive: true, force: true }) }
+})
+
 it('weapp-vite 的内嵌选项经过 ESM 配置打包后仍由 Node 加载 CJS 捕获模块', async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'cost-weapp-config-'))
   try {
