@@ -4560,7 +4560,7 @@ importers:
         version: 0.4.0
     devDependencies:
       '@weapp-tailwindcss/escape':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/escape
       tsd:
         specifier: ^0.33.0
@@ -4578,7 +4578,7 @@ importers:
   packages-runtime/merge:
     dependencies:
       '@weapp-tailwindcss/escape':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/escape
       '@weapp-tailwindcss/runtime':
         specifier: workspace:*
@@ -4594,7 +4594,7 @@ importers:
   packages-runtime/runtime:
     dependencies:
       '@weapp-tailwindcss/escape':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/escape
       clsx:
         specifier: catalog:clsx
@@ -4921,7 +4921,7 @@ importers:
         specifier: workspace:*
         version: link:../engine
       '@weapp-tailwindcss/escape':
-        specifier: workspace:~
+        specifier: workspace:*
         version: link:../escape
       '@weapp-tailwindcss/postcss-calc':
         specifier: workspace:*
@@ -5162,7 +5162,7 @@ importers:
         specifier: workspace:*
         version: link:../engine
       '@weapp-tailwindcss/escape':
-        specifier: workspace:~
+        specifier: workspace:*
         version: link:../escape
       '@weapp-tailwindcss/logger':
         specifier: workspace:*

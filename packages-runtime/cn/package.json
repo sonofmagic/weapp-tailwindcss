@@ -59,7 +59,7 @@
     "cn": "^0.4.0"
   },
   "devDependencies": {
-    "@weapp-tailwindcss/escape": "workspace:^",
+    "@weapp-tailwindcss/escape": "workspace:*",
     "tsd": "^0.33.0"
   }
 }

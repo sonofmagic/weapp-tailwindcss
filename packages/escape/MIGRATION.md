@@ -15,18 +15,23 @@
 
 公开函数、类型、映射语义和 ESM/CJS 导出路径保持不变，迁移消费者只需调整 import 和依赖包名。消费者包不新增 engines 限制，维护环境遵循根 Node/pnpm 要求。
 
-workspace 消费方使用 `workspace:~` / `workspace:^`，打包时转换为新包的 semver 范围。`escape-published` 固定为旧包 npm 8.0.0 的测试 alias，不能改为本地链接。历史发布版 fixture、旧版本基准和历史文章继续记录旧包身份。
+公开 workspace 消费方统一使用 repoctl 要求的 `workspace:*`，打包时转换为同批发布的精确版本。原迁移保留 `workspace:~` / `workspace:^` 的做法会在 Release 的协议检查阶段失败，已由发布契约与真实 tarball 检查共同约束。`escape-published` 固定为旧包 npm 8.0.0 的测试 alias，不能改为本地链接。历史发布版 fixture、旧版本基准和历史文章继续记录旧包身份。
 
 双向符号还原应显式传入同一 `map`，与 runtime 的共享映射策略一致。迁移不会调整默认 unescape 行为；JS 字符串语法转义、regex 与其他间接依赖不迁移。
 
 ## 首次发布
 
 1. 使用 `pnpm release status` 确认新包及切换生产依赖的消费者具有中文 patch intent。
-2. 新包需要绑定本仓库的 GitHub Actions trusted publisher：owner `sonofmagic`、repository `weapp-tailwindcss`、workflow `release.yml`，当前无 GitHub environment。不修改旧包的 trusted publisher。
-3. 由 repoctl 和现有 Release workflow 发布，保留 Node 24、OIDC 和 provenance，不在此迁移任务中发布 npm 包或注入发布 token。新包首次发布权限和 trusted publisher 的配置需要在发布前核验。
-4. 新包可从 npm 安装后，再同步仍锁定已发布依赖的独立模板，重新生成其真实锁文件并验证冻结安装。不得为尚未发布的包编造 registry integrity 或锁文件。
+2. 先确认新包已在 npm registry 建立。npm 的 `trust` 命令要求包已经存在且当前账号具有写权限并启用 2FA；不能为返回 404 的包预先绑定 trusted publisher。首次发布的初始化方式需单独确认，不能向现有 OIDC Release 工作流注入发布 token。
+3. 包建立后，使用 `pnpm exec npm trust github @weapp-tailwindcss/escape --repo sonofmagic/weapp-tailwindcss --file release.yml --allow-publish --yes` 绑定本仓库，再用 `pnpm exec npm trust list @weapp-tailwindcss/escape --json` 核对；当前无 GitHub environment。不修改旧包的 trusted publisher。
+4. 由 repoctl 和现有 Release workflow 发布，保留 Node 24、OIDC 和 provenance，不在此迁移任务中发布 npm 包或注入发布 token。新包首次发布权限和 trusted publisher 的配置需要在发布前核验。
+5. 新包可从 npm 安装后，再同步仍锁定已发布依赖的独立模板，重新生成其真实锁文件并验证冻结安装。不得为尚未发布的包编造 registry integrity 或锁文件。
 
 打包检查在 workspace 外加载 tarball，验证新包名的 ESM/CJS、双端类型及消费者依赖范围。实际验证记录见下方。
+
+## 首次发布结果（2026-10-02）
+
+`@weapp-tailwindcss/escape@0.0.1` 已完成账号初始化发布。npm 的 stage 新包初始化请求实际返回 404，用户随后明确授权本轮首次发布例外；该版本没有 OIDC provenance。后续已通过 `npm trust` 建立并读回 `sonofmagic/weapp-tailwindcss` / `release.yml` 的 GitHub Actions 发布权限。实际命令、失败边界与产物校验见[发布复盘](../../docs/engineering/lessons/escape-release-protocol.md)。
 
 ## 本次验证记录
 

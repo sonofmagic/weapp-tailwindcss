@@ -56,7 +56,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@weapp-tailwindcss/escape": "workspace:^",
+    "@weapp-tailwindcss/escape": "workspace:*",
     "clsx": "catalog:clsx"
   }
 }
