@@ -126,7 +126,6 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "@weapp-tailwindcss/source-scan": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "es-toolkit": "catalog:postcssUtilities",
     "lru-cache": "catalog:buildUtilities",
     "postcss": "catalog:postcss85tilde",
     "postcss-load-config": "catalog:buildUtilities",
