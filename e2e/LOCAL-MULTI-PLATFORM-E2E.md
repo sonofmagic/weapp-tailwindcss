@@ -95,6 +95,8 @@ pnpm e2e:demo:workflow:local --quality --extended --baseline-ref <任务起始�
 
 扩展模式固定 `CI=1`，清除局部用例过滤、旧二进制和原生工作目录复用配置，禁用跳过安装/构建及自动更新基线；工具路径、设备和超时配置仍需与预检一致。RN/Lynx 原生验收使用本轮绑定的 Android/iOS 模拟器；额外需要对应的 JDK/Gradle、Xcode/CocoaPods，以及 Lynx 的 xcodegen，缺失时记录阻塞，不将跳过计为通过。历史 Issue 的特殊版本对照与人工诊断按关联改动另行执行，不属于扩展模式的默认覆盖。
 
+视觉测试的 `DEMO_VISUAL_STYLE_ISOLATION_VARIANT` 和 IDE 的 `E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY` 也会清除：uni-app x 恢复两种样式隔离模式，IDE HMR 恢复默认页面可见性要求。既有用例级可见性例外仍按原逻辑处理，不能将它们的产物证据描述为实时页面验收。
+
 也可以把本轮报告交给 `pnpm e2e:demo:workflow:local --preflight-report <本轮-report.json>`。两者只能选择一个消费同一报告；再次运行必须新建预检。prepare 前台服务要保持运行，测试结束后自动释放会话和锁。
 
 verify 会重新检查环境并合并 computer use 证据。全面入口在任何测试/构建子进程启动前，向活动预检服务领取一次性会话；所有检查必须在 15 分钟以内，且 checkout、SHA、源码、主机与相关配置一致。领取复查结束时再次验证时效和证据。修改 JSON、传入旧报告、关闭 prepare 服务均不能放行。测试进程固定已检查的设备 ID、微信 CLI、IDE host 和浏览器，进入设备阶段前再次检查；失败则停止后续调度。Web 同时检查测试默认 Chromium 与 HBuilderX 实际选用的浏览器；指定 `E2E_HBUILDERX_CHROME_PATH` 时不能回退到其他安装。HBuilderX 检查所选安装的编译器入口和运行基座，实际编译仍由门禁之后的测试验证。smoke/hmr-smoke 为独立局部验证，不构成全面验收。

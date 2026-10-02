@@ -5,6 +5,7 @@ baseline: 148cebd6ce3584f5b2c930dd63639a0c3a5d47ee
 regressions:
   - e2e/demo-workflow-extended.test.ts
   - e2e/demo-workflow-quality.test.ts
+  - e2e/demo-workflow-environment.test.ts
 ---
 
 # 扩展全面回归的覆盖与环境边界
@@ -19,12 +20,16 @@ regressions:
 
 扩展环境复制当前配置，仅清理明确缩小覆盖、更新基线和复用旧产物的选项；设备与工具链仍由预检绑定覆盖。性能比较要求任务起始提交的完整 SHA，避免分支推进改变基准。
 
+后续覆盖审计发现清理表遗漏了两个消费者开关：`DEMO_VISUAL_STYLE_ISOLATION_VARIANT` 会让 uni-app x 只生成一种样式隔离结果，结果完整性检查无法发现未调度的另一种；`E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY=0` 会把要求页面显示本轮标识的 HMR 验证降为产物证据。扩展模式现在删除两项继承配置，恢复消费者默认行为；既有用例级可见性例外仍保持原语义。回归同时检查实际消费者和所有编排子进程，避免仅验证清理表自身。
+
 ## 验证
 
 - 修复前，新增编排回归出现 8 个失败，证明扩展参数被忽略、独立套件未运行、过滤配置被继承。
 - `pnpm exec cross-env CI=1 vitest run -c e2e/vitest.e2e.config.ts e2e/demo-workflow-quality.test.ts e2e/demo-workflow-extended.test.ts --update=none`：24 个测试通过。
 - `pnpm exec cross-env CI=1 vitest run -c e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts --update=none`：34 个测试通过；新工作树先构建 `@weapp-tailwindcss/escape` 以提供矩阵检查依赖。
 - 用例验证非法参数与门禁失败均不启动测试、扩展套件覆盖与顺序、固定性能基线、环境继承边界以及失败后的报告和门禁释放。
+- 两项遗漏修复前，`e2e/demo-workflow-environment.test.ts` 的三个实际消费者回归和编排环境断言共四项失败，分别显示缺少另一种样式隔离模式、页面可见性仍被禁用、子进程仍继承过滤配置。
+- 修复后执行 `pnpm exec cross-env CI=1 vitest run -c e2e/vitest.e2e.config.ts e2e/demo-workflow-environment.test.ts e2e/demo-workflow-extended.test.ts e2e/demo-workflow-quality.test.ts --update=none`：三文件、27 项通过，零失败、零跳过；改动 TypeScript 的 ESLint 通过。
 
 ## 适用边界
 

@@ -104,11 +104,13 @@ describe('扩展回归的完整覆盖与门禁', () => {
   })
 
   it('清理继承的过滤、跳过和基线更新，保留工具配置并优先采用门禁设备', async () => {
-    const filters = ['E2E_TEMPLATE_CASE', 'E2E_WATCH_CASE', 'E2E_HBUILDERX_CASE', 'DEMO_VISUAL_FILTER', 'RN_ANDROID_BINARY', 'LYNX_NATIVE_WORK_DIR']
+    const filters = ['E2E_TEMPLATE_CASE', 'E2E_WATCH_CASE', 'E2E_HBUILDERX_CASE', 'DEMO_VISUAL_FILTER', 'DEMO_VISUAL_STYLE_ISOLATION_VARIANT', 'E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY', 'RN_ANDROID_BINARY', 'LYNX_NATIVE_WORK_DIR']
     const switches = ['RN_UPDATE_BASELINE', 'E2E_TEMPLATE_SKIP_BUILD', 'E2E_TEMPLATE_HMR_SKIP', 'LYNX_IOS_SKIP_POD_INSTALL']
     for (const key of [...filters, ...switches]) {
       vi.stubEnv(key, '1')
     }
+    vi.stubEnv('DEMO_VISUAL_STYLE_ISOLATION_VARIANT', 'style-isolation-v2')
+    vi.stubEnv('E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY', '0')
     vi.stubEnv('CI', '0')
     vi.stubEnv('LYNX_IOS_DEVICE_ID', 'unverified-device')
     vi.stubEnv('HBUILDERX_CLI_PATH', '/selected/cli')
