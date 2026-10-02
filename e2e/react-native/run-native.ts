@@ -13,6 +13,7 @@ import { execa } from 'execa'
 import { PNG } from 'pngjs'
 import { assessNativeScreenshot } from './native-screenshot'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
+import { androidExpoDevice } from './android-device'
 import { androidScreenProbes, findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
 import { createExpoNativeEnvironment } from './native-environment'
@@ -257,18 +258,6 @@ async function assertAndroidMarker(device: string, marker: string) {
   throw new Error(`Android accessibility tree is missing ${marker} or tw-rn-root`)
 }
 
-async function androidExpoDevice(device: string) {
-  const configured = process.env['RN_ANDROID_EXPO_DEVICE']
-  if (configured) { return configured }
-  const result = await execa('adb', ['-s', device, 'emu', 'avd', 'name'], { reject: false })
-  const avdName = result.stdout
-    .split(/\r?\n/)
-    .map(line => line.trim())
-    .find(line => line && line !== 'OK')
-  if (result.exitCode === 0 && avdName) { return avdName }
-  throw new Error(`Unable to resolve the Expo AVD name for ${device}; set RN_ANDROID_EXPO_DEVICE explicitly`)
-}
-
 function startAndroidDialogGuard(device: string) {
   let dismissing = false
   const timer = setInterval(() => {
@@ -319,13 +308,14 @@ async function main() {
   const originalMarker = await fs.readFile(markerFile, 'utf8')
   const originalCss = await fs.readFile(cssFile, 'utf8')
   const runtimeHost = platform === 'ios' ? iosHostAddress() : '127.0.0.1'
-  const reporter = startReporter(platform === 'ios' ? '0.0.0.0' : runtimeHost)
-  const port = await reporter.ready
   const device = platform === 'android'
     ? process.env['RN_ANDROID_DEVICE_ID'] ?? 'emulator-5554'
     : process.env['RN_IOS_DEVICE_ID'] ?? (await execa('xcrun', ['simctl', 'list', 'devices', 'booted', '-j'])).stdout.match(/"udid"\s*:\s*"([^"]+)"/)?.[1] ?? ''
   if (!device) { throw new TypeError(`No booted ${platform} simulator was found`) }
+  const expoDevice = platform === 'android' ? await androidExpoDevice(device) : device
   const nativeEnvironment = await collectNativeEnvironment(device)
+  const reporter = startReporter(platform === 'ios' ? '0.0.0.0' : runtimeHost)
+  const port = await reporter.ready
   const reportUrl = `http://${runtimeHost}:${port}`
   let stopAndroidDialogGuard: (() => void) | undefined
   if (platform === 'android') {
@@ -374,7 +364,6 @@ async function main() {
   try {
     await waitForMetro(metro)
     const runArgs = ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'run', platform === 'android' ? 'android' : 'ios', '--no-bundler']
-    const expoDevice = platform === 'android' ? await androidExpoDevice(device) : device
     runArgs.push('--device', expoDevice)
     if (platform === 'android' && process.env['RN_ANDROID_BINARY']) {
       runArgs.push('--binary', path.resolve(repoRoot, process.env['RN_ANDROID_BINARY']))

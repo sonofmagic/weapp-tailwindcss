@@ -15,6 +15,7 @@ import { web } from '../scripts/e2e-preflight/probes/web'
 import { connectWechat } from '../scripts/e2e-preflight/probes/wechat-connect'
 import { wechatVersion, wechatVersionCandidates } from '../scripts/e2e-preflight/probes/wechat-version'
 import { runOwnedWorker } from '../scripts/e2e-preflight/process'
+import { requestedIosTarget } from '../scripts/e2e-preflight/targets'
 
 vi.mock('../scripts/e2e-preflight/io', async original => ({ ...await original<object>(), command: vi.fn() }))
 const run = vi.mocked(command)
@@ -26,6 +27,8 @@ beforeEach(() => {
     'E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID',
     'DEMO_VISUAL_ANDROID_DEVICE_ID',
     'RN_ANDROID_DEVICE_ID',
+    'LYNX_ANDROID_DEVICE_ID',
+    'ANDROID_SERIAL',
   ]) {
     vi.stubEnv(key, undefined)
   }
@@ -163,6 +166,28 @@ describe('真实探针的阻断条件', () => {
     vi.stubEnv('E2E_HBUILDERX_ANDROID_DEVICE_ID', 'a')
     vi.stubEnv('E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID', 'b')
     expect(() => requestedTarget(['E2E_HBUILDERX_ANDROID_DEVICE_ID', 'E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID'])).toThrow('歧义')
+  })
+
+  it.each(['LYNX_ANDROID_DEVICE_ID', 'ANDROID_SERIAL'])('Android 预检拒绝与 %s 不同的设备', async (key) => {
+    vi.stubEnv('RN_ANDROID_DEVICE_ID', 'selected')
+    vi.stubEnv(key, 'other')
+    run.mockImplementation(async (_file, args) => {
+      if (args[0] === 'version') {
+        return 'adb 1'
+      }
+      if (args[0] === 'devices') {
+        return 'selected device\nother device'
+      }
+      return '1'
+    })
+    await expect(android(context)).rejects.toThrow('歧义')
+  })
+
+  it('iOS 目标解析拒绝 Lynx、RN 与 destination 之间的冲突', () => {
+    const keys = ['E2E_HBUILDERX_IOS_DEVICE_ID', 'RN_IOS_DEVICE_ID', 'LYNX_IOS_DEVICE_ID']
+    expect(() => requestedIosTarget(keys, { RN_IOS_DEVICE_ID: 'selected', LYNX_IOS_DEVICE_ID: 'other' })).toThrow('歧义')
+    expect(() => requestedIosTarget(keys, { E2E_HBUILDERX_IOS_DEVICE_ID: 'selected', LYNX_IOS_DESTINATION: 'platform=iOS Simulator,id=other' })).toThrow('歧义')
+    expect(requestedIosTarget(keys, { LYNX_IOS_DESTINATION: 'platform=iOS Simulator,id=selected' })).toBe('selected')
   })
 
   it('等待可观察的异步渲染，不把 tap 返回当成 setData 已提交', async () => {

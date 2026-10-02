@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { readReport, request } from './client'
 import { collectIdentity } from './io'
+import { iosSimulatorDestination } from './targets'
 
 export function stageChecks(name: string): ProbeId[] {
   if (/visual-weapp-h5-app/i.test(name)) {
@@ -27,7 +28,7 @@ export function stageChecks(name: string): ProbeId[] {
   return [...new Set(ids)]
 }
 
-export function bindingEnvironment(bindings: Record<string, Record<string, string>>) {
+export function bindingEnvironment(bindings: Record<string, Record<string, string>>, env: NodeJS.ProcessEnv = process.env) {
   const android = bindings.android?.device
   const ios = bindings.ios?.device
   const harmony = bindings.harmony?.device
@@ -58,6 +59,10 @@ export function bindingEnvironment(bindings: Record<string, Record<string, strin
     PATH: path.isAbsolute(bindings.android!.command!) ? `${path.dirname(bindings.android!.command!)}${path.delimiter}${process.env.PATH ?? ''}` : process.env.PATH ?? '',
     RN_ANDROID_DEVICE_ID: android,
     RN_IOS_DEVICE_ID: ios,
+    LYNX_ANDROID_DEVICE_ID: android,
+    ANDROID_SERIAL: android,
+    LYNX_IOS_DEVICE_ID: ios,
+    LYNX_IOS_DESTINATION: iosSimulatorDestination(ios, env['LYNX_IOS_DESTINATION']),
   }
 }
 

@@ -53,7 +53,12 @@ const configKeys = [
   'DEMO_VISUAL_ANDROID_DEVICE_ID',
   'DEMO_VISUAL_IOS_DEVICE_ID',
   'RN_ANDROID_DEVICE_ID',
+  'RN_ANDROID_EXPO_DEVICE',
   'RN_IOS_DEVICE_ID',
+  'LYNX_ANDROID_DEVICE_ID',
+  'ANDROID_SERIAL',
+  'LYNX_IOS_DEVICE_ID',
+  'LYNX_IOS_DESTINATION',
 ]
 
 export async function collectIdentity(root: string): Promise<Identity> {
