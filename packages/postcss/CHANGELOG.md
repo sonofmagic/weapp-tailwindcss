@@ -1,5 +1,14 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.11
+
+### Patch Changes
+
+- 使用 32 位整数乘法减少样式缓存键的哈希开销，继续校验完整源码和配置，保持哈希碰撞、外部插件及 Root 来源的失效边界。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/engine@0.1.4
+
 ## 3.3.10
 
 ### Patch Changes

@@ -5,6 +5,15 @@
 ### Patch Changes
 
 - Updated dependencies:
+  - @weapp-tailwindcss/engine@0.1.4
+  - @weapp-tailwindcss/postcss@3.3.11
+  - weapp-tailwindcss@5.5.12
+
+## 0.0.0
+
+### Patch Changes
+
+- Updated dependencies:
   - @weapp-tailwindcss/cn@0.1.4
   - @weapp-tailwindcss/engine@0.1.3
   - @weapp-tailwindcss/merge@2.2.6
