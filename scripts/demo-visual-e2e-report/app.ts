@@ -19,6 +19,7 @@ import {
 } from '../../e2e/hbuilderx-local/android-runtime.ts'
 import { removeLegacyAppMarkers, rewriteAppMarker } from '../../e2e/hbuilderx-local/app-marker.ts'
 import { readExistingAppHmrTransformedOutput, readExistingAppTransformedOutput } from '../../e2e/hbuilderx-local/app-output.ts'
+import { bindAppTarget, readAppLaunchOption } from '../../e2e/hbuilderx-local/app-target.ts'
 import { resolveAppHmrSteps } from '../../e2e/hbuilderx-local/cases.ts'
 import { createHarmonyDomProbe } from '../../e2e/hbuilderx-local/harmony-dom-probe.ts'
 import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from '../../e2e/hbuilderx-local/harmony-runtime.ts'
@@ -278,30 +279,15 @@ function createAndroidAdbArgs(deviceId?: string) {
 }
 
 function resolveIosScreenshotTarget(item: AppCase) {
-  const launchArgs = item.launchArgs ?? []
-  const index = launchArgs.indexOf('--iosTarget')
-  const target = process.env['E2E_HBUILDERX_IOS_SCREENSHOT_TARGET']
-    ?? (index >= 0 ? launchArgs[index + 1] : undefined)
-    ?? process.env['E2E_HBUILDERX_IOS_TARGET']
-    ?? 'booted'
-  return target === 'simulator' ? 'booted' : target
+  return readAppLaunchOption(item.launchArgs ?? [], '--deviceId')!
 }
 
 function resolveAndroidScreenshotDeviceId(item: AppCase) {
-  const launchArgs = item.launchArgs ?? []
-  const index = launchArgs.indexOf('--deviceId')
-  return process.env['E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID']
-    ?? process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID']
-    ?? (index >= 0 ? launchArgs[index + 1] : undefined)
+  return readAppLaunchOption(item.launchArgs ?? [], '--deviceId')!
 }
 
 function resolveHarmonyScreenshotDeviceId(item: AppCase) {
-  const launchArgs = item.launchArgs ?? []
-  const index = launchArgs.indexOf('--deviceId')
-  return process.env['DEMO_VISUAL_HARMONY_SCREENSHOT_DEVICE_ID']
-    ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']
-    ?? process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID']
-    ?? (index >= 0 ? launchArgs[index + 1] : undefined)
+  return readAppLaunchOption(item.launchArgs ?? [], '--deviceId')!
 }
 
 function createHdcArgs(deviceId?: string) {
@@ -968,6 +954,7 @@ async function runAppCaseVariant(
 }
 
 export async function runAppCase(item: AppCase, context: RuntimeContext, results: CaseResult[]) {
+  item = bindAppTarget(item)
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   const originalSource = removeLegacyAppMarkers(await readUtf8(sourceFile))

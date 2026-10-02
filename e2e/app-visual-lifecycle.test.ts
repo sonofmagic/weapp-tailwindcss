@@ -13,12 +13,24 @@ import { runAppCase } from '../scripts/demo-visual-e2e-report/app'
 const state = vi.hoisted(() => ({
   child: undefined as ChildProcess | undefined,
   capture: vi.fn(),
+  launch: vi.fn(),
+  screenshot: vi.fn(),
   restart: 'mutation' as 'mutation' | 'screenshot' | 'none',
 }))
 vi.mock('node:child_process', async importOriginal => ({
   ...await importOriginal<typeof import('node:child_process')>(),
   spawnSync: (_command: string, args: string[]) => {
+    if (args.includes('list')) {
+      return { status: 0, stdout: JSON.stringify({ devices: { ios: [
+        { udid: 'first-simulator', state: 'Booted' },
+        { udid: 'second-simulator', state: 'Booted' },
+      ] } }), stderr: '' }
+    }
+    if (args[0] === 'devices') {
+      return { status: 0, stdout: 'emulator-5554 device\n', stderr: '' }
+    }
     if (args.includes('screenshot')) {
+      state.screenshot(args)
       state.capture(args.at(-1))
     }
     return { status: 0, stdout: '', stderr: '' }
@@ -30,7 +42,10 @@ vi.mock('./hbuilderx-local/process', () => ({
   collectProcessOutput: () => [],
   createLocalHBuilderXRunner: async () => ({
     run: async () => {},
-    spawn: () => ({ child: state.child }),
+    spawn: (options: unknown) => {
+      state.launch(options)
+      return { child: state.child }
+    },
   }),
   fileExists: async () => true,
   hbuilderxAppTimeoutMs: 1000,
@@ -74,12 +89,19 @@ describe('App 视觉入口的原生 HMR 生命周期', () => {
   afterEach(async () => {
     await Promise.all(directories.splice(0).map(directory => rm(directory, { recursive: true, force: true })))
     vi.clearAllMocks()
+    vi.unstubAllEnvs()
   })
 
   it.each((['app-android', 'app-ios'] as const).flatMap(platform =>
     (['mutation', 'screenshot', 'none'] as const).map(restart => ({ platform, restart })),
   ))('$platform 视觉入口检查 $restart 阶段的进程连续性', async ({ platform, restart }) => {
     state.restart = restart
+    for (const key of ['E2E_HBUILDERX_ANDROID_DEVICE_ID', 'E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID', 'ANDROID_SERIAL']) {
+      vi.stubEnv(key, 'emulator-5554')
+    }
+    vi.stubEnv('E2E_HBUILDERX_IOS_TARGET', 'simulator')
+    vi.stubEnv('E2E_HBUILDERX_IOS_DEVICE_ID', 'second-simulator')
+    vi.stubEnv('E2E_HBUILDERX_IOS_SCREENSHOT_TARGET', 'second-simulator')
     const directory = await mkdtemp(join(tmpdir(), 'app-visual-lifecycle-'))
     directories.push(directory)
     const sourceFile = join(directory, 'App.uvue')
@@ -119,5 +141,11 @@ describe('App 视觉入口的原生 HMR 生命周期', () => {
       : { status: 'failed', error: expect.stringContaining('restarted') })
     expect(await readFile(sourceFile, 'utf8')).toBe('original source')
     expect(state.child.stdout!.listenerCount('data')).toBe(0)
+    if (platform === 'app-ios') {
+      expect(state.launch).toHaveBeenCalledWith(expect.objectContaining({
+        args: expect.arrayContaining(['--deviceId', 'second-simulator']),
+      }))
+      expect(state.screenshot).toHaveBeenCalledWith(expect.arrayContaining(['io', 'second-simulator', 'screenshot']))
+    }
   })
 })

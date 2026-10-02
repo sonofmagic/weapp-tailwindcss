@@ -12,11 +12,11 @@ import { expect } from 'vitest'
 import { createHBuilderXProjectAlias as createSharedHBuilderXProjectAlias } from '../../scripts/hbuilderx-project-alias.mjs'
 import {
   collectAndroidRuntimeMetadata,
-  resolveAndroidDeviceId,
   waitForAndroidRuntimeEvidence,
 } from './android-runtime'
 import { rewriteAppMarker } from './app-marker'
 import { readExistingAppHmrTransformedOutput, readExistingAppTransformedOutput, resolveAppTransformedFiles } from './app-output'
+import { bindAppTarget, readAppLaunchOption } from './app-target'
 import { rawTailwindDirectiveRE, resolveAppHmrSteps } from './cases'
 import { createHarmonyDomProbe } from './harmony-dom-probe'
 import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from './harmony-runtime'
@@ -36,7 +36,6 @@ import {
   killProcessTree,
   pollIntervalMs,
   readUtf8,
-  resolveIosSimulatorDeviceId,
   wait,
 } from './process'
 import { findMissingRuntimeLogs, resolveAppRuntimeLogContract } from './render-mode'
@@ -552,16 +551,14 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {
+  item = bindAppTarget(item)
   let androidEnv: Record<string, string> | undefined
-  let launchArgs = [...(item.launchArgs ?? [])]
+  const launchArgs = [...(item.launchArgs ?? [])]
   if (item.platform === 'app-android') {
     androidEnv = assertAndroidToolchain()
   }
   if (item.platform === 'app-ios') {
     assertIosSimulatorToolchain()
-    if (!launchArgs.includes('--deviceId')) {
-      launchArgs = [...launchArgs, '--deviceId', resolveIosSimulatorDeviceId()]
-    }
   }
   if (item.platform === 'app-harmony') {
     assertHarmonyToolchain()
@@ -670,10 +667,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     await waitForAppRuntimeLogs(item, logs, ensureLaunchRunning)
     const androidDeviceId = item.platform === 'app-android'
-      ? resolveAndroidDeviceId(launchArgs)
+      ? readAppLaunchOption(launchArgs, '--deviceId')
       : undefined
-    const harmonyDeviceIndex = launchArgs.indexOf('--deviceId')
-    const harmonyDeviceId = harmonyDeviceIndex >= 0 ? launchArgs[harmonyDeviceIndex + 1] : undefined
+    const harmonyDeviceId = readAppLaunchOption(launchArgs, '--deviceId')
     const initialHarmony = item.platform === 'app-harmony'
       ? await waitForHarmonyRuntimeEvidence({
           ...domOptions,
