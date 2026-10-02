@@ -81,6 +81,16 @@ pnpm e2e:local:full-report --preflight-report <本轮-report.json>
 
 demo 工作流在矩阵检查后先执行 static 快照和多平台构建产物断言，再进入微信 IDE、watch HMR 和 H5。多平台构建范围固定为矩阵中 `status: ci` 的可执行 case；普通 uni-app Vite 的 H5 构建与浏览器 HMR 通过 `e2e:uni:h5` 单独执行。矩阵中登记为 local 的额外平台仍按本次任务涉及范围选择专用入口。
 
+需要补齐独立类型、打包、脚本、模板、React Native/Lynx 原生与性能回归时，在同一个入口增加 `--extended --baseline-ref <任务起始提交的完整SHA>`，且同时保留 `--quality`。例如：
+
+```bash
+pnpm e2e:demo:workflow:local --quality --extended --baseline-ref <任务起始提交的完整SHA> --preflight-report <本轮-report.json>
+```
+
+扩展模式要求固定的完整提交 SHA，禁止以移动分支充当性能基线；性能命令及基线会写入阶段报告。新增阶段共享本轮门禁，任一失败均停止。独立质量检查在 static 前完成，模板构建/HMR/微信 IDE 与启动矩阵在标准 IDE 阶段前完成；标准多端截图之后串行执行 RN Web/Android/iOS、Lynx Android/iOS 和 synthetic/framework 性能门禁。canonical template 与 RN/Lynx 静态测试由 static 统一覆盖，不重复执行。
+
+扩展模式固定 `CI=1`，清除局部用例过滤、旧二进制和原生工作目录复用配置，禁用跳过安装/构建及自动更新基线；工具路径、设备和超时配置仍需与预检一致。RN/Lynx 原生验收使用本轮绑定的 Android/iOS 模拟器；额外需要对应的 JDK/Gradle、Xcode/CocoaPods，以及 Lynx 的 xcodegen，缺失时记录阻塞，不将跳过计为通过。历史 Issue 的特殊版本对照与人工诊断按关联改动另行执行，不属于扩展模式的默认覆盖。
+
 也可以把本轮报告交给 `pnpm e2e:demo:workflow:local --preflight-report <本轮-report.json>`。两者只能选择一个消费同一报告；再次运行必须新建预检。prepare 前台服务要保持运行，测试结束后自动释放会话和锁。
 
 verify 会重新检查环境并合并 computer use 证据。全面入口在任何测试/构建子进程启动前，向活动预检服务领取一次性会话；所有检查必须在 15 分钟以内，且 checkout、SHA、源码、主机与相关配置一致。领取复查结束时再次验证时效和证据。修改 JSON、传入旧报告、关闭 prepare 服务均不能放行。测试进程固定已检查的设备 ID、微信 CLI、IDE host 和浏览器，进入设备阶段前再次检查；失败则停止后续调度。Web 同时检查测试默认 Chromium 与 HBuilderX 实际选用的浏览器；指定 `E2E_HBUILDERX_CHROME_PATH` 时不能回退到其他安装。HBuilderX 检查所选安装的编译器入口和运行基座，实际编译仍由门禁之后的测试验证。smoke/hmr-smoke 为独立局部验证，不构成全面验收。
