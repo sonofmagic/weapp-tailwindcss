@@ -68,7 +68,7 @@ source map、stdin/stdout、watch 与 `canonicalize` 的完整用法见 [CLI 指
 ## 社区与支持
 
 - [官方文档](https://tw.weapp.dev)
-- [GitHub Issues](https://github.com/sonofmagic/weapp-tailwindcss/issues)
+- [GitHub Issues](https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues)
 - [技术交流群](https://tw.weapp.dev/zh-cn/docs/community/group)
 
 ## License

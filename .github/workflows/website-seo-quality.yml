@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
 
-          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- website/ packages/ packages-runtime/ .github/workflows/docs.yml; then
+          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- website/ packages/ packages-runtime/ scripts/deploy-docs-gate.ts scripts/deploy-docs-cloudflare.mjs .github/workflows/docs.yml .github/workflows/website-seo-quality.yml; then
             echo "website_changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "website_changed=true" >> "$GITHUB_OUTPUT"
@@ -85,6 +85,10 @@ jobs:
       - name: Docs audience gate (website)
         if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm --filter @weapp-tailwindcss/website check:docs-audience
+
+      - name: Test deployment guards
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
+        run: pnpm --filter @weapp-tailwindcss/website exec vitest run scripts/docs-deployment.test.ts scripts/deploy-docs-cloudflare.test.mjs --update=none
 
       - name: few_keywords Gate (website)
         if: needs.detect-website-changes.outputs.website_changed == 'true'

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-28T11:53:23.457Z",
+  "generatedAt": "2026-10-01T17:58:02.350Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -887,7 +887,7 @@
       "productArea": "ai",
       "title": "Skill 发布与同步",
       "description": "说明 weapp-tailwindcss 官方 Skill 从源仓库到聚合安装仓库的验证与同步流程。",
-      "summary": "sonofmagic/weapp-tailwindcss 的 skills/ 是官方 Skill 内容的唯一事实源。用户安装使用的 sonofmagic/skills 是聚合仓库，不在这里手工维护副本。",
+      "summary": "weapp-tailwindcss/weapp-tailwindcss 的 skills/ 是官方 Skill 内容的唯一事实源。用户安装使用的 sonofmagic/skills 是聚合仓库，不在这里手工维护副本。",
       "url": "/zh-cn/docs/ai/basics/skill-release",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/ai/basics/skill-release",
       "alternates": {
@@ -2794,7 +2794,7 @@
       "productArea": "community",
       "title": "加载自定义字体",
       "description": "加载自定义字体，汇总生态插件、模板与实践案例。",
-      "summary": "详见: https://github.com/sonofmagic/weapp-tailwindcss/discussions/637",
+      "summary": "详见: https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions/637",
       "url": "/zh-cn/docs/community/load-font",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/community/load-font",
       "alternates": {

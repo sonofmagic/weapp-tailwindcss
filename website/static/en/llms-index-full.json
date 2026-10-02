@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-28T11:53:23.457Z",
+  "generatedAt": "2026-10-01T17:58:02.350Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -744,7 +744,7 @@
       "productArea": "ai",
       "title": "Skill publishing and synchronization",
       "description": "Describe the verification and synchronization process of weapp-tailwindcss official skill from the source warehouse to the aggregated installation warehouse.",
-      "summary": "sonofmagic/weapp-tailwindcss by skills/ is the only source of truth for official Skill content. The sonofmagic/skills installed and used by users is an aggregation warehouse, and copies are not manually maintained here.",
+      "summary": "weapp-tailwindcss/weapp-tailwindcss by skills/ is the only source of truth for official Skill content. The sonofmagic/skills installed and used by users is an aggregation warehouse, and copies are not manually maintaine…",
       "url": "/docs/ai/basics/skill-release",
       "canonical": "https://tw.weapp.dev/docs/ai/basics/skill-release",
       "alternates": {
@@ -2629,7 +2629,7 @@
       "productArea": "community",
       "title": "Load custom fonts",
       "description": "Load custom fonts: Current concepts, configuration guidance, and practical examples for weapp-tailwindcss users.",
-      "summary": "See: https://github.com/sonofmagic/weapp-tailwindcss/discussions/637",
+      "summary": "See: https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions/637",
       "url": "/docs/community/load-font",
       "canonical": "https://tw.weapp.dev/docs/community/load-font",
       "alternates": {

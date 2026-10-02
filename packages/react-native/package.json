@@ -7,7 +7,7 @@
   "homepage": "https://tw.weapp.dev/docs/quick-start/react-native-expo",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "url": "git+https://github.com/weapp-tailwindcss/weapp-tailwindcss.git",
     "directory": "packages/react-native"
   },
   "sideEffects": true,

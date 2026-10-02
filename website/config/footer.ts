@@ -43,11 +43,11 @@ const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
     items: [
       {
         label: 'GitHub',
-        href: 'https://github.com/sonofmagic/weapp-tailwindcss',
+        href: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss',
       },
       {
         label: 'Code of Conduct',
-        href: 'https://github.com/sonofmagic/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md',
+        href: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md',
       },
       {
         label: 'weapp-vite',
@@ -74,5 +74,5 @@ export const footerCustomFields = {
 export const footer: NonNullable<ThemeConfig['footer']> = {
   style: 'dark',
   links: footerLinks,
-  copyright: `<a href="/copyright" target="_self" rel="noopener noreferrer">${copy.footer.copyrightLabel}</a> © ${copyrightYears} <a href="https://github.com/sonofmagic" target="_blank" rel="noopener noreferrer">sonofmagic</a>. Released under the <a href="https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.`,
+  copyright: `<a href="/copyright" target="_self" rel="noopener noreferrer">${copy.footer.copyrightLabel}</a> © ${copyrightYears} <a href="https://github.com/sonofmagic" target="_blank" rel="noopener noreferrer">sonofmagic</a>. Released under the <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.`,
 }

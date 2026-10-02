@@ -110,7 +110,7 @@ const commonItems: NonNullable<ThemeConfig['navbar']>['items'] = [
     position: 'right',
   },
   {
-    href: 'https://github.com/sonofmagic/weapp-tailwindcss',
+    href: 'https://github.com/weapp-tailwindcss/weapp-tailwindcss',
     label: 'GitHub',
     className: 'navbar__github-link',
     position: 'right',
