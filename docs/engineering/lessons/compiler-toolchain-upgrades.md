@@ -9,6 +9,7 @@ regressions:
   - scripts/ci/demo-matrix/rollup-watch.test.mjs
   - benchmark/version-compare/test/process-memory.test.mjs
   - packages/weapp-tailwindcss/test/bundlers/vite-root-coverage-reuse.test.ts
+  - packages/postcss/test/css-rule-matcher.test.ts
 ---
 
 # 编译依赖的逐项升级验证
@@ -259,3 +260,19 @@ CPU profile 保留了模块加载、候选提取、文件读取和空闲等待�
 `CI=1 pnpm e2e:demo:matrix taro-vite-react-tailwindcss-v4:weapp taro-vite-react-tailwindcss-v4:alipay --update --build-only` 重新生成两个项目目标的 static 基线，无文件差异；随后去掉更新和仅构建参数执行原矩阵，两个目标 production / initial / replace / add / restore 全部通过。日志与产物保留在 `.tmp/toolchain-evidence/root-coverage-*`。这是本机 Node 24 的两个小程序 CLI 目标验证，不包含 IDE/设备验收，也不代表云端性能门禁已修复。仍须等待新 head 的全部适用 CI。
 
 规则评估：沿用既有解析所有权、缓存生命周期和性能证据边界，不新增规则。
+
+### 2026-10-02：同步 main 后的 CSS 比较重复解析
+
+同步 main `2bc33ddc21ef834a36bbafa5887e498793174c1b` 后，head `6eb1d387174939c438ffce21d1a666ebbca0f4e5` 的 [Benchmark attempt 1](https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/runs/36963946725/job/110706485323) 在 Taro Vite v4 微信目标触发 `hmrPluginP95`：稳态基线 `[2072, 1994]` ms、当前 `[2460, 2460]` ms，p95 增加 388 ms / 18.73%。构建和 marker 完成；原始日志和 [artifact](https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/runs/36963946725/artifacts/11209533993) 保留，不以旧 head 成功代替本轮失败。
+
+增量仍集中在 `tasks.css`，稳态从约 1713 / 1635 ms 增至 2144 / 2139 ms；`finalize.rootCss` 则由约 184 / 183 ms 降至 132 / 133 ms。实际 Taro demo 的 Vite 4.5.14、Rollup 3.30.0 和 Taro runner 依赖与 main 相同，不能直接归因于根 Rollup 或 Oxc 升级，也不能声称此前根覆盖优化解决了本轮失败。
+
+复核既有 CPU 诊断，`restoreDeferredUserCss → filterExistingCssRules` 中规则文本索引与声明索引分别解析同一份 base CSS。此路径属于 CSS task，但旧 macOS profile 有插桩开销和不完整轮次，只能用于热点定位。新增 [CSS 比较生命周期回归](../../../packages/postcss/test/css-rule-matcher.test.ts) 在修复前观察到两次解析而失败；修复后在同一个不可变 base 内懒解析一次，共享只读 AST，两个索引完成即释放 AST。解析失败保持保守结果，新 CSS 创建新的 matcher；未建立全局缓存或跳过转换。
+
+本轮 PostCSS 相关 3 文件 50 项、生成与 bundler 相关 3 文件 223 项通过，两个受影响包的 JS 与类型构建、显式 ESLint 通过。原始失败及验证日志保留在 `.tmp/toolchain-evidence/css-base-reuse-*`。这是确定的重复工作优化，尚不足以证明消除整个 CI 耗时增量；不增加已耗尽的正式确认次数、不放宽预算。设备、全端及 stateful HMR 的未验证边界不变。
+
+微基准使用 1000 条主样式规则、20 份候选 CSS、5 对预热及 15 对交替采样，逐项检查旧／新输出完全相同；中位数由 77.728 ms 降至 60.419 ms。仅比较这段过滤操作，不能推算整个 HMR 的改变量。采样在所有本地构建与 watch 结束后串行执行，完整样本及脚本保留于 `css-base-reuse-micro/`。
+
+`CI=1 pnpm e2e:demo:matrix taro-vite-react-tailwindcss-v4:weapp taro-vite-react-tailwindcss-v4:alipay --update --build-only` 重建两个 static 基线，无差异；去掉 `--update --build-only` 后，两个目标的 production / initial / replace / add / restore 均通过。本次产物单独保存于 `css-base-reuse-demo-artifacts/`。`pnpm architecture:check`、`pnpm agents:check`、`git diff --check` 通过，`pnpm release status` 已确认两包 patch intent，未执行发布。
+
+规则评估：沿用现有所有权与证据边界，不新增规则。
