@@ -1,33 +1,38 @@
+import type { Locale } from '../config'
 import { Browser, Phone } from '../components/Interface'
-import { Accent, Eyebrow } from '../components/Stage'
+import { Heading } from '../components/Stage'
 import { C } from '../config'
-import { enter, rise } from '../motion'
+import { copy } from '../content/copy'
 
-const platforms = ['Web / H5', '小程序', 'App WebView', 'uni-app x', 'React Native', 'Lynx']
-export function Platforms({ frame, portrait }: { frame: number, portrait: boolean }) {
-  const p = portrait
+export function Platforms({ frame, portrait: p, locale }: { frame: number, portrait: boolean, locale: Locale }) {
+  const text = copy[locale]
+  const active = Math.min(5, Math.floor(frame / (p ? 45 : 60)))
+  const native = active >= 3
   return (
     <>
-      <div style={{ position: 'absolute', top: p ? 225 : 171, left: p ? 80 : 111 }}>
-        <div style={rise(frame)}><Eyebrow>DESIGNED FOR MORE</Eyebrow></div>
-        <div style={{ ...rise(frame, 3), fontSize: p ? 76 : 79, fontWeight: 750, letterSpacing: -4, lineHeight: 1.35 }}>
-          从一块屏幕，
-          <br style={{ display: p ? 'block' : 'none' }} />
-          <Accent>到更多可能。</Accent>
-        </div>
-      </div>
-      <div style={{ position: 'absolute', left: p ? 52 : 155, top: p ? 569 : 333, transform: `perspective(1600px) rotateY(${p ? -5 : 8}deg) translateY(${(1 - enter(frame, 6, 45)) * 65 + Math.sin(frame / 65) * 4}px)`, opacity: enter(frame, 6) }}><Browser width={p ? 824 : 803} /></div>
-      <div style={{ position: 'absolute', left: p ? 547 : 1413, top: p ? 696 : 326, transform: `translateY(${(1 - enter(frame, 21, 45)) * 95 + Math.sin(frame / 57 + 2) * 5}px) rotate(7deg)`, opacity: enter(frame, 21) }}><Phone width={p ? 261 : 247} color="green" /></div>
-      <div style={{ position: 'absolute', left: p ? 248 : 1080, top: p ? 773 : 340, transform: `translateY(${(1 - enter(frame, 15, 45)) * 75 + Math.sin(frame / 62) * 5}px) rotate(-5deg)`, opacity: enter(frame, 15) }}><Phone width={p ? 287 : 267} /></div>
-      <div style={{ position: 'absolute', top: p ? 1410 : 889, left: p ? 80 : 120, width: p ? 820 : 1680, display: p ? 'grid' : 'flex', gridTemplateColumns: 'repeat(3,1fr)', gap: p ? '20px 16px' : 30, justifyContent: 'space-between' }}>
-        {platforms.map((label, i) => (
-          <div key={label} style={{ ...rise(frame, 30 + i * 7, 20), display: 'flex', gap: 11, alignItems: 'center', fontSize: p ? 24 : 23, color: Math.floor(frame / 50) % 6 === i ? '#E5F8FF' : '#85A5B9', whiteSpace: 'nowrap' }}>
-            <span style={{ height: 5, width: 5, borderRadius: 5, background: i % 2 ? C.green : C.blue }} />
-            {label}
+      <Heading locale={locale} scene="platforms" portrait={p} horizontal />
+      <div data-safe="platform-list" style={{ position: 'absolute', left: p ? 80 : 110, top: p ? 580 : 376, width: p ? 820 : 780 }}>
+        {text.targetLabels.map((label, i) => (
+          <div key={label} style={{ height: p ? 120 : 81, display: 'flex', alignItems: 'center', borderBottom: '1px solid #38617A55', padding: p ? '8px 17px' : '8px 18px', background: active === i ? 'linear-gradient(90deg,#0EA5E927,#07C16015)' : 'transparent', borderLeft: `3px solid ${active === i ? C.green : 'transparent'}` }}>
+            <div style={{ width: p ? 32 : 29, color: active === i ? '#78F0BB' : '#416E84', fontSize: 22 }}>{active === i ? '↗' : '·'}</div>
+            <div>
+              <div style={{ color: active === i ? C.text : '#8CABBF', fontSize: p ? 42 : 28, lineHeight: 1.2, fontWeight: active === i ? 700 : 450 }}>{label}</div>
+              <div className="mono" style={{ fontSize: p ? 28 : 16, lineHeight: 1.25, color: active === i ? C.ice : '#567F96', marginTop: 4 }}>{text.targetDetails[i]}</div>
+            </div>
           </div>
         ))}
       </div>
-      <div style={{ position: 'absolute', top: p ? 1530 : 934, left: p ? 80 : 125, fontSize: p ? 16 : 13, color: '#4D7389' }}>界面设计示意 · 样式能力以各目标运行时为准</div>
+      {!p && (
+        <>
+          <div style={{ position: 'absolute', left: 1010, top: 400, opacity: native ? 0.4 : 1, transform: `translateX(${native ? -15 : 0}px)` }}><Browser width={670} locale={locale} /></div>
+          <div style={{ position: 'absolute', left: native ? 1275 : 1490, top: native ? 363 : 483, transform: `rotate(${native ? -3 : 5}deg)` }}><Phone width={native ? 264 : 202} locale={locale} color={native ? 'green' : 'blue'} /></div>
+          <div style={{ position: 'absolute', left: 1020, top: 316, fontSize: 25, color: C.ice }}>{text.targetGroup[native ? 1 : 0]}</div>
+        </>
+      )}
+      <div data-safe="support-note" style={{ position: 'absolute', left: p ? 80 : 111, top: p ? 1340 : 892, color: '#7FA4B8', fontSize: p ? 23 : 20 }}>
+        {text.supportNote}
+        {!p && ` · ${text.design}`}
+      </div>
     </>
   )
 }

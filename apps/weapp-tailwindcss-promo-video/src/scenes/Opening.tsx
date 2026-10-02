@@ -1,76 +1,59 @@
+import type { Locale } from '../config'
 import { Img, staticFile } from 'remotion'
+import { CodeWindow, LiveCard, Tokens } from '../components/Proof'
 import { Ribbon } from '../components/Ribbon'
-import { Accent, Brand, Eyebrow } from '../components/Stage'
+import { Accent, Brand } from '../components/Stage'
 import { C } from '../config'
-import { enter, rise } from '../motion'
+import { copy } from '../content/copy'
 
-export function Opening({ frame, portrait, cover = false }: { frame: number, portrait: boolean, cover?: boolean }) {
-  const p = portrait
-  const orbitSize = p ? 930 : 900
+export function Opening({ frame, portrait: p, locale, cover = false }: { frame: number, portrait: boolean, locale: Locale, cover?: boolean }) {
+  const text = copy[locale]
   return (
     <>
-      <div style={{ position: 'absolute', left: p ? 76 : 106, top: p ? 246 : 262, zIndex: 2 }}>
-        <div style={rise(frame, 2)}><Eyebrow>BUILD BEYOND BOUNDARIES</Eyebrow></div>
-        <div style={{ ...rise(frame, 5, 65), fontSize: p ? 91 : 113, fontWeight: 700, letterSpacing: -5, lineHeight: 1.23 }}>Tailwind CSS</div>
-        <div style={{ ...rise(frame, 12, 70), fontSize: p ? 126 : 157, fontWeight: 850, letterSpacing: -8, lineHeight: 1.26 }}><Accent>走向全端。</Accent></div>
-        {!p && <div style={{ ...rise(frame, 24), marginTop: 33, fontSize: 29, fontWeight: 350, color: C.muted, letterSpacing: 4 }}>熟悉的写法。更多的屏幕。</div>}
-      </div>
-      <div style={{ position: 'absolute', left: p ? -2 : 973, top: p ? 634 : 109, transform: `scale(${0.83 + enter(frame, 5, 65) * 0.17})`, opacity: 0.32 + enter(frame, 3) * 0.68 }}>
-        <Ribbon size={orbitSize} />
-        <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}>
-          <div style={{ transform: `translateY(${Math.sin(frame / 50) * 9}px)`, width: p ? 230 : 226, height: p ? 230 : 226, display: 'grid', placeItems: 'center', borderRadius: 58, background: 'linear-gradient(130deg,#29485B99,#0A1A2BDD)', border: '1px solid #B3D9EE45', boxShadow: 'inset 0 1px 0 #C4E7FD40,0 20px 90px #0B5B8430' }}>
-            <Img src={staticFile('brand/logo.svg')} style={{ width: 202, height: 202 }} />
-          </div>
+      <div data-safe="hook" style={{ position: 'absolute', left: p ? 80 : 104, top: p ? 325 : 234, width: p ? 820 : 950 }}>
+        <div style={{ fontSize: p ? 25 : 24, color: C.ice, marginBottom: 30 }}>{text.hookTag}</div>
+        <div style={{ fontSize: p ? 91 : 112, fontWeight: 820, letterSpacing: -4, lineHeight: 1.15 }}>
+          {text.heading.intro[0]}
+          <br />
+          <Accent>{text.heading.intro[1]}</Accent>
         </div>
       </div>
-      <div style={{ ...rise(frame, 26), position: 'absolute', left: p ? 80 : 112, top: p ? 1450 : 850, display: 'flex', flexDirection: p ? 'column' : 'row', gap: p ? 17 : 34, color: C.muted, fontSize: p ? 27 : 21, letterSpacing: 2 }}>
-        <span>Web / 小程序 / 原生跨端生态</span>
-        {!p && <span style={{ color: '#44708C' }}>————</span>}
-        <span className="mono" style={{ fontSize: p ? 20 : 17, color: C.ice }}>{cover ? 'tw.weapp.dev' : 'ONE LANGUAGE. MORE SCREENS.'}</span>
-      </div>
+      <div data-safe="hook-code" style={{ position: 'absolute', left: p ? 80 : 110, top: p ? 652 : 571 }}><CodeWindow title="class" width={p ? 820 : 840} fontSize={p ? 32 : 34}><Tokens active={Math.floor(frame / 24) % 3} /></CodeWindow></div>
+      <div style={{ position: 'absolute', left: p ? 80 : 1053, top: p ? 876 : 325, transform: `perspective(1400px) rotateY(${p ? 0 : -7}deg) translateY(${Math.sin(frame / 45) * 4}px)` }}><LiveCard locale={locale} width={p ? 820 : 660} /></div>
+      {!p && (
+        <div style={{ position: 'absolute', left: 1610, top: 590, width: 170, height: 242, border: '1px solid #72C9E0', borderRadius: 27, background: '#081D2A', padding: 15, boxShadow: '0 22px 70px #00000080' }}>
+          <div style={{ width: 45, height: 5, borderRadius: 4, background: '#477385', margin: '0 auto 20px' }} />
+          <Img src={staticFile('brand/logo.svg')} style={{ width: 105, margin: 14 }} />
+          <div className="mono" style={{ textAlign: 'center', fontSize: 17, color: C.ice }}>class → UI</div>
+        </div>
+      )}
+      <div data-safe="hook-targets" style={{ position: 'absolute', top: p ? 1340 : 840, left: p ? 80 : 110, color: C.ice, fontSize: p ? 26 : 27 }}>{text.hookTargets}</div>
+      {cover && <div className="mono" style={{ position: 'absolute', left: p ? 80 : 110, top: p ? 1480 : 930, color: '#82AECA', fontSize: 25 }}>tw.weapp.dev ↗</div>}
     </>
   )
 }
-
-export function PromiseScene({ frame, portrait }: { frame: number, portrait: boolean }) {
+export function CtaScene({ portrait: p, locale }: { frame: number, portrait: boolean, locale: Locale }) {
+  const text = copy[locale]
   return (
     <>
-      <div style={{ position: 'absolute', left: portrait ? -120 : 630, top: portrait ? 500 : -90, opacity: 0.42 }}><Ribbon size={portrait ? 1100 : 1400} phase={2} /></div>
-      <div style={{ position: 'absolute', left: portrait ? 80 : 123, top: portrait ? 320 : 245 }}>
-        <div style={rise(frame)}><Eyebrow>CREATE WITHOUT LIMITS</Eyebrow></div>
-        <div style={{ ...rise(frame, 4), fontSize: portrait ? 106 : 134, lineHeight: 1.32, fontWeight: 800, letterSpacing: -6 }}>
-          让创造，
+      <div style={{ position: 'absolute', left: p ? 140 : 1050, top: p ? 730 : 80, opacity: 0.3 }}><Ribbon size={p ? 800 : 830} phase={3} /></div>
+      <div data-safe="cta" style={{ position: 'absolute', left: p ? 80 : 113, top: p ? 345 : 247, width: p ? 820 : 1030 }}>
+        <div style={{ fontSize: p ? 66 : 83, fontWeight: 800, lineHeight: 1.22, letterSpacing: -3 }}>
+          {text.heading.cta[0]}
           <br />
-          <Accent>跨越屏幕。</Accent>
+          <Accent>{text.heading.cta[1]}</Accent>
         </div>
-        <div style={{ ...rise(frame, 14), fontSize: portrait ? 31 : 29, color: C.muted, marginTop: 40 }}>把熟悉的原子化开发体验，带到更多屏幕。</div>
-      </div>
-    </>
-  )
-}
-
-export function CtaScene({ frame, portrait }: { frame: number, portrait: boolean }) {
-  const p = portrait
-  return (
-    <>
-      <div style={{ position: 'absolute', left: p ? -20 : 684, top: p ? 480 : -190, opacity: 0.25 }}><Ribbon size={p ? 1100 : 1350} phase={3} /></div>
-      <div style={{ position: 'absolute', left: p ? 82 : 119, top: p ? 268 : 236 }}>
-        <div style={rise(frame)}><Eyebrow>YOUR NEXT SCREEN STARTS HERE</Eyebrow></div>
-        <div style={{ ...rise(frame, 5), fontSize: p ? 103 : 108, fontWeight: 750, lineHeight: 1.33, letterSpacing: -5 }}>
-          下一块屏幕，
-          <br />
-          <Accent>等你创造。</Accent>
-        </div>
-        <div style={{ ...rise(frame, 10), marginTop: p ? 52 : 55 }}><Brand size={p ? 70 : 67} /></div>
-        <div className="mono" style={{ ...rise(frame, 13), fontSize: p ? 60 : 51, fontWeight: 500, color: C.ice, marginTop: p ? 32 : 30, letterSpacing: -2 }}>
+        <div style={{ marginTop: 42 }}><Brand size={p ? 59 : 68} /></div>
+        <div className="mono" style={{ marginTop: 32, fontSize: p ? 58 : 70, color: C.ice }}>
           tw.weapp.dev
           <span style={{ color: C.green }}>↗</span>
         </div>
+        <div style={{ marginTop: 20, color: C.muted, fontSize: p ? 29 : 28 }}>{text.ctaLabel}</div>
       </div>
-      <div style={{ ...rise(frame, 8, 35), position: 'absolute', left: p ? 82 : 1280, top: p ? 1028 : 292 }}>
-        <div style={{ width: p ? 268 : 306, padding: 12, background: '#FFFFFF', borderRadius: 26, boxShadow: '0 20px 90px #0EA5E920' }}><Img src={staticFile('brand/docs-qr.png')} style={{ width: '100%', display: 'block', borderRadius: 18 }} /></div>
-        <div style={{ marginTop: 26, color: C.text, fontSize: p ? 29 : 25, fontWeight: 500, letterSpacing: 8 }}>开始构建</div>
-        <div className="mono" style={{ marginTop: 13, color: C.muted, fontSize: 14, letterSpacing: 4 }}>OPEN SOURCE / MIT</div>
+      <div data-safe="qr" style={{ position: 'absolute', left: p ? 80 : 1340, top: p ? 950 : 320 }}>
+        <div style={{ width: p ? 288 : 320, background: 'white', padding: 15, borderRadius: 23 }}><Img src={staticFile('brand/docs-qr.png')} style={{ width: '100%', display: 'block' }} /></div>
+        <div style={{ marginTop: 22, color: C.ice, fontSize: p ? 27 : 25 }}>{text.ctaScan}</div>
+        <div className="mono" style={{ marginTop: 12, color: C.muted, fontSize: 18 }}>OPEN SOURCE / MIT</div>
       </div>
     </>
   )

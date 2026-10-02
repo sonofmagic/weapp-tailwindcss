@@ -9,7 +9,7 @@
     "voice": "tsx scripts/generate-narration.ts",
     "music": "tsx scripts/generate-music.ts",
     "audio": "tsx scripts/mix-audio.ts",
-    "prepare:media": "pnpm assets && pnpm fonts && pnpm voice && pnpm music && pnpm audio",
+    "prepare:media": "tsx scripts/prepare-media.ts",
     "studio": "remotion studio src/index.ts",
     "render:frames": "tsx scripts/render.ts frames",
     "render:covers": "tsx scripts/render.ts covers",

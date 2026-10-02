@@ -1,27 +1,24 @@
-# weapp-tailwindcss 品牌宣传片
+# weapp-tailwindcss 中英文传播片
 
-面向前端开发者的中文品牌片：横版 60 秒、竖版 30 秒，各自剪辑、构图、配音和混音。主题为「Tailwind CSS，走向全端」，官网入口为 https://tw.weapp.dev。
+面向前端开发者，以「Tailwind，不止 Web / Tailwind. Beyond the web.」开场。通过代码变化、目标端、开发生态和接入步骤介绍产品。中文与英文各有 60 秒横版、30 秒竖版，共四支视频；每套都有对应语言的旁白、画面与字幕。
 
-## 成片
+## 交付
 
-输出统一放在本工程 `out/`：
-
-| 文件 | 规格 |
+| 目录 | 内容 |
 | --- | --- |
-| `weapp-tailwindcss-landscape.mp4` | 1920×1080，60 秒，1800 帧 |
-| `weapp-tailwindcss-portrait.mp4` | 1080×1920，30 秒，900 帧 |
-| `weapp-tailwindcss-landscape-cover.png` | 横版封面 |
-| `weapp-tailwindcss-portrait-cover.png` | 竖版封面 |
-| `weapp-tailwindcss-{landscape,portrait}.{srt,vtt}` | 按实际配音词边界对齐的字幕 |
-| `verification.json` | 完整解码、媒体参数、响度和字幕校验 |
+| `out/zh/` | 中文横版 1920×1080、竖版 1080×1920，及封面、SRT/VTT |
+| `out/en/` | 英文横版 1920×1080、竖版 1080×1920，及封面、SRT/VTT |
+| `subtitles/zh/`、`subtitles/en/` | 纳入版本管理的对应语言字幕 |
+| `out/verification-bilingual.json` | 四个版本的媒体实测报告 |
+| `out/weapp-tailwindcss-bilingual-media-kit.zip` | 四支成片、封面、字幕和制作记录 |
 
-MP4 使用 H.264、30 FPS、yuv420p、AAC 48 kHz 立体声和 faststart。混音目标 −16 LUFS；无声浏览时，画面文案与内嵌字幕仍保留完整叙事。
+每个语言目录中的成片名为 `weapp-tailwindcss-landscape.mp4` 和 `weapp-tailwindcss-portrait.mp4`，封面追加 `-cover.png`。首版中文成片仍保留在 `out/` 根目录，便于对比；根目录旧 SRT/VTT 也属于首版。
 
-## 环境与准备
+视频为 H.264、30 FPS、yuv420p、BT.709、AAC 48 kHz 立体声及 faststart；横版 1800 帧，竖版 900 帧。声音目标 −16±1 LUFS，真峰值不高于 −1 dBTP。MP4 已烧录字幕，平台额外导入 SRT/VTT 时避免重复显示。
 
-遵循仓库 Node.js / pnpm 版本要求；本机还需 `ffmpeg`、`ffprobe`、`uvx`，均从 PATH 读取。配音使用 `edge-tts==7.2.8` 的 `zh-CN-XiaoxiaoNeural`，语速 `+8%`。首次准备字体与配音需要网络，之后渲染只读取本地素材。
+## 环境与制作
 
-在仓库根目录安装依赖后执行：
+使用仓库指定的 Node.js / pnpm；另需 PATH 中的 `ffmpeg`、`ffprobe` 和 `uvx`。新 checkout 先在仓库根目录安装依赖，然后执行：
 
 ```bash
 pnpm --filter @weapp-tailwindcss/promo-video prepare:media
@@ -30,36 +27,43 @@ pnpm --filter @weapp-tailwindcss/promo-video render
 pnpm --filter @weapp-tailwindcss/promo-video verify
 ```
 
-Remotion 会管理其 Headless Shell。已有兼容 Chromium 时可通过 `REMOTION_BROWSER_EXECUTABLE` 指定可执行文件的绝对路径；不在源码中写入本机路径。`REMOTION_CONCURRENCY` 控制并发，默认 4。渲染脚本复用一个后台浏览器，并在成功或异常时关闭它。
+首次准备字体和语音需要联网，渲染只读取本地素材。语音使用 `edge-tts==7.2.8`：中文 `zh-CN-XiaoxiaoNeural`（+8%），英文 `en-US-JennyNeural`（+4%）。词边界取自同一音频流；文案超时会报错，须精简内容，不自动加速或截断。
 
-本次隔离工作区复用本机已安装依赖。若以同样方式开发，进程级设置 `PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false` 可防止 pnpm 12 在执行脚本前自动重装；常规 `pnpm install --frozen-lockfile` 安装的 checkout 不需要此设置。
-
-## 编辑与预览
+所有声音、渲染和校验脚本默认处理四个版本，也可指定语言和画幅：
 
 ```bash
-pnpm --filter @weapp-tailwindcss/promo-video studio
+pnpm --filter @weapp-tailwindcss/promo-video prepare:media --locale en
+pnpm --filter @weapp-tailwindcss/promo-video voice --locale zh --format portrait
+pnpm --filter @weapp-tailwindcss/promo-video audio --locale en --format portrait
+pnpm --filter @weapp-tailwindcss/promo-video render:frames --locale en
+pnpm --filter @weapp-tailwindcss/promo-video render:landscape --locale zh
+pnpm --filter @weapp-tailwindcss/promo-video render:portrait --locale en
 pnpm --filter @weapp-tailwindcss/promo-video render:covers
-pnpm --filter @weapp-tailwindcss/promo-video render:landscape
-pnpm --filter @weapp-tailwindcss/promo-video render:portrait
+pnpm --filter @weapp-tailwindcss/promo-video verify --locale en
+pnpm --filter @weapp-tailwindcss/promo-video studio
 ```
 
-Composition 为 `WeappPromoLandscape`、`WeappPromoPortrait`，封面分别追加 `Cover`。
+`--locale` 支持 `zh`、`en`、`all`；`--format` 支持 `landscape`、`portrait`、`all`。局部混音会保留其他语言的字幕与动效时间，局部验证也会保留其他版本的报告。
 
-- `src/config.ts` 定义两套时间轴、显示文案和发音文案。改文案后执行 `fonts`、`voice`、`audio`；改镜头时长还需执行 `music`。
-- `src/scenes/` 编排镜头，`src/components/` 保存品牌光带、代码与自制设备界面。所有动效以帧数驱动。
-- `scripts/audio/tts.py` 从同一语音流保存 MP3 与词级时间戳；字幕会校验规范化后的发音文本与显示文本一致，不按字符数猜测时间。
-- `scripts/audio/synthesis.ts` 生成原创 120 BPM 配乐，包含和弦铺底、琶音、低音、节拍和转场音效。`audio` 完成平滑音乐压低与两遍响度归一。
-- `render:frames` 输出镜头起点、中段、转场前和最后一帧，便于检查布局与过渡。
+Remotion 管理其后台 Headless Shell。可通过 `REMOTION_BROWSER_EXECUTABLE` 指定已有兼容 Chromium 的绝对路径；`REMOTION_CONCURRENCY` 默认 4。每次渲染复用一个后台浏览器，正常或异常结束均关闭。本次 worktree 复用已安装依赖；使用同样方式时，进程级设置 `PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false` 可防止 pnpm 12 自动重装。常规完整安装无需此设置。
 
-## 视觉与内容边界
+## 编辑入口
 
-采用正式蓝绿 Logo、深海蓝背景、银白文字、Noto Sans SC 与 JetBrains Mono。字库按新文案生成，许可证随字体保存在 `src/assets/fonts/`。
+- `src/config.ts`：两套时间轴、画幅、语言、声音与字幕安全区。
+- `src/content/`：双语画面文案、旁白、字幕短语和动效关键词。英文独立编写；框架和代码标识保留官方名称。
+- `src/scenes/`、`src/components/`：按帧驱动的镜头、光带和界面设计示意；代码变化与接入步骤使用对应语言的实际语音关键词时间切换。
+- `scripts/audio/`：字幕映射、两行断行、缓存校验、120 BPM 原创电子音乐合成。`audio` 脚本完成旁白压低与两遍响度归一。
+- `src/generated/`：语音对齐后的字幕和镜头内部切换时间。更新旁白后先重新执行 `voice`、`audio`，再渲染；增加文字后执行 `fonts`，更改时长后执行 `music`。
 
-片中 FLOW 为专门制作的界面设计示意。展示的平台包括 Web/H5、小程序、App WebView、uni-app x、React Native、Lynx；它们的样式能力以对应运行时和仓库文档为准。宣传动画不作为本轮设备实测证据。
+中文 composition 仍为 `WeappPromoLandscape`、`WeappPromoPortrait`；英文追加 `En`。四个封面在对应 composition ID 后追加 `Cover`。
 
-品牌图形来自仓库 `assets/logo.svg`，框架标识来自官网素材目录，用于指认其对应技术生态。项目未使用第三方商业产品截图或外部音乐录音；配乐由本工程确定性合成脚本创作。
+## 内容与素材依据
 
-## 验证
+平台、框架、CLI 和运行时工具以仓库中英文 README 为依据。接入代码明确展示 Vite/Web；CLI 的小程序目标为 CSS-only。跨端范围包括 Web/H5、小程序、App WebView、uni-app x、React Native/Expo、Lynx，各目标的样式能力以对应运行时为准。
+
+FLOW 界面及按钮为自制设计示意，不作为实际设备验收证据。Logo 来自仓库正式素材，框架标识来自官网素材。Noto Sans SC 与 JetBrains Mono 的 OFL 许可证保留在字体目录。音乐为确定性合成脚本制作，没有使用外部商业录音。
+
+## 验证与保存
 
 ```bash
 pnpm --filter @weapp-tailwindcss/promo-video test
@@ -68,6 +72,6 @@ pnpm --filter @weapp-tailwindcss/promo-video verify
 pnpm agents:check
 ```
 
-只执行此视频工程的定向检查，不涉及产品构建行为或多端 E2E。`verify` 检查两种画幅的帧数、编码、完整解码、黑帧、faststart、响度、峰值、声道、封面和字幕。发布前仍需完整观看与试听两支成片，确认转场和音画观感。
+定向检查包含四组合文案、时间轴、真实词边界、英文断行、镜头关键词、缓存完整性和语言选择；媒体验证检查旁白、字幕同步、尺寸、帧数、编码、色彩空间、完整解码、黑帧、响度和 faststart。实际结果与人工检查范围见 `VALIDATION.md`。本工程不需要产品全端 E2E。
 
-`out/`、`.render/` 与 `public/audio/` 为本地生成产物。需要离线重渲时保留 `public/audio/`；重新获取声音会受语音服务版本变化影响。源码、字体及字幕纳入版本管理。
+`out/`、`.render/`、`public/audio/` 不纳入 Git。离线重渲必须保留 `public/audio/{zh,en}/`，或重新联网生成声音；语音服务版本变化可能影响重新合成的音色和时长。公开发布前需在目标设备上完整观看与试听。

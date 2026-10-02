@@ -1,15 +1,22 @@
 import type { Voice } from './audio/subtitles'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import process from 'node:process'
 import { execa } from 'execa'
-import { films, FORMATS } from '../src/config'
-import { createCues, serializeCues } from './audio/subtitles'
+import { films } from '../src/config'
+import { motionMarkers } from '../src/content/narration'
+import { beatTimes, createCues, serializeCues } from './audio/subtitles'
 import { appRoot, audioDir, outputDir } from './paths'
+import { selection } from './selection'
 
-const subtitles: Record<string, ReturnType<typeof createCues>> = {}
+const timingFile = path.join(appRoot, 'src', 'generated', 'timing.json')
+const timing: Record<string, Record<string, Record<string, number[]>>> = JSON.parse(await fs.readFile(timingFile, 'utf8').catch(() => '{}'))
+const generatedFile = path.join(appRoot, 'src', 'generated', 'subtitles.json')
+const previous: Record<string, Record<string, ReturnType<typeof createCues>>> = JSON.parse(await fs.readFile(generatedFile, 'utf8').catch(() => '{}'))
+const subtitles: Record<string, Record<string, ReturnType<typeof createCues>>> = Object.fromEntries(Object.entries(previous).filter(([key]) => key === 'zh' || key === 'en'))
 await fs.mkdir(outputDir, { recursive: true })
-for (const format of FORMATS) {
-  const directory = path.join(audioDir, format)
+for (const { locale, format } of selection(process.argv.slice(2)).variants) {
+  const directory = path.join(audioDir, locale, format)
   const voices: Voice[] = JSON.parse(await fs.readFile(path.join(directory, 'voice.json'), 'utf8'))
   const inputs = ['-i', path.join(directory, 'music.wav')]
   const filters: string[] = []
@@ -32,13 +39,24 @@ for (const format of FORMATS) {
   const stats = JSON.parse(measurement)
   const filter = `loudnorm=I=-16:TP=-1.2:LRA=9:measured_I=${stats.input_i}:measured_TP=${stats.input_tp}:measured_LRA=${stats.input_lra}:measured_thresh=${stats.input_thresh}:offset=${stats.target_offset}:linear=true`
   await execa('ffmpeg', ['-v', 'error', '-y', '-i', mixFile, '-af', filter, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s24le', path.join(directory, 'master.wav')])
-  subtitles[format] = createCues(voices)
+  timing[locale] ??= {}
+  timing[locale][format] = Object.fromEntries(voices.map((voice) => {
+    const scene = films[format].scenes.find(scene => scene.id === voice.id)!
+    return [voice.id, beatTimes(voice, motionMarkers[locale][format][scene.id] ?? [], scene.offset)]
+  }))
+  subtitles[locale] ??= {}
+  subtitles[locale][format] = createCues(voices, locale)
+  const sourceDir = path.join(appRoot, 'subtitles', locale)
+  const targetDir = path.join(outputDir, locale)
+  await fs.mkdir(sourceDir, { recursive: true })
+  await fs.mkdir(targetDir, { recursive: true })
   for (const extension of ['srt', 'vtt']) {
-    const text = serializeCues(subtitles[format], extension === 'srt')
-    await fs.writeFile(path.join(appRoot, `weapp-tailwindcss-${format}.${extension}`), text)
-    await fs.writeFile(path.join(outputDir, `weapp-tailwindcss-${format}.${extension}`), text)
+    const text = serializeCues(subtitles[locale][format], extension === 'srt')
+    await fs.writeFile(path.join(sourceDir, `weapp-tailwindcss-${format}.${extension}`), text)
+    await fs.writeFile(path.join(targetDir, `weapp-tailwindcss-${format}.${extension}`), text)
   }
-  console.log(`${format}: 混音、响度归一与字幕完成。`)
+  console.log(`${locale}/${format}: 混音、响度归一与字幕完成。`)
 }
 await fs.mkdir(path.join(appRoot, 'src', 'generated'), { recursive: true })
 await fs.writeFile(path.join(appRoot, 'src', 'generated', 'subtitles.json'), `${JSON.stringify(subtitles, null, 2)}\n`)
+await fs.writeFile(timingFile, `${JSON.stringify(timing, null, 2)}\n`)

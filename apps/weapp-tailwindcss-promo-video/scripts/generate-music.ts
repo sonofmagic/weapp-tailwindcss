@@ -1,12 +1,14 @@
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { films, FORMATS } from '../src/config'
+import process from 'node:process'
+import { films } from '../src/config'
 import { musicSample } from './audio/synthesis'
 import { audioDir } from './paths'
+import { selection } from './selection'
 
 const rate = 48_000
-for (const format of FORMATS) {
+for (const { locale, format } of selection(process.argv.slice(2)).variants) {
   const film = films[format]
   const samples = rate * film.seconds
   const buffer = Buffer.alloc(44 + samples * 4)
@@ -29,8 +31,8 @@ for (const format of FORMATS) {
       buffer.writeInt16LE(Math.round(Math.max(-1, Math.min(1, value)) * 32767), 44 + index * 4 + channel * 2)
     }
   }
-  const directory = path.join(audioDir, format)
+  const directory = path.join(audioDir, locale, format)
   await fs.mkdir(directory, { recursive: true })
   await fs.writeFile(path.join(directory, 'music.wav'), buffer)
-  console.log(`${format}: 原创 120 BPM 配乐与转场音效已生成。`)
+  console.log(`${locale}/${format}: 原创 120 BPM 配乐与转场音效已生成。`)
 }

@@ -9,11 +9,11 @@ import edge_tts
 
 
 async def main():
-    text, target = sys.argv[1:]
+    text, target, voice, rate = sys.argv[1:]
     output = pathlib.Path(target)
     words = []
     communication = edge_tts.Communicate(
-        text, "zh-CN-XiaoxiaoNeural", rate="+8%", boundary="WordBoundary"
+        text, voice, rate=rate, boundary="WordBoundary"
     )
     with output.open("wb") as audio:
         async for chunk in communication.stream():
