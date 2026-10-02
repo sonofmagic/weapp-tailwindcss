@@ -38,7 +38,7 @@ export function stripSourceGeneration(source, file) {
 
 export async function sourceFiles(consumer) {
   return fg(['**/*.{vue,uvue,mpx,wxml,ttml,tsx,jsx,ts,js,wxs,css,scss,html}'], {
-    cwd: consumer.project, ignore: ['node_modules/**', 'dist/**', '.output/**', '.nuxt/**', '.cost/**', '.weapp-vite/**', '.temp/**', '.cache/**', '.vite/**', 'unpackage/**', 'config/**', '**/*config.*', 'scripts/**', 'gulpfile.ts'],
+    cwd: consumer.project, ignore: ['node_modules/**', 'dist/**', '.output/**', '.nuxt/**', '.cost/**', '.weapp-vite/**', '.temp/**', '.cache/**', '.vite/**', 'unpackage/**', 'config/**', '**/*config.*', 'scripts/**', 'gulpfile.{ts,mts,mjs}'],
   })
 }
 
