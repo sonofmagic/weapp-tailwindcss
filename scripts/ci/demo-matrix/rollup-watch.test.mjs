@@ -1,10 +1,9 @@
 import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises'
-import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { expect, it } from 'vitest'
-import { repo } from './catalog.mjs'
+import { rollupTestRequire } from './rollup-test-runtime.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 const scenarios = ['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries', 'taro-vite-react-tailwindcss-v4'].flatMap(demo =>
@@ -12,8 +11,7 @@ const scenarios = ['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries',
 )
 
 it.each(scenarios)('keeps module and transform dependencies live after atomic replacement ($demo, $format, $dependency)', async ({ demo, format, dependency }) => {
-  const demoRequire = createRequire(path.join(repo, 'demo', demo, 'package.json'))
-  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const viteRequire = rollupTestRequire(demo)
   const rollup = format === 'cjs'
     ? viteRequire('rollup')
     : await import(pathToFileURL(path.join(path.dirname(viteRequire.resolve('rollup')), 'es/rollup.js')).href)

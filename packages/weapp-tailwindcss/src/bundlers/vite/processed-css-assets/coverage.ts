@@ -1,3 +1,4 @@
+import type { ComparableCssCoverage } from '@weapp-tailwindcss/postcss/transform'
 import type { OutputBundle } from 'rollup'
 import type { CssAssetMarkerMatcher, CssAssetResultRecorder } from './markers-imports'
 import { collectRootScopedComparableCssCoverage, removeCssCoveredByRootStyleSources } from '@weapp-tailwindcss/postcss/transform'
@@ -67,6 +68,8 @@ export function removeCssCoveredByRootStyleAssets(
   },
 ) {
   let updated = 0
+  let previousRootSources: string[] | undefined
+  let rootCoverage: ComparableCssCoverage | undefined
   for (const [bundleFile, output] of Object.entries(bundle)) {
     if (output.type !== 'asset') {
       continue
@@ -81,6 +84,7 @@ export function removeCssCoveredByRootStyleAssets(
       && !isMiniProgramStyleOutputFile(file)
     if (
       !(options.cssMatcher(file) || (hasScopedCss && isCssOutputFile(file)) || shouldIncludeTailwindGeneratedCssAsset)
+      || rawSource.trim().length === 0
       || isRootStyleOutputFile(file)
       || (
         options.isViteProcessedCssAsset?.(output, file) === true
@@ -94,7 +98,15 @@ export function removeCssCoveredByRootStyleAssets(
     ) {
       continue
     }
-    const nextCss = removeCssCoveredByRootStyleBundleSources(bundle, file, rawSource)
+    const rootSources = collectRootStyleBundleCssSources(bundle, file)
+    // 只在本轮产物处理内复用；回调修改根样式时必须重新建立覆盖索引。
+    if (!previousRootSources
+      || rootSources.length !== previousRootSources.length
+      || rootSources.some((source, index) => source !== previousRootSources?.[index])) {
+      previousRootSources = rootSources
+      rootCoverage = collectRootScopedComparableCssCoverage(rootSources)
+    }
+    const nextCss = removeCssCoveredByRootStyleSources(rawSource, rootSources, rootCoverage)
     if (nextCss === rawSource) {
       continue
     }

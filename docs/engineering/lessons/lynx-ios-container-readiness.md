@@ -38,3 +38,8 @@ CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/lynx-ios-container.tes
 ## 规则评估
 
 不新增 AGENTS 规则；以有界恢复、保留失败证据和持久回归约束准备流程。
+
+
+## #1258 的相同失败
+
+[PR #1258](https://github.com/sonofmagic/weapp-tailwindcss/pull/1258) 独立分支未包含本修复；run `36755688568` attempt 1、job `110025217436` 在构建安装后再次出现同一 30 秒 `get_app_container` 超时。故同步同一实现与回归，不对该失败盲目重跑。原始 artifact `11118600193` 已保留。外部 CoreSimulator 阻塞根因仍未确定，实际恢复结果等待新 head 的 hosted iOS 检查，不能以 mock 回归宣称真实设备问题已解决。

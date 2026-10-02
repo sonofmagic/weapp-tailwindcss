@@ -54,11 +54,42 @@ function prepareCssBase(css: string) {
   let normalized: string | undefined
   let ruleKeys: Set<string> | undefined
   let declarations: Map<string, Set<string>> | undefined
+  let root: postcss.Root | null | undefined
+  const parsedRoot = () => {
+    if (root === undefined) {
+      try {
+        root = postcss.parse(css)
+      }
+      catch {
+        root = null
+      }
+    }
+    return root
+  }
   return {
     css,
     normalized: () => normalized ??= normalizeCssForContainment(css),
-    ruleKeys: () => ruleKeys ??= collectCssRuleContentKeys(css),
-    declarations: () => declarations ??= collectCssRuleDeclarationKeyMap(css),
+    ruleKeys: () => {
+      if (!ruleKeys) {
+        const parsed = parsedRoot()
+        ruleKeys = parsed ? collectCssRuleContentKeys(parsed) : new Set()
+        if (declarations) {
+          root = null
+        }
+      }
+      return ruleKeys
+    },
+    declarations: () => {
+      if (!declarations) {
+        const parsed = parsedRoot()
+        declarations = parsed ? collectCssRuleDeclarationKeyMap(parsed) : new Map()
+        // 两个索引就绪后释放 AST，避免 matcher 长期保留整棵语法树。
+        if (ruleKeys) {
+          root = null
+        }
+      }
+      return declarations
+    },
   }
 }
 
