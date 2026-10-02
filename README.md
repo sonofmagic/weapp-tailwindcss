@@ -19,16 +19,16 @@
   <a href="https://tw.weapp.dev/zh-cn/docs/intro">文档</a> ·
   <a href="https://tw.weapp.dev/zh-cn/docs/quick-start/install">快速开始</a> ·
   <a href="https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli">CLI</a> ·
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo">示例</a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/demo">示例</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/stargazers"><img src="https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss" alt="GitHub stars"></a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/stargazers"><img src="https://badgen.net/github/stars/weapp-tailwindcss/weapp-tailwindcss" alt="GitHub stars"></a>
   <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/dm/weapp-tailwindcss" alt="npm downloads"></a>
   <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/license/weapp-tailwindcss" alt="license"></a>
-  <a href="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml"><img src="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://codecov.io/gh/sonofmagic/weapp-tailwindcss"><img src="https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt" alt="codecov"></a>
-  <a href="https://deepwiki.com/sonofmagic/weapp-tailwindcss"><img src="https://deepwiki.com/badge.svg" alt="DeepWiki"></a>
+  <a href="https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/ci.yml"><img src="https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss"><img src="https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt" alt="codecov"></a>
+  <a href="https://deepwiki.com/weapp-tailwindcss/weapp-tailwindcss"><img src="https://deepwiki.com/badge.svg" alt="DeepWiki"></a>
 </p>
 
 ## 项目定位
@@ -160,8 +160,8 @@ CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--po
 - [多端配置](https://tw.weapp.dev/zh-cn/docs/multi-platform)
 - [API 参考](https://tw.weapp.dev/zh-cn/docs/api/interfaces/UserDefinedOptions)
 - [官方 CLI](https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli)
-- [框架示例](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo)
-- [React Native 与 Lynx 示例](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples)
+- [框架示例](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/demo)
+- [React Native 与 Lynx 示例](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/examples)
 - [备用文档地址](https://ice-tw.netlify.app/)
 
 ## AI Skill
@@ -199,4 +199,4 @@ npx skills add sonofmagic/skills --skill weapp-tailwindcss
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=weapp-tailwindcss/weapp-tailwindcss&type=Date)](https://star-history.com/#weapp-tailwindcss/weapp-tailwindcss&Date)

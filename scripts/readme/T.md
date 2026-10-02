@@ -13,11 +13,11 @@
 
 > 简体中文(zh-cn) | [English](./README_en.md)
 
-![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
+![star](https://badgen.net/github/stars/weapp-tailwindcss/weapp-tailwindcss)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
-[![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
+[![test](https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/weapp-tailwindcss/weapp-tailwindcss/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/weapp-tailwindcss/weapp-tailwindcss)
 
 > [!NOTE]
 > 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
@@ -90,7 +90,7 @@
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=weapp-tailwindcss/weapp-tailwindcss&type=Date)](https://star-history.com/#weapp-tailwindcss/weapp-tailwindcss&Date)
 
 ## Related projects
 

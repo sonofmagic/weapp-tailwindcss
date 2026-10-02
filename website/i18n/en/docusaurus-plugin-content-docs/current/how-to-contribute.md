@@ -35,15 +35,15 @@ No matter what you do, as long as you play a positive role in helping the develo
 
 ## Contribution Guidelines
 
-First, you must `fork` [`weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss) this project to your own account, and then you `git clone` it to your local.
+First, you must `fork` [`weapp-tailwindcss`](https://github.com/weapp-tailwindcss/weapp-tailwindcss) this project to your own account, and then you `git clone` it to your local.
 
 ### Documentation contribution
 
-Currently, all documents on this website are in the [weapp-tailwindcss/website](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website) directory.
+Currently, all documents on this website are in the [weapp-tailwindcss/website](https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/website) directory.
 
 You can add articles, modify articles, delete articles in it, and then submit them to your `fork` branch, and then from `pr` to the `weapp-tailwindcss` branch of `main`.
 
-The `website` project will be deployed under the domain name `https://tw.weapp.dev` and displayed as the document of [`weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss).
+The `website` project will be deployed under the domain name `https://tw.weapp.dev` and displayed as the document of [`weapp-tailwindcss`](https://github.com/weapp-tailwindcss/weapp-tailwindcss).
 
 As far as the project is concerned, this is a project of `docusaurus@2`. Similar to `vuepress`/`vitepress`, it is also an open source document generation tool, but it is written by `react`.
 

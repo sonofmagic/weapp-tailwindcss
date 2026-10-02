@@ -6,6 +6,14 @@ import { selectCases } from '../model.mjs'
 import { consumerManifest, withoutIntegration } from '../published.mjs'
 import { plainRuntimeMarkers } from '../runtime-marker.mjs'
 
+it('三组消费项目固定仓库包管理器，不使用机器上的默认 pnpm', async () => {
+  const root = JSON.parse(await readFile(path.join(repo, 'package.json'), 'utf8'))
+  const { manifest } = await consumerManifest(selectCases('web/react-webpack-tailwindcss-v4:web')[0], { version: '5.5.11' })
+  expect(manifest.packageManager).toMatch(/^pnpm@\d+\.\d+\.\d+/)
+  expect(manifest.packageManager).toBe(root.packageManager)
+  expect(withoutIntegration(manifest).packageManager).toBe(root.packageManager)
+})
+
 it('Mpx 样式注入 demo 的三组消费项目声明 Babel 实际生成的 runtime 依赖', async () => {
   const item = selectCases('style-injector-mpx:wx')[0]
   const config = JSON.parse(await readFile(path.join(repo, 'demo', item.name, 'babel.config.json'), 'utf8'))

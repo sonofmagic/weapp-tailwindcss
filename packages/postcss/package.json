@@ -8,11 +8,11 @@
   "homepage": "https://tw.weapp.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "url": "git+https://github.com/weapp-tailwindcss/weapp-tailwindcss.git",
     "directory": "packages/postcss"
   },
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+    "url": "https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues"
   },
   "keywords": [],
   "sideEffects": false,
@@ -121,12 +121,11 @@
     "@csstools/css-parser-algorithms": "catalog:csstools",
     "@csstools/css-tokenizer": "catalog:csstools",
     "@weapp-tailwindcss/engine": "workspace:*",
-    "@weapp-tailwindcss/escape": "workspace:~",
+    "@weapp-tailwindcss/escape": "workspace:*",
     "@weapp-tailwindcss/postcss-calc": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "@weapp-tailwindcss/source-scan": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "es-toolkit": "catalog:postcssUtilities",
     "lru-cache": "catalog:buildUtilities",
     "postcss": "catalog:postcss85tilde",
     "postcss-load-config": "catalog:buildUtilities",

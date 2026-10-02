@@ -12,7 +12,7 @@ import { run } from '../../demo/process.mjs'
 
 // 仅供源码 tarball 实验使用，不进入发布版周报的安装或完整性校验链路。
 const request = JSON.parse(await readFile(process.argv[2], 'utf8'))
-const { item, directory, logs, artifacts, response } = request
+const { item, directory, logs, artifacts, response, registry } = request
 await mkdir(logs, { recursive: true })
 const consumers = {}
 const locks = {}
@@ -27,7 +27,7 @@ for (const mode of ['enabled', 'native', 'static']) {
   await writeFile(workspaceFile, stringify(workspace))
   const store = path.join(directory, `${mode}-store`)
   if (mode !== 'enabled') await seedPreparationStore(path.join(directory, 'enabled-store'), store)
-  const install = () => run('pnpm', ['install', '--no-frozen-lockfile', '--store-dir', store], { cwd: consumer.project, logFile: path.join(logs, `${mode}-install.log`) })
+  const install = () => run('pnpm', ['install', '--no-frozen-lockfile', '--store-dir', store, ...(registry ? ['--registry', registry] : [])], { cwd: consumer.project, logFile: path.join(logs, `${mode}-install.log`) })
   await install()
   let lock = parseLock(await readFile(path.join(consumer.project, 'pnpm-lock.yaml'), 'utf8'))
   if (Object.keys(await prepareFrameworkPatches(consumer.project, lock)).length) await install()

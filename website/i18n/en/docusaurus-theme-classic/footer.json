@@ -25,18 +25,18 @@
   },
   "link.item.label.GitHub": {
     "message": "GitHub",
-    "description": "The label of footer link with label=GitHub linking to https://github.com/sonofmagic/weapp-tailwindcss"
+    "description": "The label of footer link with label=GitHub linking to https://github.com/weapp-tailwindcss/weapp-tailwindcss"
   },
   "link.item.label.Code of Conduct": {
     "message": "Code of Conduct",
-    "description": "The label of footer link with label=Code of Conduct linking to https://github.com/sonofmagic/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md"
+    "description": "The label of footer link with label=Code of Conduct linking to https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/main/CODE_OF_CONDUCT.md"
   },
   "link.item.label.weapp-vite": {
     "message": "weapp-vite",
     "description": "The label of footer link with label=weapp-vite linking to https://vite.icebreaker.top"
   },
   "copyright": {
-    "message": "<a href=\"/copyright\" target=\"_self\" rel=\"noopener noreferrer\">Copyright</a> © 2021-present <a href=\"https://github.com/sonofmagic\" target=\"_blank\" rel=\"noopener noreferrer\">sonofmagic</a>. Released under the <a href=\"https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener noreferrer\">MIT License</a>.",
+    "message": "<a href=\"/copyright\" target=\"_self\" rel=\"noopener noreferrer\">Copyright</a> © 2021-present <a href=\"https://github.com/sonofmagic\" target=\"_blank\" rel=\"noopener noreferrer\">sonofmagic</a>. Released under the <a href=\"https://github.com/weapp-tailwindcss/weapp-tailwindcss/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener noreferrer\">MIT License</a>.",
     "description": "The footer copyright"
   },
   "link.title.Docs": {
