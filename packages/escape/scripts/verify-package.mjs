@@ -76,16 +76,16 @@ escape(123)
   await execa('pnpm', ['exec', 'tsc', '--ignoreConfig', '--noEmit', '--strict', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2020', '--skipLibCheck', path.join(tempRoot, 'types.mts'), path.join(tempRoot, 'types.cts')], { cwd: repoRoot })
 
   const consumers = [
-    ['packages/postcss', 'dependencies', '~'],
-    ['packages/weapp-tailwindcss', 'dependencies', '~'],
-    ['packages-runtime/runtime', 'dependencies', '^'],
-    ['packages-runtime/merge', 'dependencies', '^'],
-    ['packages-runtime/cn', 'devDependencies', '^'],
+    ['packages/postcss', 'dependencies'],
+    ['packages/weapp-tailwindcss', 'dependencies'],
+    ['packages-runtime/runtime', 'dependencies'],
+    ['packages-runtime/merge', 'dependencies'],
+    ['packages-runtime/cn', 'devDependencies'],
   ]
-  for (const [directory, section, range] of consumers) {
+  for (const [directory, section] of consumers) {
     const extracted = await mkdtemp(path.join(tempRoot, 'consumer-'))
     const packed = await packAndExtract(path.resolve(repoRoot, directory), extracted)
-    assert.equal(packed[section]['@weapp-tailwindcss/escape'], `${range}${manifest.version}`)
+    assert.equal(packed[section]['@weapp-tailwindcss/escape'], manifest.version)
     assert.equal(packed[section]['@weapp-core/escape'], undefined)
     await assertNoLegacyImports(path.join(extracted, 'dist'))
   }

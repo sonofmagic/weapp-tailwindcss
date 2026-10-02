@@ -24,7 +24,7 @@ declare global {
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.weapp.dev/'
 const localeStorageKey = 'weapp-tailwindcss:website:locale'
 const uiStorageKey = 'weapp-tailwindcss:website:ui'
-const githubStarsCacheKey = 'weapp-tailwindcss:github-stars:sonofmagic/weapp-tailwindcss'
+const githubStarsCacheKey = 'weapp-tailwindcss:github-stars:weapp-tailwindcss/weapp-tailwindcss'
 const npmVersionCacheKey = 'weapp-tailwindcss:latest-version'
 
 interface ViewportCase {
@@ -381,6 +381,26 @@ test.describe('homepage hero layout', () => {
 
     await page.setViewportSize({ width: 1280, height: 720 })
     await expect.poll(async () => support.evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(720)
+  })
+
+  test('GitHub badge requests the organization repository and ignores the previous owner cache', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem('weapp-tailwindcss:github-stars:sonofmagic/weapp-tailwindcss', JSON.stringify({
+        value: 1234,
+        expires: Date.now() + 60_000,
+      }))
+    })
+    const endpoint = 'https://img.shields.io/github/stars/weapp-tailwindcss/weapp-tailwindcss.json'
+    await page.route(endpoint, route => route.fulfill({ json: { message: '2.5k' } }))
+    const request = page.waitForRequest(endpoint)
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
+    await request
+
+    const badge = page.locator('.ui-homepage-github-badge')
+    await expect(badge).toHaveAttribute('href', 'https://github.com/weapp-tailwindcss/weapp-tailwindcss')
+    await expect(badge).toHaveAttribute('aria-label', 'Star weapp-tailwindcss/weapp-tailwindcss on GitHub')
+    await expect(badge).toContainText('2.5k')
   })
 
   test('support signals retain cached data and UI switch behavior', async ({ page }) => {

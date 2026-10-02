@@ -61,7 +61,7 @@ The following commands are for repository contributors and documentation maintai
 
 ### start
 
-Click [`fork weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss/fork), then go to `git clone` locally and open this directory:
+Click [`fork weapp-tailwindcss`](https://github.com/weapp-tailwindcss/weapp-tailwindcss/fork), then go to `git clone` locally and open this directory:
 
 1. Execute `pnpm i` to install dependencies
 2. Execute `pnpm build:pkg` to build the local dependency package of `website`

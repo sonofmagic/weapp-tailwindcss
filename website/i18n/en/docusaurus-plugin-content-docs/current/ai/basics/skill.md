@@ -20,7 +20,7 @@ keywords:
 
 `weapp-tailwindcss` official skill is for business project users. It splits the current v5 access, migration, troubleshooting and advanced capabilities into independent workflows, avoiding the need for one big Skill to maintain all frameworks and APIs at the same time.
 
-This project uses [`vercel-labs/skills`](https://github.com/vercel-labs/skills) to install Skill. `sonofmagic/weapp-tailwindcss` is the content source of fact, and `sonofmagic/skills` is the user-facing aggregated installation repository.
+This project uses [`vercel-labs/skills`](https://github.com/vercel-labs/skills) to install Skill. `weapp-tailwindcss/weapp-tailwindcss` is the content source of fact, and `sonofmagic/skills` is the user-facing aggregated installation repository.
 
 ## Install the complete package
 

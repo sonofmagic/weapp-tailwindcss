@@ -61,7 +61,7 @@ npx skills add sonofmagic/skills \
 
 ### 开始
 
-点击 [`fork weapp-tailwindcss`](https://github.com/sonofmagic/weapp-tailwindcss/fork), 然后 `git clone` 到本地在打开这个目录:
+点击 [`fork weapp-tailwindcss`](https://github.com/weapp-tailwindcss/weapp-tailwindcss/fork), 然后 `git clone` 到本地在打开这个目录:
 
 1. 执行 `pnpm i` 安装依赖
 2. 执行 `pnpm build:pkg` 构建 `website` 的本地依赖包

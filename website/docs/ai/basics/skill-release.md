@@ -15,12 +15,12 @@ keywords:
 
 # Skill 发布与同步
 
-`sonofmagic/weapp-tailwindcss` 的 `skills/` 是官方 Skill 内容的唯一事实源。用户安装使用的 `sonofmagic/skills` 是聚合仓库，不在这里手工维护副本。
+`weapp-tailwindcss/weapp-tailwindcss` 的 `skills/` 是官方 Skill 内容的唯一事实源。用户安装使用的 `sonofmagic/skills` 是聚合仓库，不在这里手工维护副本。
 
 ## 同步关系
 
 ```text
-sonofmagic/weapp-tailwindcss@main:skills/
+weapp-tailwindcss/weapp-tailwindcss@main:skills/
   -> sonofmagic/skills@main:skills/weapp-tailwindcss/
 ```
 

@@ -24,4 +24,4 @@ keywords:
 
 ## WeChat applet loads custom fonts
 
-See: https://github.com/sonofmagic/weapp-tailwindcss/discussions/637
+See: https://github.com/weapp-tailwindcss/weapp-tailwindcss/discussions/637

@@ -5,6 +5,7 @@ import process from 'node:process'
 import { setTimeout as delay } from 'node:timers/promises'
 import { stripVTControlCharacters } from 'node:util'
 import { execa } from 'execa'
+import { captureOwnedProcessGroups } from './process-groups.mjs'
 
 export function developmentEnvironment(env) {
   return {
@@ -26,6 +27,10 @@ export async function freePort() {
 }
 
 export function start(args, cwd, env, logFile) {
+  return startProcess('pnpm', args, cwd, env, logFile)
+}
+
+export function startProcess(command, args, cwd, env, logFile) {
   let log = ''
   const output = logFile ? createWriteStream(logFile) : undefined
   if (process.env.DEMO_MATRIX_PROCESS_DIAGNOSTICS === '1') {
@@ -37,17 +42,56 @@ export function start(args, cwd, env, logFile) {
     const diagnostic = new URL('./watch-lifecycle-diagnostic.cjs', import.meta.url).href
     env = { ...env, NODE_OPTIONS: `${env.NODE_OPTIONS ?? process.env.NODE_OPTIONS ?? ''} --import=${diagnostic}` }
   }
-  const child = execa('pnpm', args, { cwd, env: { CI: '1', ...env }, detached: process.platform !== 'win32', reject: false })
+  const child = execa(command, args, { cwd, env: { CI: '1', ...env }, detached: process.platform !== 'win32', reject: false })
   for (const stream of [child.stdout, child.stderr]) {
     stream.on('data', (data) => {
       log += data.toString()
       output?.write(data)
     })
   }
+  let settled = false
+  let stopping
   const done = child.then((result) => {
+    settled = true
     output?.end()
     return result
   })
+  function signalGroup(pid, signal) {
+    try {
+      process.kill(-pid, signal)
+    }
+    catch (error) {
+      if (error.code !== 'ESRCH') {
+        throw error
+      }
+    }
+  }
+  async function stop() {
+    if (!settled) {
+      if (process.platform === 'win32') {
+        await execa('taskkill', ['/pid', String(child.pid), '/T', '/F'], { reject: false })
+      }
+      else {
+        // pnpm/corepack 可能创建新的后代进程组，必须在父进程退出前记录归属。
+        const groups = await captureOwnedProcessGroups(child.pid)
+        for (const pid of groups.toReversed()) {
+          signalGroup(pid, 'SIGTERM')
+        }
+        const controller = new AbortController()
+        try {
+          await Promise.race([done, delay(3000, undefined, { signal: controller.signal })])
+        }
+        finally { controller.abort() }
+        // 启动器退出后，后代仍可能持有输出管道；以整个会话完成为准升级信号。
+        if (!settled) {
+          for (const pid of groups.toReversed()) {
+            signalGroup(pid, 'SIGKILL')
+          }
+        }
+      }
+    }
+    await done
+  }
   return {
     log: () => log,
     done,
@@ -55,27 +99,9 @@ export function start(args, cwd, env, logFile) {
       assert.equal(child.exitCode, null, log)
       assert.equal(child.signalCode, null, log)
     },
-    async stop() {
-      if (child.exitCode === null && child.signalCode === null) {
-        if (process.platform === 'win32') {
-          await execa('taskkill', ['/pid', String(child.pid), '/T', '/F'], { reject: false })
-        }
-        else {
-          try {
-            process.kill(-child.pid, 'SIGTERM')
-          }
-          catch (error) {
-            if (error.code !== 'ESRCH') {
-              throw error
-            }
-          }
-          await Promise.race([done, delay(3000)])
-          if (child.exitCode === null && child.signalCode === null) {
-            process.kill(-child.pid, 'SIGKILL')
-          }
-        }
-      }
-      await done
+    stop() {
+      stopping ??= stop()
+      return stopping
     },
   }
 }

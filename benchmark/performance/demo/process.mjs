@@ -13,7 +13,7 @@ export async function startProcess(command, args, { cwd, env = {}, logFile, time
   let timedOut = false
   let stopped = false
   let stopping
-  let sampling = false
+  let sampling
   let peakRssMb = null
   const recordMemory = value => { if (value > 0) peakRssMb = Math.max(peakRssMb ?? 0, value) }
   const windowsMemory = process.platform === 'win32' ? await prepareWindowsMemory(recordMemory) : undefined
@@ -25,14 +25,10 @@ export async function startProcess(command, args, { cwd, env = {}, logFile, time
   })
   if (child.pid) windowsMemory?.start(child.pid)
   for (const stream of [child.stdout, child.stderr]) stream.on('data', data => { log += data; output?.write(data) })
-  const sample = async () => {
+  const sample = () => {
     if (sampling || stopped) return
-    sampling = true
-    try {
-      const value = await samplePosixMemory(child.pid)
-      recordMemory(value)
-    }
-    finally { sampling = false }
+    sampling = samplePosixMemory(child.pid).then(recordMemory).finally(() => { sampling = undefined })
+    return sampling
   }
   if (!windowsMemory) void sample()
   const timer = windowsMemory ? undefined : setInterval(sample, 250)
@@ -64,6 +60,7 @@ export async function startProcess(command, args, { cwd, env = {}, logFile, time
       }
     }
     await raw
+    await sampling
     await windowsMemory?.stop()
     if (output) await new Promise(resolve => output.end(resolve))
   }
@@ -78,6 +75,9 @@ export async function startProcess(command, args, { cwd, env = {}, logFile, time
     async complete() {
       try {
         const result = await raw
+        // 采样可能在进程退出后返回；耗时仍采用 raw 记录的退出时刻。
+        clearInterval(timer)
+        await sampling
         windowsMemory?.ensureRunning()
         if (timedOut || result.exitCode !== 0) throw new Error(`${timedOut ? '超时' : `退出码 ${result.exitCode}`}：${command} ${args.join(' ')}\n${log.slice(-8000)}`)
         return { ms: result.ms, peakRssMb, stdout: result.stdout }

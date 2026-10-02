@@ -5,14 +5,14 @@
   "description": "escape class name in weapp",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
-  "homepage": "https://github.com/sonofmagic/weapp-tailwindcss/tree/main/packages/escape#readme",
+  "homepage": "https://github.com/weapp-tailwindcss/weapp-tailwindcss/tree/main/packages/escape#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "url": "git+https://github.com/weapp-tailwindcss/weapp-tailwindcss.git",
     "directory": "packages/escape"
   },
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+    "url": "https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues"
   },
   "keywords": [
     "weapp",

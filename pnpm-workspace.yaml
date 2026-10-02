@@ -104,6 +104,7 @@ versioning:
     storage: repository
 
 overrides:
+  rolldown@1.2.10: 1.2.12
   jiti: 2.7.0
   weapp-vite>weapp-tailwindcss: workspace:*
 
@@ -394,3 +395,4 @@ patchedDependencies:
   rollup@3.30.0: patches/rollup@3.30.0.patch
   rollup@4.63.0: patches/rollup@4.63.0.patch
   rollup@4.63.1: patches/rollup@4.63.1.patch
+  weapp-vite@7.3.0: patches/weapp-vite@7.3.0.patch

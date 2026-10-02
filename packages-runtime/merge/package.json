@@ -8,11 +8,11 @@
   "homepage": "https://tw.weapp.dev/docs/community/merge",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "url": "git+https://github.com/weapp-tailwindcss/weapp-tailwindcss.git",
     "directory": "packages-runtime/merge"
   },
   "bugs": {
-    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+    "url": "https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues"
   },
   "keywords": [
     "tailwindcss",
@@ -117,7 +117,7 @@
     "types": "./dist/index.d.mts"
   },
   "dependencies": {
-    "@weapp-tailwindcss/escape": "workspace:^",
+    "@weapp-tailwindcss/escape": "workspace:*",
     "@weapp-tailwindcss/runtime": "workspace:*",
     "tailwind-merge": "catalog:tailwindMerge"
   },
