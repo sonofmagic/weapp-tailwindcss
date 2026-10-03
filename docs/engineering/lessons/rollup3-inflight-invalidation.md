@@ -15,7 +15,7 @@ regressions:
 
 ## 根因与纠正
 
-Taro 当前消费的 Rollup `3.30.0` 补丁修复了原生监听及事件去重，但没有同步 Rollup 4 补丁的缓存交接修复。`Task.invalidate` 在构建未完成时修改旧 `cache.modules`，随后 `updateWatchedFiles` 用当前构建返回的新缓存覆盖它；下一轮仍复用旧派生结果。
+Taro 当前消费 [Rollup `3.30.0`](https://github.com/rollup/rollup/blob/v3.30.0/src/watch/watch.ts)；本仓此前的补丁修复了原生监听及事件去重，但没有同步 Rollup 4 补丁的缓存交接修复。`Task.invalidate` 在构建未完成时修改旧 `cache.modules`，随后 `updateWatchedFiles` 用当前构建返回的新缓存覆盖它；下一轮仍复用旧派生结果。
 
 扩展既有确定性回归到 Taro：挂起已经读取第一版的真实 transform，保存第二版，确认真实 Task 收到文件或目录依赖事件后才释放。Rollup 3 没有 `onInvalidate`，测试仅观察实际 `Task.invalidate` 调用并保留原实现，不手工注入事件或绕过构建。CJS、ESM 在修复前均稳定得到 `2` 而非 `4`。
 
