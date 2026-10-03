@@ -24,6 +24,24 @@ function contentSignature(nodes: ChildNode[]): unknown[] {
   })
 }
 
+function hasClassInSameCompound(node: selectorParser.Node, className: string) {
+  let sibling = node.prev()
+  while (sibling && sibling.type !== 'combinator') {
+    if (sibling.type === 'class' && sibling.value === className) {
+      return true
+    }
+    sibling = sibling.prev()
+  }
+  sibling = node.next()
+  while (sibling && sibling.type !== 'combinator') {
+    if (sibling.type === 'class' && sibling.value === className) {
+      return true
+    }
+    sibling = sibling.next()
+  }
+  return false
+}
+
 /** 对同一份 CSS 建立严格的类规则索引；调用方显式提供实际消费的 scope 类。 */
 export function createCssClassSignatureReader(css: string) {
   const root = postcss.parse(css)
@@ -70,7 +88,8 @@ export function createCssClassSignatureReader(css: string) {
     for (const record of records.get(className) ?? []) {
       const selector = record.selector.clone()
       selector.walkClasses((node) => {
-        if (scopeClasses.has(node.value)) {
+        // 消费节点的 scope 不能证明祖先、兄弟或后代也具有该 scope。
+        if (scopeClasses.has(node.value) && hasClassInSameCompound(node, className)) {
           node.remove()
         }
       })

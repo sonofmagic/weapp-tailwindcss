@@ -90,6 +90,24 @@ describe('watch class output evidence', () => {
     expect(() => verify(outputs(`<view class="${alias}"/><view class="data-v-a1"/>`))).toThrow(utility)
   })
 
+  it.each([
+    `.data-v-a1 .${alias}`,
+    `.data-v-a1 > .${alias}`,
+    `.data-v-a1 + .${alias}`,
+    `.${alias} .data-v-a1`,
+    `.${alias} > view.data-v-a1`,
+  ])('does not infer another compound scope from the alias node: %s', (selector) => {
+    expect(() => verify(outputs(undefined, `${reference}\n${selector}{font-size:23px}`))).toThrow(utility)
+  })
+
+  it.each([
+    `.data-v-a1.${alias}`,
+    `.${alias}.data-v-a1`,
+    `.${alias}.data-v-a1.${alias}`,
+  ])('accepts the consumed scope on the same alias compound: %s', (selector) => {
+    expect(verify(outputs(undefined, `${reference}\n${selector}{font-size:23px}`))[0]?.actualClass).toBe(alias)
+  })
+
   it.each(['data-class', 'hover-class'])('does not treat %s as the class attribute', (attribute) => {
     expect(() => verify(outputs(`<view ${attribute}="${alias} data-v-a1"/>`))).toThrow(utility)
   })
