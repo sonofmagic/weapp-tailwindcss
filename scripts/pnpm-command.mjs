@@ -35,7 +35,14 @@ export function createPnpmCommand(
     : process.env.npm_execpath
 
   const paths = platform === 'win32' ? path.win32 : path.posix
-  const activeCli = npmExecPath && /^(?:pnpm(?:-native)?(?:\.exe)?|pnpm\.(?:c|m)?js)$/i.test(paths.basename(npmExecPath))
+  const activeName = npmExecPath ? paths.basename(npmExecPath) : undefined
+  if (activeName && /^pnpm(?:-native)?\.(?:cmd|bat|ps1)$/i.test(activeName)) {
+    // 包装脚本需要 shell 重解释参数，不能静默换用 PATH 或猜测相邻 CLI。
+    throw Object.assign(new Error(`无法保留 pnpm 包装入口身份：${npmExecPath}。请将 npm_execpath 指向 pnpm.mjs、pnpm.cjs 等 JavaScript 入口或 pnpm 原生可执行文件。`), {
+      code: 'ERR_UNSUPPORTED_PNPM_ENTRY',
+    })
+  }
+  const activeCli = activeName && /^(?:pnpm(?:-native)?(?:\.exe)?|pnpm\.(?:c|m)?js)$/i.test(activeName)
     ? paths.resolve(npmExecPath)
     : undefined
   if (activeCli) {

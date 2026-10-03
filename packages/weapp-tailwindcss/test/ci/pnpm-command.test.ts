@@ -44,6 +44,12 @@ describe('pnpm command', () => {
       .toEqual({ command: cli, args: ['--version'], shell: false })
   })
 
+  it.each(['pnpm.cmd', 'PNPM.CMD', 'pnpm.bat', 'pnpm.ps1', 'pnpm-native.cmd', 'pnpm-native.bat', 'pnpm-native.ps1'])('显式 %s 包装入口不能静默改用 PATH', (name) => {
+    const cli = path.win32.join('C:\\selected manager', name)
+    expect(() => createPnpmCommand(['run', '带 空格', '"quoted" & %PATH%'], { platform: 'win32', npmExecPath: cli }))
+      .toThrow(/pnpm\.cjs.*原生可执行文件/)
+  })
+
   it.each(['npm-cli.js', 'yarn.js'])('不会将 %s 当作当前 pnpm CLI', (name) => {
     expect(createPnpmCommand(['build'], {
       platform: 'win32',

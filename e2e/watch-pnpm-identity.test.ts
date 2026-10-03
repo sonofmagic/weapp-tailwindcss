@@ -104,6 +104,19 @@ describe('watch 子进程保留已选择的 pnpm 身份', () => {
     await expect(result(child)).rejects.toMatchObject({ code: 'ENOENT' })
   })
 
+  it.each([true, false])('显式 cmd 入口存在=%s 时均在创建子进程前拒绝 shell 重解释', async (exists) => {
+    const { active, project, env } = await fixture()
+    const wrapper = path.join(path.dirname(active), 'pnpm.cmd')
+    if (exists) {
+      await writeFile(wrapper, '@echo wrapper must not run\r\n')
+    }
+    await expect(async () => result(spawnPnpm(['run', '带 空格', '"quoted" & %PATH%'], {
+      cwd: project,
+      env: { ...env, npm_execpath: wrapper },
+      stdio: 'pipe',
+    }))).rejects.toMatchObject({ code: 'ERR_UNSUPPORTED_PNPM_ENTRY' })
+  })
+
   it.each(['npm-cli.js', 'yarn.js'])('不会将 %s 活动入口误当作 pnpm', async (name) => {
     const { active, project, env } = await fixture()
     const other = path.join(path.dirname(active), name)
