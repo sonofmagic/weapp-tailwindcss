@@ -31,6 +31,12 @@ HBuilderX 5.31.2026093020-alpha 在 Harmony 模拟器安装 Vapor demo 后，首
 - 已验证选择器与回归文件的独立 TypeScript 检查、定向 ESLint。公开包未变化，无需 change intent。
 - 当前独立工作树只复用既有工具依赖执行离线检查；没有运行原生设备测试或更新 demo static 基线。原生首屏、构建产物及对应 static 更新由主工作树串行执行后补充记录。
 
+主工作树集成提交 `2225ce0f1` 后，22 项定向回归通过，并完成以下真实验证：
+
+- 在 OpenHarmony 6.1.1.125 模拟器上，以原有 App runner 的初始产物、运行模式、DOM 和截图断言执行一次明确不含 HMR 步骤的定向诊断，24.015 秒通过。日志实际选择 Alpha 安装中的插件；生成页改为 `defineVaporSharedDataComponent`，缺失的 shared-data 字节码恢复，页面不再报 `_vnode` 错误。
+- DOM 中本轮 marker 为 `173 × 41`，Tailwind 与原生对照文字的宽高均为 `220 × 52`；首屏截图可见实际内容。原始日志、结构、截图及三个编译产物和 SHA-256 保存在 `e2e/.artifacts/uni-app-x-alpha/vapor-toolchain-2225ce0f1/`。此结果不代表纯 HMR 已通过。
+- 对 VDOM 小程序与 issue-1144 Web 限定执行 `e2e/uni-app-x-vdom-tailwindcss-v4.test.ts`、`e2e/issue-1144-static.test.ts` 的 `-u` 重建，3 项通过，所有已跟踪基线字节不变；随后 `--update=none` 重新构建，3 项通过、无跳过，24.70 秒。Vapor 未登记普通 static 快照入口，已重新生成并保存本轮原生 JS、shared-data 与样式字节码，并通过既有产物断言，不将其描述为普通 static 快照验收。
+
 定向单测入口：`pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-toolchain.test.ts --update=none`。
 
 ## 适用边界
