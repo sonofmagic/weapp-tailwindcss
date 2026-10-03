@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { PNG } from 'pngjs'
+import { readAndroidUiDump } from './android-runtime/ui-hierarchy'
 
 export interface AndroidRuntimeStyleExpectation {
   backgroundColor: string
@@ -173,22 +174,7 @@ export async function captureAndroidScreenshot(
 }
 
 export async function readAndroidUiHierarchy(env: Record<string, string | undefined>, deviceId?: string) {
-  const adb = resolveAdbCommand(env)
-  const args = createAdbArgs(deviceId)
-  spawnSync(adb, [...args, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'], {
-    encoding: 'utf8',
-    env: { ...process.env, ...env },
-    killSignal: 'SIGTERM',
-    timeout: screenshotTimeoutMs,
-  })
-  const result = spawnSync(adb, [...args, 'shell', 'cat', '/sdcard/window.xml'], {
-    encoding: 'utf8',
-    env: { ...process.env, ...env },
-    killSignal: 'SIGTERM',
-    maxBuffer: 1024 * 1024,
-    timeout: screenshotTimeoutMs,
-  })
-  return result.status === 0 ? result.stdout : ''
+  return await readAndroidUiDump(resolveAdbCommand(env), createAdbArgs(deviceId), env)
 }
 
 export function isAndroidDebugShell(uiHierarchy: string) {
