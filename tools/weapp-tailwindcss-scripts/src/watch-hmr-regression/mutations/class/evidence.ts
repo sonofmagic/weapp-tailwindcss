@@ -1,5 +1,7 @@
+import type { CssRuleRemovalExpectation } from '../../types'
 import ts from 'typescript'
 import { createCssClassSignatureReader } from '../../../../../../packages/postcss/src/selectorParser/class-signatures'
+import { assertCssConditionsRemoved } from '../../../../../../packages/postcss/src/selectorParser/rule-removal-evidence'
 
 type OutputTarget = 'wxml' | 'js'
 
@@ -15,6 +17,9 @@ export interface ClassOutputEvidence {
   actualClass: string
   target: OutputTarget
   ruleSignatures: string[]
+  cssExpectation?: 'removed'
+  /** 同一消费位置的实际别名集合，仅验证最终回滚，不推断其所属 utility。 */
+  consumerAliases?: string[]
 }
 
 function decodeHtml(value: string) {
@@ -59,10 +64,14 @@ export function assertClassTokensInOutput(
   label: string,
   requireAll = true,
   requireCss = true,
+  expectedRemovedCssUtilities: readonly CssRuleRemovalExpectation[] = [],
 ): ClassOutputEvidence[] {
   if (targets.length === 0) {
     return []
   }
+  assertCssConditionsRemoved(outputs.globalStyle, expectedRemovedCssUtilities
+    .filter(item => classTokens.includes(item.utility))
+    .map(item => item.condition))
   const readSignatures = createCssClassSignatureReader(outputs.globalStyle)
   const evidence: ClassOutputEvidence[] = []
   for (const target of targets) {
@@ -79,6 +88,19 @@ export function assertClassTokensInOutput(
       const escapedReference = readSignatures(escapedClass)
       const reference = escapedReference.length > 0 ? escapedReference : readSignatures(utility)
       const original = [escapedClass, utility].find(token => tokens.has(token))
+      if (expectedRemovedCssUtilities.some(item => item.utility === utility)) {
+        if (!original) {
+          throw new Error(`${label} ${target}: missing original class token for removed CSS utility ${utility}; a safe alias alone cannot prove its identity`)
+        }
+        if (reference.length > 0) {
+          throw new Error(`${label} ${target}: expected platform to remove CSS rules for ${utility}`)
+        }
+        matched += 1
+        const consumerAliases = [...new Set(groups.filter(group => group.has(original))
+          .flatMap(group => [...group].filter(token => safeClasses.includes(token))))]
+        evidence.push({ utility, escapedClass, actualClass: original, target, ruleSignatures: [], cssExpectation: 'removed', consumerAliases })
+        continue
+      }
       const actualClasses = safeClasses.filter((safeClass) => {
         return groups.filter(group => group.has(safeClass)).some((group) => {
           const scopes = new Set([...group, ...dynamicTemplateScopes].filter(token => /^data-v-[\da-z]+$/i.test(token)))
@@ -119,7 +141,9 @@ export function assertPreviousClassEvidenceRemoved(
     }
     const tokens = collectOutputTokens(outputs[entry.target], entry.target)
     const baselineTokens = baseline ? collectOutputTokens(baseline[entry.target], entry.target) : new Set<string>()
-    for (const token of new Set([entry.actualClass, entry.escapedClass, entry.utility])) {
+    // 替换阶段保留的 utility 可能仍消费这些别名；最终回滚才检查整组新增消费 token。
+    const consumerAliases = retainedUtilities.length === 0 ? entry.consumerAliases ?? [] : []
+    for (const token of new Set([entry.actualClass, entry.escapedClass, entry.utility, ...consumerAliases])) {
       if (tokens.has(token) && !baselineTokens.has(token)) {
         throw new Error(`${label} ${entry.target}: stale class ${token} for ${entry.utility}`)
       }

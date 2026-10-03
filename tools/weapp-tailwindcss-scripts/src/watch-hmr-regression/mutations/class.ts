@@ -372,11 +372,11 @@ export function assertRoundOutputs(
   assertNoUnsupportedMiniProgramCssImport(watchCase, outputs.globalStyle, `mutation=${mutationKind} phase=${phase}`)
 
   if (mutation.verifyAllEscapedClasses !== false) {
-    assertClassTokensInOutput(outputs, classTokens, escapedClasses, mutation.verifyEscapedIn, `[${watchCase.label}] mutation=${mutationKind} phase=${phase}`, true, minRequiredGlobalStyleEscapedClasses > 0)
+    assertClassTokensInOutput(outputs, classTokens, escapedClasses, mutation.verifyEscapedIn, `[${watchCase.label}] mutation=${mutationKind} phase=${phase}`, true, minRequiredGlobalStyleEscapedClasses > 0, mutation.expectedRemovedCssUtilities)
   }
 
   if (mutation.verifyAllClassLiterals !== false) {
-    assertClassTokensInOutput(outputs, classTokens, escapedClasses, verifyClassLiteralIn, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} literal`, true, minRequiredGlobalStyleEscapedClasses > 0)
+    assertClassTokensInOutput(outputs, classTokens, escapedClasses, verifyClassLiteralIn, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} literal`, true, minRequiredGlobalStyleEscapedClasses > 0, mutation.expectedRemovedCssUtilities)
   }
 
   if (forbidBgHexTruncationIn.length > 0) {
@@ -593,7 +593,7 @@ export async function runClassMutation(
       )
       const outputs = addResult.outputs
       phaseOutputs = outputs
-      roundEvidence.push(...assertClassTokensInOutput(outputs, classTokens, escapedClasses, evidenceTargets, `[${watchCase.label}] mutation=${mutationKind} phase=add`, true, minRequiredGlobalStyleEscapedClasses > 0))
+      roundEvidence.push(...assertClassTokensInOutput(outputs, classTokens, escapedClasses, evidenceTargets, `[${watchCase.label}] mutation=${mutationKind} phase=add`, true, minRequiredGlobalStyleEscapedClasses > 0, mutation.expectedRemovedCssUtilities))
       const matchedEscapedClasses = addResult.matchedEscapedClasses
 
       for (const escaped of matchedEscapedClasses.slice(0, 3)) {
@@ -764,7 +764,7 @@ export async function runClassMutation(
           js: baselineJs,
           globalStyle: baselineGlobalStyle,
         })
-        roundEvidence.push(...assertClassTokensInOutput(outputs, modifyClassTokens, modifyEscapedClasses, evidenceTargets, `[${watchCase.label}] mutation=${mutationKind} phase=modify`, true, minRequiredGlobalStyleEscapedClasses > 0))
+        roundEvidence.push(...assertClassTokensInOutput(outputs, modifyClassTokens, modifyEscapedClasses, evidenceTargets, `[${watchCase.label}] mutation=${mutationKind} phase=modify`, true, minRequiredGlobalStyleEscapedClasses > 0, mutation.expectedRemovedCssUtilities))
         const matchedEscapedClasses = modifyResult.matchedEscapedClasses
 
         for (const escaped of matchedEscapedClasses.slice(0, 3)) {

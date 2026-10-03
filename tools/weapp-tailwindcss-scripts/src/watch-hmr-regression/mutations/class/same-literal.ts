@@ -157,7 +157,7 @@ export async function runSameClassLiteralMutation(
   }, preferredRound.classLiteral.split(/\s+/), preferredRound.escapedClasses, [...new Set([
     ...(mutation.verifyAllEscapedClasses !== false ? mutation.verifyEscapedIn : []),
     ...(mutation.verifyAllClassLiterals !== false ? mutation.verifyClassLiteralIn ?? [] : []),
-  ])], `[${watchCase.label}] same-class-literal`, true, minRequiredGlobalStyleEscapedClasses > 0)
+  ])], `[${watchCase.label}] same-class-literal`, true, minRequiredGlobalStyleEscapedClasses > 0, mutation.expectedRemovedCssUtilities)
   const changedGlobalStyleOutputs: string[] = []
   const stableGlobalStyleOutputs: string[] = []
   for (const file of globalStyleOutputs) {

@@ -76,8 +76,8 @@ export function assertClassOutputs(
   }
 
   const label = `[${watchCase.label}] added-class ${mutationKind}`
-  const evidence = assertClassTokensInOutput(outputs, classTokens, escapedClasses, mutation.verifyEscapedIn, label, mutation.verifyAllEscapedClasses !== false, minRequiredEscapedClasses > 0)
-  evidence.push(...assertClassTokensInOutput(outputs, classTokens, escapedClasses, verifyClassLiteralIn, `${label} literal`, mutation.verifyAllClassLiterals !== false, minRequiredEscapedClasses > 0))
+  const evidence = assertClassTokensInOutput(outputs, classTokens, escapedClasses, mutation.verifyEscapedIn, label, mutation.verifyAllEscapedClasses !== false, minRequiredEscapedClasses > 0, mutation.expectedRemovedCssUtilities)
+  evidence.push(...assertClassTokensInOutput(outputs, classTokens, escapedClasses, verifyClassLiteralIn, `${label} literal`, mutation.verifyAllClassLiterals !== false, minRequiredEscapedClasses > 0, mutation.expectedRemovedCssUtilities))
 
   const verifiedEscapedClasses = escapedClasses.filter(escaped => outputs.globalStyle.includes(escaped))
   if (verifiedEscapedClasses.length < minRequiredEscapedClasses) {
