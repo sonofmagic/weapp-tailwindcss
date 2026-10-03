@@ -8,8 +8,12 @@ import { inspect } from 'node:util'
 import { createHBuilderXRunner } from '../packages/hbuilderx-runner/src/index'
 import { createHBuilderXProjectAlias } from './hbuilderx-project-alias.mjs'
 import { withHBuilderXProjectCleanup } from './hbuilderx-project-lifecycle'
+import { watchWechatWithHBuilderXCompiler } from './hbuilderx/wechat-watch'
 
 export async function launchHBuilderXMiniProgram(projectRoot = process.cwd()) {
+  if (process.env.HBUILDERX_COMPILE_ONLY === undefined || process.env.HBUILDERX_COMPILE_ONLY === '0') {
+    return watchWechatWithHBuilderXCompiler(projectRoot)
+  }
   // HBuilderX 的运行模式会经 launcher 调用微信 CLI；必须在解析 runner 或修改产物前阻断。
   if (process.env.HBUILDERX_COMPILE_ONLY !== '1') {
     throw new Error('已阻断 HBuilderX 微信 watch：launch mp-weixin 的运行模式会间接启动微信开发者工具，不能保证登录态。仅允许显式 HBUILDERX_COMPILE_ONLY=1 的一次性静态编译；watch/HMR 需使用独立编译器，并由 scripts/wechat 连接用户已开启的 IDE。')

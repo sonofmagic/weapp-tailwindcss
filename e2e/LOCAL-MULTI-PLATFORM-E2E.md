@@ -24,7 +24,7 @@ pnpm e2e:preflight prepare
 
 所有 E2E 禁止退出登录、切换账号、读取/替换/刷新登录票据、清 session/all 缓存、删除用户配置或终止共享 IDE。允许编译缓存操作但不降级为全量清理。打开项目时记录原 HTTP 端口，清理只断开自己的连接并关闭原服务上的本轮项目；认证或服务失败后不再发项目请求，保留未清理现场并报告。服务端自然过期或撤销票据仍可能令 IDE 自行退出，测试不得伪造/恢复这些凭据；用户恢复后重新 prepare。根因与证据见[微信登录态保护复盘](../docs/engineering/lessons/wechat-login-preservation.md)。
 
-第三方工具中转同样受限：HBuilderX `launch mp-weixin --compile false` 会自动调用微信 CLI，启动前还会清理本地存储。当前独立脚本对此立即阻断，仅允许显式 `HBUILDERX_COMPILE_ONLY=1` 的静态编译；一次性编译不能替代 watch/HMR 验收。安全 watch 必须直接运行同套编译器，再由 `scripts/wechat` 连接已有 IDE；未验证该链路前保留阻塞，见[HBuilderX 微信 watch 复盘](../docs/engineering/lessons/hbuilderx-wechat-watch-session.md)。
+第三方工具中转同样受限：HBuilderX `launch mp-weixin --compile false` 会自动调用微信 CLI，启动前还会清理本地存储，禁止使用。独立脚本默认直接运行所选 HBuilderX 安装的同套 Node 与 uni 编译器持续 watch，再由 `scripts/wechat` 连接已有 IDE；安装身份缺失或歧义直接失败。只有显式 `HBUILDERX_COMPILE_ONLY=1` 才进入静态编译，一次性编译不能替代 watch/HMR 验收。环境合同与验收边界见[HBuilderX 微信 watch 复盘](../docs/engineering/lessons/hbuilderx-wechat-watch-session.md)。
 
 ### 当前会话的 computer use 证据
 

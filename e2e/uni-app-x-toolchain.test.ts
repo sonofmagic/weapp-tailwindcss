@@ -97,7 +97,7 @@ describe('uni-app x 工具链身份', () => {
     expect(() => resolveHBuilderXCompilerRoot({ UNI_HBUILDERX_PLUGINS: plugins }, pathApi)).toThrow('绝对路径')
   })
 
-  it.each(['uni-app-x-vapor-tailwindcss-v4', 'uni-app-x-vdom-tailwindcss-v4', 'issue-1144-uni-app-x-web'])('%s 的配置先选择工具链再加载插件', async (project) => {
+  it.each(['uni-app-x-vapor-tailwindcss-v4', 'uni-app-x-vdom-tailwindcss-v4', 'issue-1144-uni-app-x-web', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'])('%s 的配置先选择工具链再加载插件', async (project) => {
     const config = await readFile(new URL(`../demo/${project}/vite.config.ts`, import.meta.url), 'utf8')
     const source = ts.createSourceFile('vite.config.ts', config, ts.ScriptTarget.Latest, true)
     const eagerImports = source.statements.filter(node => ts.isImportDeclaration(node)

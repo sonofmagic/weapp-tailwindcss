@@ -107,7 +107,7 @@ function expectCombined(error: unknown, primary: unknown, close: unknown) {
   expect(errors[1].message).toContain(state.alias!.projectPath)
 }
 
-it.each([undefined, '', '0', 'false', 'true'])('阻断 HBuilderX 间接启动微信 IDE 的 watch 模式（%s），且不创建进程或修改产物', async (value) => {
+it.each(['', 'false', 'true'])('拒绝模糊编译模式（%s），不回退到 HBuilderX 运行入口或修改产物', async (value) => {
   vi.stubEnv('HBUILDERX_COMPILE_ONLY', value)
   const debugFile = path.join(projectRoot, '.debug', 'existing.txt')
   const outputFile = path.join(projectRoot, 'unpackage', 'dist', 'dev', 'mp-weixin', 'app.json')

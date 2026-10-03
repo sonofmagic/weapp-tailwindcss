@@ -5,6 +5,8 @@ baseline: 6d2eb5064f9ffb35429e551a7b57309bd05bc5e4
 regressions:
   - e2e/hbuilderx-alias-consumers.test.ts
   - e2e/wechat-session-boundary.test.ts
+  - e2e/hbuilderx-compiler-watch.test.ts
+  - e2e/hbuilderx-compiler-lifecycle.test.ts
 ---
 
 # HBuilderX 的微信 watch 必须与 IDE 启动解耦
@@ -23,9 +25,22 @@ regressions:
 
 ### 安全编译链
 
-独立脚本在解析 runner、创建项目别名、删除旧产物和启动进程之前拒绝非 `HBUILDERX_COMPILE_ONLY=1` 的调用。显式静态编译固定传 `--compile true`；正常 watch/HMR 仍报告阻塞。持续开发编译应直接使用同套 `uniapp-cli-vite` 的官方 `bin/uni.js -p mp-weixin`，其 `runDev` 原生创建持续 watcher；项目输入、输出、uni-app x 标志、HBuilderX 插件映射和进程归属需要由独立入口明确提供。该编译进程不经过 IDE debug adapter 或 launcher，微信连接仍只能由 `scripts/wechat` 管理用户已打开的 IDE。
+先行安全提交在解析 runner、创建项目别名、删除旧产物和启动进程之前拒绝 watch 调用。随后把默认模式与 `HBUILDERX_COMPILE_ONLY=0` 接入[独立编译入口](../../../scripts/hbuilderx/wechat-watch.ts)：直接运行所选安装的 Node 和同套 `uniapp-cli-vite` 官方 `bin/uni.js -p mp-weixin`。其 `runDev` 原生创建持续 watcher，不经过 IDE debug adapter 或 launcher。显式 `HBUILDERX_COMPILE_ONLY=1` 仍固定传 `--compile true`；其他值拒绝，不回退到运行模式。微信连接只能由 `scripts/wechat` 管理用户已打开的 IDE。
 
-本次先交付安全阻断；独立 watch 编译入口与真实增量验收仍待补齐。恢复后必须验证同一编译进程的首次产物与多轮源码增量，并检查微信 CLI 零调用，才可继续完整 watch 阶段。
+安装身份来自既有 `HBUILDERX_CLI_PATH` / channel 解析，但不执行该 CLI。绑定安装下 `about`、`node`、`uniapp-cli-vite` 的 manifest 身份和实际入口；缺失、冲突或多个候选目录立即失败，不回退到项目旧编译器。普通 HBuilderX demo 的 uni 插件工厂也改为共享工具链选择器，保持工厂与直接编译器一致。
+
+| 输入 | 子进程合同 |
+| --- | --- |
+| 运行目录、Node、uni 入口 | 所选安装的 compiler 目录、`plugins/node/node`（Windows 为 `node.exe`）与 `bin/uni.js` |
+| `UNI_INPUT_DIR` / `VITE_ROOT_DIR` | 本轮项目真实绝对路径 |
+| `UNI_OUTPUT_DIR` | 该项目的 `unpackage/dist/dev/mp-weixin` |
+| `HX_APP_ROOT` / `UNI_HBUILDERX_PLUGINS` | 同一安装根目录 / 插件目录，按完整目录查找插件 |
+| `HX_Version`、缓存、平台、模式 | 安装 manifest 版本、本项目缓存、`mp-weixin`、`development` |
+| uni-app x | 清除继承状态，由官方编译器读取本轮 manifest 识别 |
+| 旧 `HX_*` / `UNI_*`、`PIPE_NAME`、`HBuilderProcessId` | 清除后重建，禁止带入旧 socket、automator、插件映射或平台路由 |
+| 纯编译选项 | 保留 `UNI_MINIMIZE`、`UNI_CUSTOM_CONTEXT`、`UNI_CUSTOM_DEFINE`、`UNI_APP_SOURCEMAP` 与 `SOURCEMAP` |
+
+不注入 extension 的管道、socket、验证文件或 `static/kill.js`。环境键按不区分大小写处理，避免 Windows 的小写旧变量绕过隔离。SIGINT/SIGTERM 由受管进程树处理，只停止本轮 compiler，并等待根进程和已发起清理完成；重复信号复用同一次清理。编译器无信号自行退出（即使状态 0）仍按 watch 失败处理，并在 `exit` 事件中、`close` 撤销进程组身份之前领取收尾句柄。运行与停止同时失败时保留两者，不升级为全局终止。
 
 ## 验证
 
@@ -33,10 +48,15 @@ regressions:
 - 修复后，`CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/hbuilderx-alias-consumers.test.ts e2e/wechat-session-boundary.test.ts --update=none` 共 20 项通过，涵盖无子进程、无别名、旧产物不变、固定 compile 参数和原有信号清理。
 - AST 边界同时扫描全部 E2E 与脚本里的微信 launch 参数，拒绝缺省、变量、条件表达式、重复覆盖和展开参数，防止中转启动再次绕过直接 automator 检查。
 - 实际执行脚本并设置 `HBUILDERX_COMPILE_ONLY=0` 后立即以退出码 1 报告明确阻塞，没有启动 IDE 或编译器。定向 ESLint 通过。
+- 上一条记录对应先行安全提交。直接编译入口完成后，新的隔离安装回归覆盖默认与 `0` 模式的真实 Node 子进程，连续两次修改由同一 PID 生成新产物，结束时确认该 PID 消失；假的 HBuilderX CLI 不可执行，证明此路径无需中转 CLI。
+- 新回归还验证原生路径 API（POSIX、macOS、Windows 盘符/根目录/UNC/相对路径）、环境隔离、安装身份缺失和歧义、缺入口时保留产物，以及取消失败和晚到清理错误。独立严格 TypeScript 通过。
+- 增加真实 POSIX 子进程回归：编译器根进程主动退出 1、同组后代仍存活时，受管停止会回收后代并保留原退出错误。此进程组用例在 Windows 不适用；Windows 取消仍复用既有 `taskkill` 归属边界，本轮未做真实 Windows 进程验收。
 
 ## 适用边界
 
-本次没有修改 demo 源码或样式输出，也没有运行设备、浏览器或真实 IDE 测试；不得记录为 watch 或全面验收通过。
+本次修改普通 HBuilderX demo 的插件选择入口，但未运行真实 vendor 编译、设备、浏览器或 IDE 测试。主流程需限定重新生成该 demo 的 static 基线，审查后以 `--update=none` 验证；接着验证同一真实编译进程的首次产物与多轮源码增量、实际 IDE 截图和微信 CLI 零调用，才可继续完整 watch 阶段。隔离进程回归不得记录为真实 demo watch 或全面验收通过。
+
+只读审计覆盖官方 CLI、mp-weixin 插件、打印与编译链，已定位的 auto-open 与本地存储操作均位于没有加载的 extension launcher。部分 vendor helper 包含预编译字节码，不能声称形式化证明所有第三方代码无副作用；升级工具链后仍需按真实进程和 IDE 日志复查边界。
 
 ## 规则评估
 
