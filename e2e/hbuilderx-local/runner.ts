@@ -10,6 +10,8 @@ import process from 'node:process'
 import path from 'pathe'
 import { expect } from 'vitest'
 import { createHBuilderXProjectAlias as createSharedHBuilderXProjectAlias } from '../../scripts/hbuilderx-project-alias.mjs'
+import { closeHBuilderXProjectAlias, withHBuilderXProjectCleanup } from '../../scripts/hbuilderx-project-lifecycle'
+import { cleanupHBuilderXResources } from '../../scripts/hbuilderx-project-resources'
 import {
   collectAndroidRuntimeMetadata,
   waitForAndroidRuntimeEvidence,
@@ -513,13 +515,7 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
 
   const hbuilderx = await createLocalHBuilderXRunner(projectRoot, { WEAPP_TW_HMR_TIMING: '1' })
   const projectAlias = await createSharedHBuilderXProjectAlias(projectRoot)
-  try {
-    await hbuilderx.run({
-      args: ['project', 'close', '--path', projectAlias.projectPath],
-      allowFailure: true,
-      cwd: projectRoot,
-      timeoutMs: hbuilderxTimeoutMs,
-    })
+  await withHBuilderXProjectCleanup(projectAlias, async () => {
     await hbuilderx.run({
       args: ['project', 'open', '--path', projectAlias.projectPath],
       cwd: projectRoot,
@@ -538,16 +534,12 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
       ].filter(Boolean).join('\n'))
     }
     await assertMiniProgramOutput(item)
-  }
-  finally {
-    await hbuilderx.run({
-      args: ['project', 'close', '--path', projectAlias.projectPath],
-      allowFailure: true,
-      cwd: projectRoot,
-      timeoutMs: hbuilderxTimeoutMs,
-    })
-    await projectAlias.cleanup()
-  }
+  }, () => hbuilderx.run({
+    args: ['project', 'close', '--path', projectAlias.projectPath],
+    allowFailure: false,
+    cwd: projectRoot,
+    timeoutMs: hbuilderxTimeoutMs,
+  }))
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {
@@ -585,6 +577,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   let harmonyFailureEvidence: Parameters<typeof captureHarmonyRuntimeEvidence>[0] | undefined
   let hmrLifecycle: ReturnType<typeof observeHmrStep> | undefined
   let child: ChildProcess | undefined
+  let failure: { error: unknown } | undefined
   try {
     restore = await createHmrSourceRestore([
       sourceFile,
@@ -801,32 +794,45 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         process.stderr.write(`Harmony 失败现场取证也失败：${captureError}\n`)
       })
     }
-    throw error
+    failure = { error }
   }
   finally {
-    hmrLifecycle?.dispose()
-    if (child) {
-      const closed = new Promise<void>((resolve) => {
-        child?.once('close', () => resolve())
-      })
-      await stopAppLaunch(child, closed)
+    try {
+      await cleanupHBuilderXResources([
+        () => hmrLifecycle?.dispose(),
+        async () => {
+          if (child) {
+            const closed = new Promise<void>((resolve) => {
+              child?.once('close', () => resolve())
+            })
+            await stopAppLaunch(child, closed)
+          }
+        },
+        async () => { await restore?.() },
+        async () => {
+          if (projectAlias && cleanupProjectAlias) {
+            await closeHBuilderXProjectAlias({ projectPath: projectAlias, cleanup: cleanupProjectAlias }, () => hbuilderx.run({
+              args: ['project', 'close', '--path', projectAlias!],
+              cwd: projectRoot,
+              timeoutMs: hbuilderxAppTimeoutMs,
+              allowFailure: false,
+              env: androidEnv,
+            }))
+          }
+        },
+        () => domObserver?.dispose(),
+        async () => { await nativeLog?.close() },
+      ])
     }
-    if (restore) {
-      await restore()
+    catch (error) {
+      failure = { error: failure
+        ? new AggregateError([failure.error, error], 'HBuilderX App 验证与收尾均失败。', { cause: failure.error })
+        : error }
     }
-    if (projectAlias) {
-      await hbuilderx.run({
-        args: ['project', 'close', '--path', projectAlias],
-        cwd: projectRoot,
-        timeoutMs: hbuilderxAppTimeoutMs,
-        allowFailure: true,
-        env: androidEnv,
-      }).catch(() => undefined)
-      await cleanupProjectAlias?.()
-    }
-    domObserver?.dispose()
-    await nativeLog?.close()
     process.stdout.write(`[hbuilderx-app] 原始日志：${path.resolve(runtimeEvidenceRoot, 'hbuilderx.log')}\n`)
+  }
+  if (failure) {
+    throw failure.error
   }
 }
 
