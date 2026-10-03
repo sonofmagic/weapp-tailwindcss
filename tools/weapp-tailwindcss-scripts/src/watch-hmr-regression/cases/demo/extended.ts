@@ -637,7 +637,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        const snippet = `      <View className={${JSON.stringify(payload.classLiteral)}}>${payload.marker}-template</View>`
         return insertBeforeClosingTag(source, '    </View>', snippet)
       },
     },
@@ -763,7 +763,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        const snippet = `      <View className={${JSON.stringify(payload.classLiteral)}}>${payload.marker}-template</View>`
         return insertBeforeClosingTag(source, '    </>', snippet)
       },
     },
