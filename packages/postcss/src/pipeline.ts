@@ -1,8 +1,8 @@
 // 按阶段构建 PostCSS 插件流水线，并提供状态机式上下文信息
 import type { AcceptedPlugin } from 'postcss'
+import type postcssPresetEnv from 'postcss-preset-env'
 import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions } from './types'
-import postcssPresetEnv from 'postcss-preset-env'
 import { isAutoprefixerPlugin, resolveAutoprefixerPlugin } from './autoprefixer'
 import { resolvePostcssFrameworkProfile } from './frameworks'
 import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
@@ -16,6 +16,7 @@ import { getUnitConversionPlugin } from './plugins/getUnitConversionPlugin'
 import { getUnitsToPxPlugin } from './plugins/getUnitsToPxPlugin'
 import { postcssWeappTailwindcssPostPlugin } from './plugins/post'
 import { postcssWeappTailwindcssPrePlugin } from './plugins/pre'
+import { createPresetEnvPlugin } from './plugins/preset-env'
 import { createUserPluginStage } from './plugins/user-plugin-stage'
 
 export type PipelineStage = 'pre' | 'normal' | 'post'
@@ -188,7 +189,7 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
 
   if (!signal || signal.hasPresetEnvFeatures) {
-    preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(presetEnvOptions)))
+    preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => createPresetEnvPlugin(presetEnvOptions)))
   }
   if (!signal || signal.hasModernColorFunction) {
     preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
