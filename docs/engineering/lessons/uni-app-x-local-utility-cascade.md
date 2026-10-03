@@ -37,6 +37,8 @@ PostCSS 包拥有 AST 排序：只在同一父节点、连续且已标记的规�
 - 最终审查补出标记清理早于 source-media 残片修复的 2 项真实失败，并调整到各分支既有修复之后；PostCSS 定向 13 项、主包局部排序/完整管线 15 项均通过。新增 3 个测试文件显式执行 `eslint --no-ignore` 通过。
 - 对应 uni-app x VDOM/Vapor demo 的 static 基线与真实 watch 由主任务整合后更新。本次没有启动浏览器或设备，不把同一插件实例的连续生成回归当作真实 HMR 或全端验收。
 
+主任务整合后重建 engine、PostCSS 与主包，三个包构建通过；局部排序与 WXSS 产物归属的组合回归 3 文件、26 项通过。限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 和 `issue-1144-static` 三个 static 入口重生成基线，Git 内容无差异；随后显式 `--update=none` 复验 3 文件、4 项通过。命令保持 `CI=1 HBUILDERX_CHANNEL=alpha E2E_SKIP_OPEN_AUTOMATOR=1` 并使用本轮 Alpha 安装，原始日志分别为 `.tmp/uni-local-cascade-static-update.log` 和 `.tmp/uni-local-cascade-static-verify.log`。这是编译和产物验证，真实 watch 仍需在最终提交重新预检。
+
 ## 适用边界
 
 修复对齐 Tailwind 当前 design system 提供的候选级顺序；它按候选首个生成节点排名，不声称复现任意自定义 utility 多个 AST 节点互相交错的全部层叠关系。作者自己编写的规则顺序不被改动，局部别名身份和模板类名先后保持现有契约。平台不支持的伪类和条件规则仍由既有兼容管线处理。
