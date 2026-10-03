@@ -1,9 +1,11 @@
+import type { AndroidScreenBounds } from './android-runtime/marker-sample'
 import { spawnSync } from 'node:child_process'
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { PNG } from 'pngjs'
+import { haveAndroidMarkerPixelsChanged, isSameAndroidMarker, readAndroidMarkerSample } from './android-runtime/marker-sample'
 import { readAndroidUiDump } from './android-runtime/ui-hierarchy'
 
 export interface AndroidRuntimeStyleExpectation {
@@ -25,13 +27,6 @@ export interface AndroidRuntimeEvidence {
   text?: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>
   uiTextPreview: string
   width: number
-}
-
-interface AndroidScreenBounds {
-  maxX: number
-  maxY: number
-  minX: number
-  minY: number
 }
 
 interface WaitForAndroidRuntimeEvidenceOptions {
@@ -181,32 +176,6 @@ export function isAndroidDebugShell(uiHierarchy: string) {
   return /Connect to HBuilderX successfully|Failed to connect to \/127\.0\.0\.1|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
 }
 
-function parseAndroidBounds(value: string | undefined): AndroidScreenBounds | undefined {
-  const match = value?.match(/^\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]$/)
-  if (!match) {
-    return
-  }
-  return {
-    maxX: Number(match[3]) - 1,
-    maxY: Number(match[4]) - 1,
-    minX: Number(match[1]),
-    minY: Number(match[2]),
-  }
-}
-
-function resolveAndroidMarkerBounds(uiHierarchy: string, markerText: string) {
-  for (const nodeMatch of uiHierarchy.matchAll(/<node\b([^>]*)>/g)) {
-    const attributes = new Map<string, string>()
-    for (const attributeMatch of nodeMatch[1]!.matchAll(/([\w:-]+)="([^"]*)"/g)) {
-      attributes.set(attributeMatch[1]!, attributeMatch[2]!)
-    }
-    const label = `${attributes.get('text') ?? ''} ${attributes.get('content-desc') ?? ''}`
-    if (label.includes(markerText)) {
-      return parseAndroidBounds(attributes.get('bounds'))
-    }
-  }
-}
-
 function parseHexColor(value: string) {
   const match = value.match(/^#?([\da-f]{6})$/i)
   if (!match?.[1]) {
@@ -306,42 +275,60 @@ function scrollAndroidViewport(env: Record<string, string | undefined>, deviceId
 export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRuntimeEvidenceOptions) {
   const startedAt = Date.now()
   let latest: AndroidRuntimeEvidence | undefined
+  let latestSampling: Record<string, unknown> | undefined
   const backgroundColor = parseHexColor(options.expectation.backgroundColor)
   const textColor = options.expectation.textColor ? parseHexColor(options.expectation.textColor) : undefined
   const density = readAndroidDensity(options.env, options.deviceId)
 
   while (Date.now() - startedAt < options.timeoutMs) {
     options.ensureRunning()
-    await captureAndroidScreenshot(options.screenshot, options.env, options.deviceId)
-    const uiHierarchy = await readAndroidUiHierarchy(options.env, options.deviceId)
-    if (restoreAndroidRuntimeForeground(uiHierarchy, options.env, options.deviceId)) {
+    const beforeUi = await readAndroidUiHierarchy(options.env, options.deviceId)
+    if (restoreAndroidRuntimeForeground(beforeUi, options.env, options.deviceId)) {
       await delay(500)
       continue
     }
-    const markerBounds = resolveAndroidMarkerBounds(uiHierarchy, options.expectation.markerText)
+    const beforeMarker = readAndroidMarkerSample(beforeUi, options.expectation.markerText)
+    if (!beforeMarker || isAndroidDebugShell(beforeUi)) {
+      latestSampling = { reason: 'marker-not-visible', uiTextPreview: beforeUi.slice(0, 1000) }
+      scrollAndroidViewport(options.env, options.deviceId)
+      await delay(500)
+      continue
+    }
+    await captureAndroidScreenshot(options.screenshot, options.env, options.deviceId)
+    const uiHierarchy = await readAndroidUiHierarchy(options.env, options.deviceId)
+    const afterMarker = readAndroidMarkerSample(uiHierarchy, options.expectation.markerText)
+    if (!isSameAndroidMarker(beforeMarker, afterMarker) || isAndroidDebugShell(uiHierarchy)) {
+      latestSampling = { reason: 'marker-changed-during-screenshot', beforeMarker, afterMarker }
+      await delay(500)
+      continue
+    }
+    const markerBounds = beforeMarker.bounds
+    const screenshotChanged = haveAndroidMarkerPixelsChanged(
+      PNG.sync.read(await fs.readFile(options.screenshot)),
+      options.previousScreenshot ? PNG.sync.read(await fs.readFile(options.previousScreenshot)) : undefined,
+      markerBounds,
+    )
+    if (!screenshotChanged) {
+      latestSampling = { reason: 'marker-pixels-unchanged-or-outside-screenshot', markerBounds }
+      await delay(500)
+      continue
+    }
+    latestSampling = { reason: 'stable', beforeMarker, afterMarker }
     const background = await analyzeScreenshotColorPresence(options.screenshot, backgroundColor, markerBounds)
-    const presentationBounds = markerBounds ?? background.bounds
-    const width = presentationBounds ? presentationBounds.maxX - presentationBounds.minX + 1 : 0
-    const height = presentationBounds ? presentationBounds.maxY - presentationBounds.minY + 1 : 0
-    const text = textColor && presentationBounds
-      ? await analyzeScreenshotColorPresence(options.screenshot, textColor, presentationBounds)
+    const width = markerBounds.maxX - markerBounds.minX + 1
+    const height = markerBounds.maxY - markerBounds.minY + 1
+    const text = textColor
+      ? await analyzeScreenshotColorPresence(options.screenshot, textColor, markerBounds)
       : undefined
-    const markerTextVisible = uiHierarchy.includes(options.expectation.markerText)
-    const screenshotChanged = options.previousScreenshot
-      ? hasScreenshotContentChanged(
-          await fs.readFile(options.screenshot),
-          await fs.readFile(options.previousScreenshot),
-        )
-      : true
     latest = {
       background,
       density,
       height,
       markerBounds,
-      markerTextVisible,
+      markerTextVisible: true,
       screenshot: options.screenshot,
       screenshotChanged,
-      text,
+      ...(text ? { text } : {}),
       uiTextPreview: uiHierarchy.replace(/\s+/g, ' ').slice(0, 1000),
       width,
     }
@@ -350,20 +337,15 @@ export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRunti
     const sizeReady = Math.abs(width - expectedWidth) <= 14 * density
       && Math.abs(height - expectedHeight) <= 14 * density
     if (
-      !isAndroidDebugShell(uiHierarchy)
-      && markerTextVisible
-      && background.matched
+      background.matched
       && sizeReady
       && screenshotChanged
       && (!textColor || (text?.matchingPixels ?? 0) >= 8)
     ) {
       return latest
     }
-    if (!markerTextVisible) {
-      scrollAndroidViewport(options.env, options.deviceId)
-    }
     await delay(500)
   }
 
-  throw new Error(`${options.label} 未在 Android 设备呈现预期 marker/style\nexpected=${JSON.stringify(options.expectation)}\nlatest=${JSON.stringify(latest)}`)
+  throw new Error(`${options.label} 未在 Android 设备呈现预期 marker/style\nexpected=${JSON.stringify(options.expectation)}\nlatest=${JSON.stringify(latest)}\nsampling=${JSON.stringify(latestSampling)}`)
 }
