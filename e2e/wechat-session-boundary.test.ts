@@ -53,11 +53,48 @@ function processCalls(text: string, functionName?: string) {
   return calls
 }
 
+function unsafeWechatLaunches(text: string) {
+  const source = ts.createSourceFile('entry.ts', text, ts.ScriptTarget.Latest, true)
+  const unsafe: string[] = []
+  function visit(node: ts.Node) {
+    if (ts.isArrayLiteralExpression(node)) {
+      const args = node.elements.map(element => ts.isStringLiteralLike(element) ? element.text : undefined)
+      const launch = args.indexOf('launch')
+      if (launch >= 0 && args[launch + 1] === 'mp-weixin') {
+        const compile = args.indexOf('--compile', launch + 2)
+        // 参数必须显式且唯一；变量、条件表达式或重复覆盖都不能证明只编译。
+        if (compile < 0 || args[compile + 1] !== 'true' || args.lastIndexOf('--compile') !== compile
+          || node.elements.some(ts.isSpreadElement)) {
+          unsafe.push(node.getText(source))
+        }
+      }
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(source)
+  return unsafe
+}
+
 it('规则识别静态导入、别名、动态导入与 require，允许纯类型导入', () => {
   expect(unsafeImports('import { Launcher as L } from \'@weapp-vite/miniprogram-automator\'')).toHaveLength(1)
   expect(unsafeImports('import(\'@weapp-vite/miniprogram-automator\')')).toHaveLength(1)
   expect(unsafeImports('require(\'miniprogram-automator\')')).toHaveLength(1)
   expect(unsafeImports('import type { MiniProgram } from \'@weapp-vite/miniprogram-automator\'')).toEqual([])
+})
+
+it('规则拒绝 HBuilderX 中转微信启动，缺省、变量及覆盖参数均不能放行', () => {
+  for (const args of [
+    '["launch", "mp-weixin"]',
+    '["launch", "mp-weixin", "--compile", "false"]',
+    '["launch", "mp-weixin", "--compile", compileOnly ? "true" : "false"]',
+    '["launch", "mp-weixin", "--compile", "true", "--compile", "false"]',
+    '["launch", "mp-weixin", "--compile", "true", ...options]',
+    '["exec", "hbuilderx", "launch", "mp-weixin", "--compile", "false"]',
+  ]) {
+    expect(unsafeWechatLaunches(`wrapper.spawn({ args: ${args} })`), args).toHaveLength(1)
+  }
+  expect(unsafeWechatLaunches('wrapper.spawn({ args: ["launch", "mp-weixin", "--compile", "true"] })')).toEqual([])
+  expect(unsafeWechatLaunches('wrapper.spawn({ args: ["launch", "app-android", "--compile", "false"] })')).toEqual([])
 })
 
 it('微信预检、连接与清理没有子进程启动入口，防止恢复 islogin 冷启动', async () => {
@@ -73,4 +110,6 @@ it('自动扫描全部 E2E 与脚本，只有会话边界及其 mock 回归能�
   const files = [...new Set(stdout.split('\0').filter(file => /\.[cm]?[jt]s$/.test(file) && !allowed.has(file)))]
   const violations = (await Promise.all(files.map(async file => unsafeImports(await readFile(path.resolve(root, file), 'utf8')).map(item => `${file}: ${item}`)))).flat()
   expect(violations, '请使用 scripts/wechat/automator；禁止 CLI 冷启动、注销与票据重置。').toEqual([])
+  const indirectLaunches = (await Promise.all(files.map(async file => unsafeWechatLaunches(await readFile(path.resolve(root, file), 'utf8')).map(item => `${file}: ${item}`)))).flat()
+  expect(indirectLaunches, 'HBuilderX 中转同样会启动微信 CLI；仅允许显式 --compile true，watch 必须与 IDE 启动解耦。').toEqual([])
 })

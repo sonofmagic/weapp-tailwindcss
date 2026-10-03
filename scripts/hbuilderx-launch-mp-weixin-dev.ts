@@ -10,7 +10,10 @@ import { createHBuilderXProjectAlias } from './hbuilderx-project-alias.mjs'
 import { withHBuilderXProjectCleanup } from './hbuilderx-project-lifecycle'
 
 export async function launchHBuilderXMiniProgram(projectRoot = process.cwd()) {
-  const compileOnly = process.env.HBUILDERX_COMPILE_ONLY === '1'
+  // HBuilderX 的运行模式会经 launcher 调用微信 CLI；必须在解析 runner 或修改产物前阻断。
+  if (process.env.HBUILDERX_COMPILE_ONLY !== '1') {
+    throw new Error('已阻断 HBuilderX 微信 watch：launch mp-weixin 的运行模式会间接启动微信开发者工具，不能保证登录态。仅允许显式 HBUILDERX_COMPILE_ONLY=1 的一次性静态编译；watch/HMR 需使用独立编译器，并由 scripts/wechat 连接用户已开启的 IDE。')
+  }
   const hbuilderx = await createHBuilderXRunner({ cwd: projectRoot })
   const projectAlias = await createHBuilderXProjectAlias(projectRoot)
   const projectName = process.env.HBUILDERX_PROJECT_NAME || projectAlias.projectName
@@ -35,7 +38,7 @@ export async function launchHBuilderXMiniProgram(projectRoot = process.cwd()) {
 
     // HBuilderX 5.14 在 launch 阶段用绝对路径可能误判根目录项目类型，导入后用项目名更稳定。
     const launch = hbuilderx.spawn({
-      args: ['launch', 'mp-weixin', '--project', projectName, '--compile', compileOnly ? 'true' : 'false', '--runtime-log', 'true'],
+      args: ['launch', 'mp-weixin', '--project', projectName, '--compile', 'true', '--runtime-log', 'true'],
       cwd: projectRoot,
       stdio: 'inherit',
     })

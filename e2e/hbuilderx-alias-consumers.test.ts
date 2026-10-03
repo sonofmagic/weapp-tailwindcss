@@ -57,6 +57,7 @@ vi.mock('../packages/hbuilderx-runner/src/index', async importOriginal => ({
 let root: string
 let projectRoot: string
 beforeEach(async () => {
+  vi.stubEnv('HBUILDERX_COMPILE_ONLY', '1')
   root = await mkdtemp(path.join(tmpdir(), 'hbuilderx-alias-consumer-'))
   projectRoot = path.join(root, 'project')
   await mkdir(projectRoot)
@@ -105,6 +106,33 @@ function expectCombined(error: unknown, primary: unknown, close: unknown) {
   expect(errors[1]).toMatchObject({ cause: close })
   expect(errors[1].message).toContain(state.alias!.projectPath)
 }
+
+it.each([undefined, '', '0', 'false', 'true'])('阻断 HBuilderX 间接启动微信 IDE 的 watch 模式（%s），且不创建进程或修改产物', async (value) => {
+  vi.stubEnv('HBUILDERX_COMPILE_ONLY', value)
+  const debugFile = path.join(projectRoot, '.debug', 'existing.txt')
+  const outputFile = path.join(projectRoot, 'unpackage', 'dist', 'dev', 'mp-weixin', 'app.json')
+  for (const file of [debugFile, outputFile]) {
+    await mkdir(path.dirname(file), { recursive: true })
+    await writeFile(file, 'existing')
+  }
+  const listeners = [process.listenerCount('SIGINT'), process.listenerCount('SIGTERM')]
+  await expect(launchHBuilderXMiniProgram(projectRoot)).rejects.toThrow('已阻断 HBuilderX 微信 watch')
+  expect(state.run).not.toHaveBeenCalled()
+  expect(state.spawn).not.toHaveBeenCalled()
+  expect(state.alias).toBeUndefined()
+  expect([process.listenerCount('SIGINT'), process.listenerCount('SIGTERM')]).toEqual(listeners)
+  for (const file of [debugFile, outputFile]) {
+    expect(await readFile(file, 'utf8')).toBe('existing')
+  }
+})
+
+it('显式静态编译只传 compile=true，不能把一次性编译当成 watch 验收', async () => {
+  await launchHBuilderXMiniProgram(projectRoot)
+  expect(state.spawn).toHaveBeenCalledWith(expect.objectContaining({
+    args: ['launch', 'mp-weixin', '--project', state.alias!.projectName, '--compile', 'true', '--runtime-log', 'true'],
+  }))
+  await expect(lstat(state.alias!.projectPath)).rejects.toMatchObject({ code: 'ENOENT' })
+})
 
 it('小程序编译与关闭同时失败时保留首因和真实别名', async () => {
   state.launchError = new Error('compile failed')

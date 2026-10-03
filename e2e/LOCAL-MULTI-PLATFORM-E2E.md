@@ -24,6 +24,8 @@ pnpm e2e:preflight prepare
 
 所有 E2E 禁止退出登录、切换账号、读取/替换/刷新登录票据、清 session/all 缓存、删除用户配置或终止共享 IDE。允许编译缓存操作但不降级为全量清理。打开项目时记录原 HTTP 端口，清理只断开自己的连接并关闭原服务上的本轮项目；认证或服务失败后不再发项目请求，保留未清理现场并报告。服务端自然过期或撤销票据仍可能令 IDE 自行退出，测试不得伪造/恢复这些凭据；用户恢复后重新 prepare。根因与证据见[微信登录态保护复盘](../docs/engineering/lessons/wechat-login-preservation.md)。
 
+第三方工具中转同样受限：HBuilderX `launch mp-weixin --compile false` 会自动调用微信 CLI，启动前还会清理本地存储。当前独立脚本对此立即阻断，仅允许显式 `HBUILDERX_COMPILE_ONLY=1` 的静态编译；一次性编译不能替代 watch/HMR 验收。安全 watch 必须直接运行同套编译器，再由 `scripts/wechat` 连接已有 IDE；未验证该链路前保留阻塞，见[HBuilderX 微信 watch 复盘](../docs/engineering/lessons/hbuilderx-wechat-watch-session.md)。
+
 ### 当前会话的 computer use 证据
 
 脚本探针通过后，prepare 保持前台服务，打印本轮 loopback 探针 URL。AI 必须使用当前会话实际可用的 computer use 工具：发现目标，读取页面，截图，在输入框输入页面上的 run ID，点击“验证”，再读取界面确认“完成：<run-id>”。不得用 Playwright、HTTP 请求或页面脚本代做此项；Web 脚本探针的交互不会写入 computer use 回执。
