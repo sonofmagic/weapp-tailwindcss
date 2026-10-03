@@ -1,4 +1,5 @@
 import { postcss } from '../../../postcss-runtime'
+import { createAuthorSelectorMatcher } from '../../author-selector'
 import { isTailwindRuntimePropertyRule } from '../../uni-app-x-author-apply'
 import { preferScopedGeneratedCssRulesRoot } from './scoped-rules'
 import { collectApplyOnlySourceSelectors, isEmptyCustomVariantBlock, normalizeGeneratedSelector, removeCssComments } from './user-layers'
@@ -37,31 +38,25 @@ export function filterTailwindV4ApplyOnlyGeneratedCss(
   if (selectors.size === 0) {
     return css
   }
-  const selectorList = [...selectors]
   const preserveVariables = options.preserveVariables !== false
 
   try {
+    const matchesAuthorSelector = createAuthorSelectorMatcher(selectors)
     const root = postcss.parse(css)
     root.walkRules((rule) => {
       const ruleSelectors = rule.selectors ?? [rule.selector]
-      const isApplySelector = ruleSelectors.some((selector) => {
-        const normalized = normalizeGeneratedSelector(selector)
-        return selectorList.some((sourceSelector) => {
-          if (normalized === sourceSelector) {
-            return true
-          }
-          if (!normalized.startsWith(sourceSelector)) {
-            return false
-          }
-          const next = normalized[sourceSelector.length]
-          return next === ':' || next === '[' || next === '.'
-        })
-      })
+      const retainedSelectors = ruleSelectors.filter(selector => matchesAuthorSelector(normalizeGeneratedSelector(selector)))
+      if (retainedSelectors.length > 0) {
+        if (retainedSelectors.length !== ruleSelectors.length) {
+          rule.selectors = retainedSelectors
+        }
+        return
+      }
       const isVariableRule = rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))
       if (options.preserveRuntimeProperties && isTailwindRuntimePropertyRule(rule)) {
         return
       }
-      if (!isApplySelector && (!preserveVariables || !isVariableRule)) {
+      if (!preserveVariables || !isVariableRule) {
         rule.remove()
       }
     })
