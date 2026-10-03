@@ -5,7 +5,7 @@ import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
 import { collectCandidates, createTailwindV4SourceCacheKey, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates } from './incremental-cache'
-import { orderLocalUtilitySource } from './local-utility-order'
+import { createLocalUtilitySourcePreparation } from './local-utility-order'
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
@@ -29,8 +29,9 @@ export async function generateRawArtifact(
   } = options
   const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
   const cssMacroSource = resolveCssMacroTailwindV4Source(generateSource)
-  const compatibleSource = await orderLocalUtilitySource(
-    createCompatibleSource(cssMacroSource, target),
+  const compatibleSource = createCompatibleSource(cssMacroSource, target)
+  const preparation = createLocalUtilitySourcePreparation(
+    compatibleSource,
     target,
     resolvedStyleOptions,
     options.bareArbitraryValues,
@@ -75,6 +76,7 @@ export async function generateRawArtifact(
       createTailwindV4SourceCacheKey(compatibleSource),
       compatibleSource,
       generationRequest,
+      preparation,
     )
     generatedCss = serializeTailwindGenerationArtifact(artifact)
     classSet = artifact.classSet
@@ -85,7 +87,7 @@ export async function generateRawArtifact(
     if (compiledScan || !isCssSyntaxError(error)) {
       throw error
     }
-    const legacyEngine = createEngineTailwindV4Engine(compatibleSource)
+    const legacyEngine = createEngineTailwindV4Engine(compatibleSource, preparation)
     try {
       const legacyResult = await legacyEngine.generate({
         ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),

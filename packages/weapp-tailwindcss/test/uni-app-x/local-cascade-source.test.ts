@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { loadTailwindV4DesignSystem } from '@weapp-tailwindcss/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { UNI_APP_X_LOCAL_UTILITY_MARKER } from '@weapp-tailwindcss/postcss/transform'
 import { compileString } from 'sass'
@@ -7,7 +8,7 @@ import { disposeCompilerOwner } from '@/compiler'
 import { getCompilerContext } from '@/context'
 import { generateTailwindV4Css } from '@/generation/service'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
-import { orderLocalUtilitySource } from '@/tailwindcss/v4-engine/generator/local-utility-order'
+import { createLocalUtilitySourcePreparation } from '@/tailwindcss/v4-engine/generator/local-utility-order'
 
 const marker = `/*${UNI_APP_X_LOCAL_UTILITY_MARKER} */`
 const localRules = `${marker}.local-alpha{@apply alpha;}\n${marker}.local-beta{@apply beta;}`
@@ -50,10 +51,9 @@ describe('local cascade generation source ownership', () => {
 
   it('normalizes rpx ranks without losing equivalent spellings', async () => {
     const source = await resolveTailwindV4Source({ base: process.cwd(), css: `@import "tailwindcss" source(none); ${marker}.local-large{@apply text-[34rpx];}${marker}.local-small{@apply text-[23rpx];}${marker}.local-explicit{@apply text-[length:23rpx];}${marker}.local-arbitrary{@apply p-[10%];}${marker}.local-padding{@apply p-2;}` })
-    const ordered = await orderLocalUtilitySource(source, 'weapp', { appType: 'uni-app-x' }, true)
-    expect(localOrder(ordered.css)).toEqual(['.local-padding', '.local-arbitrary', '.local-small', '.local-explicit', '.local-large'])
-    expect(ordered.dependencies).toBe(source.dependencies)
-    expect(ordered.base).toBe(source.base)
+    const preparation = createLocalUtilitySourcePreparation(source, 'weapp', { appType: 'uni-app-x' }, true)!
+    const ordered = await preparation.prepareSource!(source, await loadTailwindV4DesignSystem(source))
+    expect(localOrder(ordered)).toEqual(['.local-padding', '.local-arbitrary', '.local-small', '.local-explicit', '.local-large'])
   })
 
   it('keeps compiler errors observable instead of producing unordered fallback CSS', async () => {
