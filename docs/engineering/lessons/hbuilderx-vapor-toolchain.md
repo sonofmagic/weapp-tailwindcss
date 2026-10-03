@@ -41,7 +41,7 @@ HBuilderX 5.31.2026093020-alpha 在 Harmony 模拟器安装 Vapor demo 后，首
 
 ## 适用边界
 
-本修复涉及 `uni-app-x-vapor-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 与 `issue-1144-uni-app-x-web` 的构建配置，不给页面追加 vapor 标记，不改样式生成语义。下一轮 Vapor 验证必须核对 `[uni-toolchain]`、生成页的 `defineVaporSharedDataComponent`、真实首屏 marker/结构/截图，再继续验收。尚未把首屏修复写成已通过。
+本修复涉及 `uni-app-x-vapor-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 与 `issue-1144-uni-app-x-web` 的构建配置，不给页面追加 vapor 标记，不改样式生成语义。下一轮 Vapor 验证必须核对 `[uni-toolchain]`、生成页的 `defineVaporSharedDataComponent`、真实首屏 marker/结构/截图，再继续验收。上述 `2225ce0f1` 轮次已通过首屏验证；新提交仍需独立验收，首屏成功不代表 HMR 通过。
 
 另一个 VDOM Harmony 失败独立存在：同轮 20:45:30 的 IDE 内部日志报告 `10310009 ArkTS: INTERNAL ERROR`，`ColdReloadArkTS` 无法从上下文找到项目别名路径的 `EntryAbility.ets`，与真实路径身份混用有关。其后重建才出现输出符号表路径错误，不能把后续错误当作首次失败原因。参见[既有纯 HMR 边界](uni-app-x-alpha-hmr.md)。
 

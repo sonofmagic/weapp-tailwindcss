@@ -35,13 +35,15 @@ PostCSS 包拥有 AST 排序：只在同一父节点、连续且已标记的规�
 - `pnpm --filter @weapp-tailwindcss/engine build`、`pnpm --filter @weapp-tailwindcss/postcss build`、`pnpm --filter weapp-tailwindcss build` 和 `pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.typecheck.json --pretty false` 均通过。
 - `pnpm architecture:check`、受影响源码 ESLint、`git diff --check`、`pnpm agents:check` 均通过，`pnpm release status` 确认中文 intent 覆盖 engine、PostCSS 和主包。ESLint 按仓库配置忽略 test 目录，测试通过由上述 Vitest 命令确认。
 - 最终审查补出标记清理早于 source-media 残片修复的 2 项真实失败，并调整到各分支既有修复之后；PostCSS 定向 13 项、主包局部排序/完整管线 15 项均通过。新增 3 个测试文件显式执行 `eslint --no-ignore` 通过。
-- 对应 uni-app x VDOM/Vapor demo 的 static 基线与真实 watch 由主任务整合后更新。本次没有启动浏览器或设备，不把同一插件实例的连续生成回归当作真实 HMR 或全端验收。
+- 对应 VDOM demo 的 static 基线与真实 watch 由主任务整合后验证；Vapor 没有普通 static 入口，其历史原生产物与首屏证据见[工具链复盘](hbuilderx-vapor-toolchain.md)。本次没有启动浏览器或设备，不把同一插件实例的连续生成回归当作真实 HMR 或全端验收。
 
 主任务整合后重建 engine、PostCSS 与主包，三个包构建通过；局部排序与 WXSS 产物归属的组合回归 3 文件、26 项通过。限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 和 `issue-1144-static` 三个 static 入口重生成基线，Git 内容无差异；随后显式 `--update=none` 复验 3 文件、4 项通过。命令保持 `CI=1 HBUILDERX_CHANNEL=alpha E2E_SKIP_OPEN_AUTOMATOR=1` 并使用本轮 Alpha 安装，原始日志分别为 `.tmp/uni-local-cascade-static-update.log` 和 `.tmp/uni-local-cascade-static-verify.log`。这是编译和产物验证，真实 watch 仍需在最终提交重新预检。
 
+在提交 `fd81fee3c` 重新 prepare、完成真实后台 computer use 输入/点击/截图并 verify 后，轮次 `edab1850-3352-4d60-8eb1-56ece3a3875a` 的微信 IDE 3 项通过。真实 watch 的模板 `baseline-arbitrary`、`complex-corpus`、`hex-arbitrary` 新增/删除及已有节点 added-class 步骤完成；此前复杂集合的变量比较与局部层叠问题没有再阻断模板阶段。脚本 `baseline-arbitrary` 新增随后因 `text-[23.000068px]` 的类/CSS 证据缺失而失败，整轮退出 1，未自动重跑。清理前完整源码、产物和日志保存在该轮 `wechat-followup/watch-script-first-add/`。插件处理样本还出现 764–2801ms 的非首编 total，超过配置的 500ms 预算；功能失败先于最终性能判定，不能把这轮写成性能门禁通过。排序设计系统与生成会话存在重复加载，耗时贡献仍需定向测量。
+
 ## 适用边界
 
-修复对齐 Tailwind 当前 design system 提供的候选级顺序；它按候选首个生成节点排名，不声称复现任意自定义 utility 多个 AST 节点互相交错的全部层叠关系。作者自己编写的规则顺序不被改动，局部别名身份和模板类名先后保持现有契约。平台不支持的伪类和条件规则仍由既有兼容管线处理。
+修复对齐 Tailwind 当前 design system 提供的候选级顺序；它按候选首个生成节点排名，不声称复现同一候选生成的多个 AST 节点互相交错的全部层叠关系。作者自己编写的规则顺序不被改动，局部别名身份和模板类名先后保持现有契约。平台不支持的伪类和条件规则仍由既有兼容管线处理。
 
 ## 规则评估
 

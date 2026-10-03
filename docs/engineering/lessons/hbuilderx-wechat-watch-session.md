@@ -59,7 +59,7 @@ regressions:
 
 限定该 demo、uni-app x VDOM、issue1144 三个入口执行 `-u` 后，审查确认只有新增项目的 7 份基线，现有项目基线字节未变；再使用 `CI=1`、`E2E_SKIP_OPEN_AUTOMATOR=1` 和 `--update=none`，3 文件 4 项全部通过、无跳过，34.38 秒。两个 HBuilderX 项目真实使用 Alpha 5.31.2026093020-alpha 的只编译路径；issue1144 是 npm Web 生产构建。日志为 `.tmp/alpha-spacing-static-{update-9ab8b2e86,verified-7f828fad9}.log`。此项未连接微信项目，不代表持续 watch 或设备 HMR 已验收。
 
-本次修改普通 HBuilderX demo 的插件选择入口，但未运行真实 vendor 编译、设备、浏览器或 IDE 测试。主流程需限定重新生成该 demo 的 static 基线，审查后以 `--update=none` 验证；接着验证同一真实编译进程的首次产物与多轮源码增量、实际 IDE 截图和微信 CLI 零调用，才可继续完整 watch 阶段。隔离进程回归不得记录为真实 demo watch 或全面验收通过。
+独立实现阶段仅执行隔离进程回归；主任务随后完成了上一段所列真实 vendor static 编译。uni-app x VDOM 还在独立预检后通过微信 IDE 连接、模板及脚本类产物更新，见[局部导入归属复盘](vite-local-css-replay-ownership.md)。这些记录不能替代普通 HBuilderX Vue3 demo 的持续 watch 验收，也不能替代实际 IDE 可视更新与完整多端验收。
 
 只读审计覆盖官方 CLI、mp-weixin 插件、打印与编译链，已定位的 auto-open 与本地存储操作均位于没有加载的 extension launcher。部分 vendor helper 包含预编译字节码，不能声称形式化证明所有第三方代码无副作用；升级工具链后仍需按真实进程和 IDE 日志复查边界。
 

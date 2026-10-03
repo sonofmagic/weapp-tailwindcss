@@ -32,6 +32,8 @@ uni-app x Alpha 的微信 IDE 热更新首次修改模板后，根 `main.wxss` �
 - 在 `43d546478` 完成新一轮 prepare、真实后台 computer use 输入/点击/截图与 verify，轮次 `3f1640ae-5082-41ef-a990-cf22201b0f4c` 的微信 IDE 连接、模板类与脚本类更新共 3 项通过。实际 `main.wxss` 不再包含被搬入的 `../../uvue.wxss` 和 `/app.wxss`。该用例保留既有 `devtoolsVisible=artifact` 边界，不计为完整可视 HMR。
 - 同轮 watch 在第一次 `space-y-2.5` 新增时失败并停止后续阶段，首次产物保存在 `watch-first-add/`。WXML 已消费 safe class，页面 CSS 也存在完整规则；其 `8rpx` 与全局参考规则的 `var(--spacing)` 被现有签名判为不同。根变量实际声明为 `--spacing:8rpx`，因此该失败与本节的局部导入归属缺陷分别处理，不通过修改生成产物或删除断言消除失败。完整 watch 及后续阶段仍待修复断言后重新预检验收。
 
+提交 `fd81fee3c` 的新预检轮次 `edab1850-3352-4d60-8eb1-56ece3a3875a` 再次通过实际微信 IDE 的连接、模板类更新和脚本类更新 3 项（54.99 秒），WXSS 路径错误未复现。模板 watch 三轮新增/删除及 added-class 步骤随后完成；脚本动态类的证据校验失败另行修复，完整 watch 仍未通过。测试退出后源码恢复、所属 compiler/预检服务退出、临时浏览器标签关闭，现有微信 HTTP 服务只读检查仍为已登录。
+
 ## 适用边界
 
 修复限于自动注入资格，不改变公开 matcher、导入文本或显式根目标语义。调用方显式登记跨产物注入时，仍需拥有正确的目标与导入关系。测试中的 Windows 路径覆盖不代表 Windows 实机编译验收。
