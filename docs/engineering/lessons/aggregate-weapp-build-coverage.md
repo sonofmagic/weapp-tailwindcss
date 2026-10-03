@@ -1,5 +1,5 @@
 ---
-status: partial
+status: verified
 issue: https://github.com/weapp-tailwindcss/weapp-tailwindcss/issues/951
 baseline: d19ae91d571ebcfa6c059a7f6b78ef5e2543881b
 regressions:
@@ -31,13 +31,13 @@ Taro 小程序产物元数据集中维护 `.wxss/.wxml`、`.acss/.axml`、`.ttss
 
 独立工作树首次运行总矩阵时缺少 escape 包产物，加载阶段失败；执行 `pnpm --filter @weapp-tailwindcss/escape build` 后，同一命令通过。ESLint 检查本次 TypeScript 修改通过。
 
-真实平台构建由全面测试主流程集中执行，尚未在本记录对应的独立工作树运行。待执行以下命令重新生成两个项目的微信产物基线并验证隔离，完成前保持 partial：
+集成工作树在 `3cdccbfb7` 使用以下命令清理后重新生成两个项目的 weapp/alipay/tt 产物基线，共 9 个真实构建组合及 1 个矩阵完整性用例通过，0 失败、0 跳过，耗时 77.56 秒：
 
 ```sh
-pnpm exec cross-env CI=1 E2E_MULTIPLATFORM_BUILD_STATUS=ci E2E_MULTIPLATFORM_BUILD_SKIP_BUILD=0 "E2E_MULTIPLATFORM_BUILD_CASE=^(issue-951-taro-vite-react-tailwindcss-v4 weapp|subpackage-taro-webpack-react-tailwindcss-v4 weapp (isolated|single))$" pnpm e2e:multiplatform-build
+pnpm exec cross-env CI=1 E2E_MULTIPLATFORM_BUILD_STATUS=ci E2E_MULTIPLATFORM_BUILD_SKIP_BUILD=0 "E2E_MULTIPLATFORM_BUILD_CASE=^(issue-951-taro-vite-react-tailwindcss-v4 (weapp|alipay|tt)|subpackage-taro-webpack-react-tailwindcss-v4 (weapp|alipay|tt) (isolated|single))$" pnpm e2e:multiplatform-build
 ```
 
-公共断言提取涉及原支付宝/头条入口，后续同时复核这两个项目的 weapp/alipay/tt 共 9 项构建。当前单测通过仅证明入口与断言契约，不代替真实样式产物基线。
+日志保存在 `.tmp/weapp-coverage-builds.log`。新增微信 WXSS/WXML、主包导入与两种分包模式通过，同步复核的支付宝/头条产物也通过。基线为严格重建后的产物断言；未修改 demo 源码、样式预期或 tracked 快照。
 
 ## 适用边界
 

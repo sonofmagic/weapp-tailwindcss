@@ -1,6 +1,6 @@
 ---
-status: partial
-issue: https://github.com/sonofmagic/weapp-tailwindcss
+status: verified
+issue: https://github.com/weapp-tailwindcss/weapp-tailwindcss/pull/1269
 baseline: 0d2ddb800db22046ff7f0f5fe7527fb0117894fa
 regressions:
   - benchmark/performance/test/watch-cancellation.test.mjs
@@ -34,15 +34,15 @@ Vitest 超时会拒绝它所等待的测试 Promise，但不会自动取消测�
 pnpm --filter benchmark-performance exec vitest run test/watch-cancellation.test.mjs test/watch-startup.test.mjs --maxWorkers=1 --fileParallelism=false --update=none --reporter=verbose
 ```
 
-真实编译验证由主任务集中执行，避免与其他资源密集测试竞争：
+主任务在集成提交 `733e0a7f5` 集中执行轻量与真实编译验证，3 文件共 12 项通过、1 项符合预期失败；真实 Vite 用时 2.95 秒、Webpack 用时 4.35 秒，三轮恢复后的 CSS 均与原静态基线一致。日志为 `.tmp/watch-lifecycle-integrated.log`，命令设置 `CI=1`：
 
 ```sh
-pnpm --filter benchmark-performance exec vitest run test/watch-lifecycle.test.mjs --maxWorkers=1 --fileParallelism=false --update=none --reporter=verbose
+pnpm --filter benchmark-performance exec vitest run test/watch-lifecycle.test.mjs test/watch-cancellation.test.mjs test/watch-startup.test.mjs --maxWorkers=1 --fileParallelism=false --update=none --reporter=verbose
 ```
 
 ## 适用边界
 
-本记录基于 Vitest 5.0.3 的 `TestContext.signal` 与 `onTestFinished` 行为。真实 Vite/Webpack 编译集成验证留待主任务执行，因此状态为 `partial`。收尾钩子也有 15 秒上限；资源关闭本身不返回时仍会报钩子超时，不能用强杀或提前删除工作目录伪造关闭成功。
+本记录基于 Vitest 5.0.3 的 `TestContext.signal` 与 `onTestFinished` 行为。真实 Vite/Webpack 编译集成验证已通过，未更新 CSS 基线。收尾钩子也有 15 秒上限；资源关闭本身不返回时仍会报钩子超时，不能用强杀或提前删除工作目录伪造关闭成功。
 
 失败诊断以首次阶段及构建数为准。不得把独立重跑通过写成此前全面测试已通过，也不得在没有本轮完整环境门禁的情况下自行启动全面验收。
 
