@@ -44,6 +44,11 @@ export function filterTailwindV4ApplyOnlyGeneratedCss(
     const matchesAuthorSelector = createAuthorSelectorMatcher(selectors)
     const root = postcss.parse(css)
     root.walkRules((rule) => {
+      const isVariableRule = rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))
+      // 变量可能被其他作者规则跨作用域引用，保留原有变量选择器覆盖范围。
+      if (preserveVariables && isVariableRule) {
+        return
+      }
       const ruleSelectors = rule.selectors ?? [rule.selector]
       const retainedSelectors = ruleSelectors.filter(selector => matchesAuthorSelector(normalizeGeneratedSelector(selector)))
       if (retainedSelectors.length > 0) {
@@ -52,13 +57,10 @@ export function filterTailwindV4ApplyOnlyGeneratedCss(
         }
         return
       }
-      const isVariableRule = rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))
       if (options.preserveRuntimeProperties && isTailwindRuntimePropertyRule(rule)) {
         return
       }
-      if (!preserveVariables || !isVariableRule) {
-        rule.remove()
-      }
+      rule.remove()
     })
     root.walkAtRules((rule) => {
       if (rule.nodes !== undefined && rule.nodes.length === 0) {

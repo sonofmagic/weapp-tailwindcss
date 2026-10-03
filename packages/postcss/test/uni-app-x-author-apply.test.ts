@@ -3,6 +3,18 @@ import { isTailwindRuntimePropertyRule, postcss, retainUniAppXAuthorApplyCss, tr
 import { filterTailwindV4ApplyOnlyGeneratedCss } from '../src/compat/tailwindcss-v4/user-css/apply-only'
 
 describe('uni-app x author structural selectors', () => {
+  it('preserves shared variable scopes before narrowing ordinary merged rules', () => {
+    const source = '.card { @apply flex; } .other { @apply text-[var(--x)]; }'
+    const generated = '.card, :root { --x: red; } .card, .generated { display: flex; } .other { color: var(--x); }'
+    const result = filterTailwindV4ApplyOnlyGeneratedCss(generated, source)
+    expect(result).toContain('.card, :root')
+    expect(result).toContain('color: var(--x)')
+    expect(result).not.toContain('.generated')
+    const withoutVariables = filterTailwindV4ApplyOnlyGeneratedCss(generated, source, { preserveVariables: false })
+    expect(withoutVariables).not.toContain(':root')
+    expect(withoutVariables).toContain('.card')
+  })
+
   it.each([
     ['author retention', retainUniAppXAuthorApplyCss],
     ['apply-only generation', filterTailwindV4ApplyOnlyGeneratedCss],

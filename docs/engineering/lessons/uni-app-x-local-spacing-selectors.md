@@ -24,6 +24,8 @@ Alpha `5.31.2026093020-alpha` 的 uni-app x 微信 watch 产物中，新增模�
 
 Tailwind CSS `4.3.3` 的 Web 输出还会把完整间距选择器放入 `:where(...)`。正向 `:is`、`:where` 必须每个分支均归属于作者；不能把 `:not(.local)`、`:has(.local)` 中的类名当成作者锚点，但已归属作者的结构后代可以附加这些条件。合并规则 `.local, .generated` 只保留作者分支及其声明，既不泄漏无关 utility，也不删除有效作者样式；Web 运行时变量收集同步采用保留分支。不根据 utility 名称、输出文件名或页面目录特判。
 
+纯 `@apply` 过滤的 `preserveVariables` 契约必须先于普通分支裁剪：`.card, :root { --x: red }` 中的根变量可能由另一条作者规则消费，不能因 `.card` 命中就丢掉 `:root`。默认保留变量规则原有作用域，显式关闭 `preserveVariables` 时再按作者分支裁剪；普通合并规则不因此放宽。
+
 ## 验证
 
 - 修复前，最小 matcher、两层过滤和真实 Tailwind/Vite 小程序链路共 4 项失败，均复现间距声明丢失；新增 Web 生成回归进一步确认 `:where` 包裹规则被丢弃。
@@ -31,6 +33,7 @@ Tailwind CSS `4.3.3` 的 Web 输出还会把完整间距选择器放入 `:where(
 - `CI=1 pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x/local-spacing.test.ts test/uni-app-x/author-apply.test.ts test/bundlers/shared/generator-css/user-css.test.ts test/bundlers/uni-app-x-web-runtime-cleanup.test.ts test/uni-app-x/vite.test.ts --update=none`：5 文件、79 项通过。
 - 集成回归复用同一 Vite 插件实例，连续生成两组 `space-x`、`space-y` 和任意字体类，分别验证 Web 与小程序的当前模板别名和实际声明对应，且无关 `.flex` 不进入页面样式。未启动浏览器或设备。
 - `pnpm --filter @weapp-tailwindcss/postcss build`、`pnpm --filter weapp-tailwindcss build`、ESLint、`git diff --check` 和 `pnpm agents:check` 已通过；`pnpm release status` 已确认中文 intent 覆盖 PostCSS 负责包及主包消费方。
+- 后续独立审查补充跨作用域混合变量规则回归；`test/uni-app-x-author-apply.test.ts` 与 `test/tailwind-v4-user-css.test.ts` 共 25 项通过，主包生成过滤与两端局部 spacing 的 3 文件、12 项通过，并重新构建 PostCSS 包。
 - 对应 uni-app x VDOM/Vapor demo 的 static 基线和真实 watch 仍由主任务整合后更新；这里不把定向生成链路通过写成真实 HMR 或全端验收通过。
 
 ## 适用边界
