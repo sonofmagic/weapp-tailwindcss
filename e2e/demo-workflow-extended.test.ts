@@ -96,7 +96,7 @@ describe('扩展回归的完整覆盖与门禁', () => {
     ])
     expect(commands.filter(command => command === 'pnpm e2e:static')).toHaveLength(1)
     expect(commands).not.toContain('pnpm e2e:canonical-templates')
-    expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current.json')
+    expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current.json', process.cwd(), true)
     expect(gate.check).toHaveBeenCalledTimes(commands.length)
     expect(gate.check).toHaveBeenCalledWith('React Native Android runtime')
     expect(gate.check).toHaveBeenCalledWith('Lynx iOS runtime')

@@ -201,7 +201,7 @@ export async function runDemoE2eWorkflow(argv = process.argv.slice(2)) {
     throw new Error('--quality 必须配合 --local 和本轮 --preflight-report，在全面测试门禁内执行。')
   }
   const reportIndex = argv.indexOf('--preflight-report')
-  const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : argv[reportIndex + 1]) : undefined
+  const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : argv[reportIndex + 1], process.cwd(), Boolean(baseline)) : undefined
   try {
     const verifiedBaseline = baseline ? await verifyBaseline(baseline) : undefined
     const steps = createWorkflowSteps(includeLocal, includeQuality, verifiedBaseline)

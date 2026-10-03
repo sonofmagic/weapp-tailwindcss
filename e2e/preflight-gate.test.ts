@@ -116,7 +116,7 @@ describe('全面测试预检门禁', () => {
       .toBe('platform=iOS Simulator,id=ios,arch=arm64')
   })
 
-  it.each(['E2E_PREFLIGHT_WECHAT_HTTP_PORT', 'LYNX_ANDROID_DEVICE_ID', 'ANDROID_SERIAL', 'LYNX_IOS_DEVICE_ID', 'LYNX_IOS_DESTINATION', 'RN_ANDROID_EXPO_DEVICE'])('%s 改变后旧门禁身份失效', async (key) => {
+  it.each(['E2E_PREFLIGHT_WECHAT_HTTP_PORT', 'LYNX_ANDROID_DEVICE_ID', 'ANDROID_SERIAL', 'LYNX_IOS_DEVICE_ID', 'LYNX_IOS_DESTINATION', 'RN_ANDROID_EXPO_DEVICE', 'JAVA_HOME', 'RN_JAVA_HOME', 'LYNX_JAVA_HOME', 'LYNX_GRADLE', 'LYNX_POD'])('%s 改变后旧门禁身份失效', async (key) => {
     vi.stubEnv(key, 'initial')
     const initial = await collectIdentity(process.cwd())
     vi.stubEnv(key, 'changed')

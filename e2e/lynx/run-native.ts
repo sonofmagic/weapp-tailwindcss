@@ -5,6 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
+import { androidSdkRoot } from '../react-native/native-toolchain'
 import { buildCompatibilityBundle } from './build'
 import { exampleDir, lynxIntermediateDir, repoRoot } from './catalog'
 import { resolveIosAppContainer } from './ios-container'
@@ -63,7 +64,7 @@ async function collectIosArtifacts(container: string, artifactDir: string) {
 }
 
 async function installedAndroidCompileSdk() {
-  const sdkRoot = process.env['ANDROID_SDK_ROOT'] ?? process.env['ANDROID_HOME']
+  const sdkRoot = androidSdkRoot(process.env, process.platform, undefined, false)
   if (!sdkRoot) {
     return undefined
   }

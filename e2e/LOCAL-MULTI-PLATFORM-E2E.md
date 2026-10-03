@@ -85,7 +85,7 @@ pnpm e2e:local:full-report --preflight-report <本轮-report.json>
 
 demo 工作流在矩阵检查后先执行 static 快照和多平台构建产物断言，再进入微信 IDE、watch HMR 和 H5。多平台构建范围固定为矩阵中 `status: ci` 的可执行 case；普通 uni-app Vite 的 H5 构建与浏览器 HMR 通过 `e2e:uni:h5` 单独执行。矩阵中登记为 local 的额外平台仍按本次任务涉及范围选择专用入口。
 
-需要补齐独立类型、打包、脚本、模板、React Native/Lynx 原生与性能回归时，在同一个入口增加 `--extended --baseline-ref <任务起始提交的完整SHA>`，且同时保留 `--quality`。例如：
+需要补齐独立类型、打包、脚本、模板、React Native/Lynx 原生与性能回归时，在同一个入口增加 `--extended --baseline-ref <任务起始提交的完整SHA>`，且同时保留 `--quality`。本轮预检必须从 `pnpm e2e:preflight prepare --extended` 开始；普通报告不能领取扩展流程。完成本轮 computer use 与 verify 后执行：
 
 ```bash
 pnpm e2e:demo:workflow:local --quality --extended --baseline-ref <任务起始提交的完整SHA> --preflight-report <本轮-report.json>
@@ -93,7 +93,7 @@ pnpm e2e:demo:workflow:local --quality --extended --baseline-ref <任务起始�
 
 扩展模式要求固定的完整提交 SHA，禁止以移动分支充当性能基线；性能命令及基线会写入阶段报告。新增阶段共享本轮门禁，任一失败均停止。独立质量检查在 static 前完成，模板构建/HMR/微信 IDE 与启动矩阵在标准 IDE 阶段前完成；标准多端截图之后串行执行 RN Web/Android/iOS、Lynx Android/iOS 和 synthetic/framework 性能门禁。canonical template 与 RN/Lynx 静态测试由 static 统一覆盖，不重复执行。
 
-扩展模式固定 `CI=1`，清除局部用例过滤、旧二进制和原生工作目录复用配置，禁用跳过安装/构建及自动更新基线；工具路径、设备和超时配置仍需与预检一致。RN/Lynx 原生验收使用本轮绑定的 Android/iOS 模拟器；额外需要对应的 JDK/Gradle、Xcode/CocoaPods，以及 Lynx 的 xcodegen，缺失时记录阻塞，不将跳过计为通过。历史 Issue 的特殊版本对照与人工诊断按关联改动另行执行，不属于扩展模式的默认覆盖。
+扩展模式固定 `CI=1`，清除局部用例过滤、旧二进制和原生工作目录复用配置，禁用跳过安装/构建及自动更新基线；工具路径、设备和超时配置仍需与预检一致。RN/Lynx 原生验收使用本轮绑定的 Android/iOS 模拟器；`prepare --extended`、verify、领取前会检查额外工具链，RN/Lynx 对应原生阶段前再次复查命令、版本与组件。检查遵循运行时实际选择：RN 使用 `RN_JAVA_HOME`/Android Studio JBR，Lynx 使用 `LYNX_JAVA_HOME`/`JAVA_HOME` 与 `LYNX_GRADLE`；Java 需 17 以上，当前 Lynx AGP 8.7.3 需 Gradle 8.9 以上的 8.x。Android SDK 两个环境变量同时设置时必须指向同一目录；检查所选 platform 的 `android.jar`、Lynx Build Tools 35.0.0 以及 RN 安装版本声明的 Build Tools/NDK。iOS 分别检查 RN 的 PATH `pod`、Lynx 的 `LYNX_POD` 和 `xcodegen`。工具缺失立即阻断，不自动安装；工具链预检不代表原生编译通过。历史 Issue 的特殊版本对照与人工诊断按关联改动另行执行，不属于扩展模式的默认覆盖。
 
 视觉测试的 `DEMO_VISUAL_STYLE_ISOLATION_VARIANT` 和 IDE 的 `E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY` 也会清除：uni-app x 恢复两种样式隔离模式，IDE HMR 恢复默认页面可见性要求。既有用例级可见性例外仍按原逻辑处理，不能将它们的产物证据描述为实时页面验收。
 

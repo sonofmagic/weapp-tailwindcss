@@ -17,6 +17,7 @@ import { androidExpoDevice } from './android-device'
 import { androidScreenProbes, findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
 import { createExpoNativeEnvironment } from './native-environment'
+import { reactNativeAndroidToolchain } from './native-toolchain'
 import { evaluateNativeWait } from './native-wait'
 import { stopOwnedProcess } from './process'
 import { createRuntimeArtifacts } from './runtime-artifacts'
@@ -302,6 +303,7 @@ function withNativeEnvironment(report: ReactNativeReport, environment: Partial<R
 }
 
 async function main() {
+  const toolchain = platform === 'android' ? await reactNativeAndroidToolchain() : undefined
   await fs.rm(artifacts, { recursive: true, force: true })
   await fs.mkdir(artifacts, { recursive: true })
   if (updateBaseline) { await fs.mkdir(reportsDir, { recursive: true }) }
@@ -330,19 +332,8 @@ async function main() {
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
   const metroLogFile = await fs.open(metroLogPath, 'w')
-  const androidStudioJavaHome = '/Applications/Android Studio.app/Contents/jbr/Contents/Home'
-  const hasAndroidStudioJava = process.platform === 'darwin'
-    ? await fs.access(androidStudioJavaHome).then(() => true, () => false)
-    : false
-  const javaHome = platform === 'android'
-    ? process.env['RN_JAVA_HOME']
-    ?? (hasAndroidStudioJava ? androidStudioJavaHome : process.env['JAVA_HOME'])
-    : undefined
-  const androidHome = process.env['ANDROID_HOME']
-    ?? process.env['ANDROID_SDK_ROOT']
-    ?? (process.platform === 'darwin'
-      ? path.join(os.homedir(), 'Library', 'Android', 'sdk')
-      : path.join(os.homedir(), 'Android', 'Sdk'))
+  const javaHome = toolchain?.javaHome
+  const androidHome = toolchain?.sdk
   const env = {
     ...createExpoNativeEnvironment(runtimeHost, reportUrl),
     ...(javaHome ? { JAVA_HOME: javaHome } : {}),

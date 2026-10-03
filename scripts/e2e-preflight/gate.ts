@@ -6,7 +6,7 @@ import { readReport, request } from './client'
 import { collectIdentity } from './io'
 import { iosSimulatorDestination } from './targets'
 
-export function stageChecks(name: string): ProbeId[] {
+export function stageChecks(name: string, extended = false): ProbeId[] {
   if (/visual-weapp-h5-app/i.test(name)) {
     return ['wechat', 'hbuilderx', 'ios', 'android', 'harmony', 'web']
   }
@@ -24,6 +24,14 @@ export function stageChecks(name: string): ProbeId[] {
   }
   if (/h5|web|browser/i.test(name)) {
     ids.push('web')
+  }
+  if (extended && /React Native|Lynx/i.test(name)) {
+    if (ids.includes('android')) {
+      ids.push('runtime-android')
+    }
+    if (ids.includes('ios')) {
+      ids.push('runtime-ios')
+    }
   }
   return [...new Set(ids)]
 }
@@ -76,20 +84,20 @@ async function recordBlock(root: string, error: unknown, stage?: string) {
   return dir
 }
 
-export async function enterFullTestGate(file?: string, root = process.cwd()) {
+export async function enterFullTestGate(file?: string, root = process.cwd(), extended = false) {
   try {
     if (!file) {
       throw new Error('缺少 --preflight-report；先执行 pnpm e2e:preflight prepare 和 verify。')
     }
     const report = await readReport(file)
     const identity = await collectIdentity(root)
-    const claimed = await request<{ lease: string, bindings: Record<string, Record<string, string>> }>(report, 'claim', { identity, consumer: `${process.pid}:${root}` })
+    const claimed = await request<{ lease: string, bindings: Record<string, Record<string, string>> }>(report, 'claim', { identity, consumer: `${process.pid}:${root}`, extended })
     const env = bindingEnvironment(claimed.bindings)
     return {
       env,
       async check(stage: string) {
         try {
-          await request(report, 'check', { identity: await collectIdentity(root), lease: claimed.lease, ids: stageChecks(stage) })
+          await request(report, 'check', { identity: await collectIdentity(root), lease: claimed.lease, ids: stageChecks(stage, extended) })
         }
         catch (error) {
           const dir = await recordBlock(root, error, stage)

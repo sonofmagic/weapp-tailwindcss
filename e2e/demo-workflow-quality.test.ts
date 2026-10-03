@@ -53,7 +53,7 @@ describe('本地质量验证的全面测试门禁', () => {
   it('门禁失败时不启动质量或设备步骤', async () => {
     mocks.enter.mockRejectedValueOnce(new Error('本轮预检未通过'))
     await expect(runDemoE2eWorkflow(['--local', '--quality'])).rejects.toThrow('本轮预检未通过')
-    expect(mocks.enter).toHaveBeenCalledWith(undefined)
+    expect(mocks.enter).toHaveBeenCalledWith(undefined, process.cwd(), false)
     expect(mocks.spawn).not.toHaveBeenCalled()
     expect(gate.close).not.toHaveBeenCalled()
   })
@@ -106,7 +106,7 @@ describe('本地质量验证的全面测试门禁', () => {
     }
     expect(commands.filter(command => command === 'pnpm e2e:static')).toHaveLength(1)
     expect(commands).not.toContain('pnpm e2e:mp')
-    expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current-report.json')
+    expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current-report.json', process.cwd(), false)
     expect(gate.close).toHaveBeenCalledTimes(1)
     expect(events[0]).toBe('claim')
     expect(events.at(-1)).toBe('close')
