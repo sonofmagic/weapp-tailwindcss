@@ -47,7 +47,11 @@ pnpm agents:check
 
 定向回归四个文件共 73 项、核心矩阵 12 项通过；新 helper 与回归通过包含 `exactOptionalPropertyTypes` 的严格类型检查，ESLint 与规则检查通过。
 
-本次只验证工程入口，没有修改 demo、样式断言或 static 快照，未启动 IDE/设备。Harmony 设备对照与取消完成屏障仍未验证；不得把定向 mock 回归写成真实 HMR 已修复。
+以上工程回归没有修改 demo、样式断言或 static 快照，不代表设备 HMR 通过。
+
+主任务在 `43d546478` 完成新的预检、后台真实输入/点击/截图和 verify，以轮次 `aad1b95a-6fe0-4de2-b9cc-83ab201f8d66` 单独执行 VDOM Harmony 根因对照。实际 Alpha 为 `5.31.2026093020-alpha`，OpenHarmony 模拟器为 `127.0.0.1:5557`。身份日志为 `canonical-root`，项目根、launch 参数、`compileConfig.aceModuleRoot` 和 patch 路径均为同一任务工作树的真实路径；本轮没有再出现 `Failed to find module info`。原始 `buildConfig.json`、厂商日志、首屏与更新截图/布局保存在该轮 `harmony-canonical-diagnostic` 目录。
+
+首屏 marker 及截图通过；第一次更新完成后，新 marker 也可见。但日志在 `23:08:55.451` 首次 App Launch 后，`23:09:01.631` 报热更新完成，`23:09:02.006` 再次 App Launch，结构探针 PID 从 `10691` 变为 `10755`。因此严格 HMR 判为 `restarted`，未执行第二轮更新，不能把页面更新可见或编译错误消失写成不重启 HMR 通过。本轮是独立根因对照，不计入此前已在 watch 阶段停止的完整编排。
 
 真实验证需重新预检，并串行记录本轮 host、版本和 `[hbuilderx-app-project]` 身份，核对输出工程、patch 配置的 `aceModuleRoot`、编译错误路径都使用同一真实根。检查初次启动、连续两轮 HMR、恢复后的页面与产物；确认没有错误 workspace 的项目类型提示或旧 alias 路径，也没有 native fallback。停止后仍需确认任务状态，不能依据不再删除 alias 推断 native 任务已结束。
 
