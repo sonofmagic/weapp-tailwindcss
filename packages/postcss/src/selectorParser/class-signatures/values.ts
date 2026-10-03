@@ -2,6 +2,8 @@ import type { Declaration, Root } from 'postcss'
 import valueParser from 'postcss-value-parser'
 import { MINI_PROGRAM_THEME_SCOPE_SELECTORS } from '../../compat/mini-program-css/selectors'
 import { decodeCssIdentifier, getCssAtRulePrelude, getCssCalcVariableReferences, getCssCustomPropertyName, isCssVarFunction } from '../../utils/css-custom-property'
+import { canInlineMarginValue, isStaticNumericFallback } from './declaration-proof'
+import { readValidVariableName } from './variable-name'
 
 interface ResolvedSignature {
   nodes: unknown[]
@@ -13,15 +15,19 @@ type ResolveVariable = (name: string) => ResolvedSignature | undefined
 
 const maxSignatureSize = 65_536
 
-function variableName(node: valueParser.FunctionNode) {
-  const comma = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
-  return getCssCustomPropertyName(valueParser.stringify(comma < 0 ? node.nodes : node.nodes.slice(0, comma)))
-}
-
-function serializeNodes(nodes: valueParser.Node[]): unknown[] {
+function serializeNodes(nodes: valueParser.Node[], resolveVariable?: ResolveVariable): unknown[] {
   return nodes.filter(node => node.type !== 'space' && node.type !== 'comment').flatMap((node): unknown[] => {
     if (node.type === 'function') {
-      return [[node.type, node.value, serializeNodes(node.nodes)]]
+      let children = node.nodes
+      if (resolveVariable && !node.unclosed && isCssVarFunction(node.value)) {
+        const comma = children.findIndex(child => child.type === 'div' && child.value === ',')
+        const name = readValidVariableName(node)
+        // 只删除无依赖且永不选中的静态 fallback，不内联自定义属性或改变依赖图。
+        if (comma >= 0 && name && isStaticNumericFallback(children.slice(comma + 1)) && resolveVariable(name)) {
+          children = children.slice(0, comma)
+        }
+      }
+      return [[node.type, node.value, serializeNodes(children, resolveVariable)]]
     }
     return [[node.type, node.value, node.type === 'string' ? node.quote : undefined]]
   })
@@ -35,7 +41,7 @@ function resolveNodes(nodes: valueParser.Node[], resolveVariable: ResolveVariabl
     }
     let fragment: ResolvedSignature
     if (node.type === 'function' && isCssVarFunction(node.value)) {
-      const name = variableName(node)
+      const name = readValidVariableName(node)
       const resolved = name && !node.unclosed ? resolveVariable(name) : undefined
       const raw = resolved ? [] : serializeNodes([node])
       fragment = resolved ?? { nodes: raw, size: JSON.stringify(raw).length, unresolved: true }
@@ -128,7 +134,7 @@ export function createCssValueSignature(root: Root) {
     const value = decl.value.trim()
     const previous = bindings.get(name)
     if (!isUnconditionalRootDeclaration(decl) || !isStaticVariableValue(value)
-      || (previous !== undefined && JSON.stringify(valueSignature(previous)) !== JSON.stringify(valueSignature(value)))) {
+      || (previous !== undefined && previous !== value)) {
       unsafe.add(name)
     }
     else {
@@ -160,10 +166,18 @@ export function createCssValueSignature(root: Root) {
     cache.set(name, result)
     return result
   }
-  return (value: string) => {
+  const bindingNodes = (name: string) => resolveVariable(name) ? valueParser(bindings.get(name)!).nodes : undefined
+  return (value: string, property: string) => {
     const nodes = valueParser(value).nodes
+    if (getCssCustomPropertyName(property)) {
+      return serializeNodes(nodes, resolveVariable)
+    }
     const resolved = value.length <= maxSignatureSize ? resolveNodes(nodes, resolveVariable) : undefined
-    // 双方必须仍延迟到 computed-value 阶段；纯字面量可能在解析时即被丢弃。
+    // 完全内联必须另证属性值合法；其它声明仍要求双方保留 computed-value 阶段。
+    if (resolved && !resolved.unresolved && canInlineMarginValue(property, nodes, bindingNodes)) {
+      // 合法性必须参加两侧签名，避免无效 calc 丢弃空白后碰巧与合法展开结果相同。
+      return [['valid-margin-value', resolved.nodes]]
+    }
     return resolved?.unresolved ? resolved.nodes : serializeNodes(nodes)
   }
 }

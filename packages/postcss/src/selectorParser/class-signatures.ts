@@ -1,14 +1,12 @@
 import type { ChildNode } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import { postcss } from '../postcss-runtime'
-import { getCssCustomPropertyName } from '../utils/css-custom-property'
 import { createCssValueSignature, valueSignature } from './class-signatures/values'
 
-function contentSignature(nodes: ChildNode[], declarationValueSignature: (value: string) => unknown[]): unknown[] {
+function contentSignature(nodes: ChildNode[], declarationValueSignature: (value: string, property: string) => unknown[]): unknown[] {
   return nodes.filter(node => node.type !== 'comment').map((node): unknown => {
     if (node.type === 'decl') {
-      const signature = getCssCustomPropertyName(node.prop) ? valueSignature : declarationValueSignature
-      return ['decl', node.prop, signature(node.value), Boolean(node.important)]
+      return ['decl', node.prop, declarationValueSignature(node.value, node.prop), Boolean(node.important)]
     }
     if (node.type === 'atrule') {
       return ['atrule', node.name, valueSignature(node.params), contentSignature(node.nodes ?? [], declarationValueSignature)]

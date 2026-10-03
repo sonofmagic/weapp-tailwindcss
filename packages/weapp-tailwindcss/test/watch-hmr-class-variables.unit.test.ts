@@ -60,8 +60,8 @@ describe('watch class evidence with global variables', () => {
   })
 
   it.each([
-    ['pure literal', 'margin-top:var(--gutter)', 'margin-top:8rpx'],
-    ['discarded fallback', 'margin-top:var(--gutter,var(--missing))', 'margin-top:8rpx'],
+    ['pure literal in an unproven property', 'padding-top:var(--gutter)', 'padding-top:8rpx'],
+    ['discarded fallback in an unproven property', 'padding-top:var(--gutter,var(--missing))', 'padding-top:8rpx'],
     ['parse-time invalid literal', 'color:red;color:var(--gutter)', 'color:red;color:8rpx'],
     ['different remaining variable', 'margin-top:calc(var(--gutter) * var(--a))', 'margin-top:calc(8rpx * var(--b))'],
     ['different remaining fallback', 'margin-top:calc(var(--gutter) * var(--a,1))', 'margin-top:calc(8rpx * var(--a,2))'],
