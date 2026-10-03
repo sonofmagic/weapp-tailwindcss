@@ -189,7 +189,10 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
 
   if (!signal || signal.hasPresetEnvFeatures) {
-    preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => createPresetEnvPlugin(presetEnvOptions)))
+    // 小程序和 WebView 保留运行时状态，UVUE 继续使用原生静态降级契约。
+    const preserveRuntimeVariables = options.appType === 'uni-app-x'
+      && !(options.uniAppX === true && options.uniAppXCssTarget === 'uvue')
+    preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => createPresetEnvPlugin(presetEnvOptions, preserveRuntimeVariables)))
   }
   if (!signal || signal.hasModernColorFunction) {
     preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))

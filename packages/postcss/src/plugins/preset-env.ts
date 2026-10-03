@@ -1,6 +1,7 @@
 import type { Declaration, Plugin } from 'postcss'
 import postcss from 'postcss'
 import postcssPresetEnv from 'postcss-preset-env'
+import { preserveTailwindRuntimeVariables } from './preset-env/runtime-variables'
 
 function isolateDeclaration(declaration: Declaration) {
   const parent = declaration.parent
@@ -68,9 +69,12 @@ function preserveIndependentHexAlphaFallback(plugin: Plugin): Plugin {
   }
 }
 
-export function createPresetEnvPlugin(options: Parameters<typeof postcssPresetEnv>[0]) {
+export function createPresetEnvPlugin(options: Parameters<typeof postcssPresetEnv>[0], preserveRuntimeVariables = false) {
   const preset = postcssPresetEnv(options)
   preset.plugins = preset.plugins.map((plugin) => {
+    if (preserveRuntimeVariables && typeof plugin === 'object' && 'postcssPlugin' in plugin && plugin.postcssPlugin === 'postcss-custom-properties') {
+      return preserveTailwindRuntimeVariables(plugin)
+    }
     return typeof plugin === 'object' && 'postcssPlugin' in plugin && plugin.postcssPlugin === 'postcss-color-hex-alpha'
       ? preserveIndependentHexAlphaFallback(plugin)
       : plugin
