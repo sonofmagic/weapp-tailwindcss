@@ -83,6 +83,29 @@ profile 的时钟原点与 `process.hrtime` 不同，本轮没有记录跨时钟
 
 证据位于 `e2e/.artifacts/uni-app-x-alpha/5e2a3e08-c1ad-44f6-8e28-30720ba00b85/iconify-verified-fixes/`，包括两端报告、原始日志、首批样本、主机状态和收尾核对。四份相关源码与 HEAD 字节一致、工作区干净；记录的 53 个所属 PID 均退出，预检为 finished，临时标签为 0，微信现有服务登录仍为 true。
 
+## 预选复杂新增与时钟校准
+
+代码 `9e5275411`、轮次 `8c12a7a0-3da4-44ac-bdb8-6ed1bc69724c` 再次完成新预检、真实 computer use、verify 和领取后，只诊断预先选定的 `template complex-corpus add`。这次没有再跑完整 watch 取绿。
+
+临时 preload 同时核对 runner 与独立编译器身份。runner 在保存源码前记录 baseline add、baseline delete、complex add 三个真实动作；普通 `passed` 汇总行不计入阶段。编译器在第二次增量 DONE 后启动 profiler，第三次增量开始时核对动作顺序和采样 ACK，在第三次主插件 total 后停止采样，确认对应 finalizer 和 DONE 后才标记采集完成。阶段身份错误、采样启动过晚、第四次增量、超时或时钟区间无交集均为 incomplete，不选择另一个增量替代。
+
+通过 `Profiler.start` / `Profiler.stop` 请求前后的 hrtime 建立 `hrtime = profiler time + offset` 区间，保留原始请求/响应及 `performance.now` 校准对，不假设两个时钟有相同原点。合成验证使用真实 Node inspector，覆盖正常三轮、真实 passed 汇总行与错误阶段身份；它只验证采集器，不能替代实际运行。
+
+| 实际观测 | 结果与解释 |
+| --- | --- |
+| 目标 | 第三次增量，runner 与编译器身份和顺序一致；目标窗口 2390.865ms |
+| profile | 3249 个样本，5138.208ms，包含前置空闲；offset 交集宽度 72.907ms |
+| 保守窗口 | 1888 个样本的整个区间在所有合法 offset 下均落入目标，权重 2317.333ms；122 个边界样本不用于确定归属 |
+| 插件日志 | 主插件 1597ms，`generateCss.build` 1053ms、`generateBundle` 533ms；后续 finalizer 37ms，不在主插件窗口内 |
+| 进程计数 | 目标窗口 user 2767.755ms、system 390.723ms；计数含整个进程及线程，不能分摊为插件函数 CPU |
+| 主机/调度 | 16 逻辑 CPU，目标开始 load 19.480/21.238/26.549；26012 次非自愿上下文切换 |
+| 稳定采样线索 | 厂商 UTS `transform → getCompiled/getCached` 645 个样本、836.546ms 权重，其中 TS `synchronizeHostData/getProgram` 478 个样本、620.086ms；GC 221 个样本、280.496ms |
+| 采样间隔 | 保守窗口最大单次间隔 4.709ms；上述调用链上下游重叠，不能累计为独立耗时 |
+
+这些权重描述采样栈，不等于精确 CPU 时间，也不能直接把厂商 UTS 的权重从插件墙钟日志扣除。当前证据没有证明新的可删除重复工作，不据此改写预算、计时口径或追加产品补丁。
+
+证据保存在 `e2e/.artifacts/uni-app-x-alpha/8c12a7a0-3da4-44ac-bdb8-6ed1bc69724c/watch-cpu-complex/`，包含 `capture.json`、`incremental.cpuprofile`、`target-selection.json`、`bounded-profile-analysis.json`、本轮脚本和原始日志。采集落盘后合作取消，退出 130、状态 `diagnostic-captured-cancelled`，不是 watch passed。三个相关源码文件与 HEAD 原文一致、工作区干净，记录中的 29 个所属 PID 均退出，预检 finished、临时标签 0、微信登录仍为 true。
+
 ## 适用边界
 
 本轮没有完成 watch，也没有完成 Alpha 16 阶段或扩展 46 阶段。真实微信编译器的 CPU 诊断不能替代微信 IDE 页面验收，更不能证明 Android、iOS 或 Harmony 的严格 HMR 和停止协议已修复。
