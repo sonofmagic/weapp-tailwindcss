@@ -1,6 +1,6 @@
 ---
 status: partial
-issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1269
+issue: https://github.com/weapp-tailwindcss/weapp-tailwindcss/pull/1269
 baseline: b5b52baff54ec28c0b2dfd67ba8b24a1fad9c8df
 regressions:
   - packages/weapp-tailwindcss/test/watch-hmr-iconify-evidence.unit.test.ts
@@ -38,11 +38,21 @@ HBuilderX uni-app x VDOM 的 watch 报告将 Iconify 文案更新记录为 4 ms�
 - 定向 ESLint 显式禁用 Prettier；执行 `git diff --check` 与 `pnpm agents:check`。
 - 严格 TypeScript 源码图检查中，新证据模块、探针模块及测试没有诊断。`extended.ts` 的两条 `exactOptionalPropertyTypes` 错误位于原有配置复制函数，使用基线文件内容对照仍存在；依赖源码图另有既存诊断，不能宣称全图类型检查通过。
 
+### 整合后的真实编译器复验
+
+代码 `886a43d98`、轮次 `5e2a3e08-c1ad-44f6-8e28-30720ba00b85` 在新预检、当前会话真实输入/点击/截图、verify、领取与逐阶段复查后，执行现有 HBuilderX Alpha VDOM 微信 watch 用例。主树整合后 191 项定向回归全部通过；实际运行不跳过构建、仅一次尝试、不加载 profiler，保留原阈值。
+
+本轮 inject、content 和 rollback 均完成稳定后验证。content 的 `updatedFiles` 包含页面 WXML、JS、页面 WXSS 与根 app WXSS；本轮阶段标识与图标、内容在同一 WXML class 载体内成立。产物命中耗时 1897ms，包含稳定后复验的有效耗时 4913ms；回滚为 8074ms / 11210ms，WXML 和 JS 已更新，两个阶段标识均移除。此前固定 CSS 即可通过的 4ms 记录仍保留为无效旧证据。
+
+完整 watch 在 206.53 秒后退出 1，原性能门禁报 `case-template-preferred:hot-update 685ms > 500ms`，因此只有上述产物功能证据通过，整体性能未通过。该流程没有打开实际业务 IDE 页面，不能据此宣称小程序可视 HMR 通过。
+
+原始报告、日志及清理证据保存在 `e2e/.artifacts/uni-app-x-alpha/5e2a3e08-c1ad-44f6-8e28-30720ba00b85/iconify-verified-fixes/`。关联源码恢复为 HEAD 原始字节、工作区干净，采样中的 53 个所属 PID 均退出，临时标签为 0，微信现有服务只读登录检查仍为 true。
+
 ## 适用边界
 
 这是编译产物的 class 载体验收，不等价于设备或浏览器已呈现该节点。JS 不解释任意函数、复杂间接绑定或运行可达性；未识别的载体应缺证失败。Web 的 DOM 与计算样式验收由独立链路负责。
 
-本次只修改私有测试工具、测试及复盘，没有修改 demo 或公开包样式输出，不生成 static 基线和公开 change intent。真实 HBuilderX / 设备验收由主任务在整合提交后重新预检执行；此前 4 ms 的 Iconify 记录不再被视为功能通过证据。
+本次只修改私有测试工具、测试及复盘，没有修改 demo 或公开包样式输出，不生成 static 基线和公开 change intent。真实编译器复验仅覆盖上述 VDOM 微信产物；其他框架的实际运行与设备可见性不由单测或本轮产物验收替代。
 
 ## 规则评估
 

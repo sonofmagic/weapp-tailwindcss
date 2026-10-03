@@ -30,9 +30,17 @@ TS、TSX、JS、JSX 的默认注释载体继续承担源码候选扫描回归。
 - 对修改的 TypeScript 文件执行 `pnpm exec eslint --no-ignore`，通过。
 - `pnpm exec tsc --project tools/weapp-tailwindcss-scripts/tsconfig.json --noEmit` 未全绿；该配置连同传递源码报告 217 项诊断。通过 TypeScript compiler host 将 `web.ts` 替换为基线源码并排除新增模块进行对照，基线同为 217 项；按文件、错误码与消息逐项比较，新增和移除均为 0。未为本修复更改无关类型定义。
 
+### 整合后的真实浏览器复验
+
+代码 `886a43d98`、轮次 `5e2a3e08-c1ad-44f6-8e28-30720ba00b85` 完成新预检、当前会话真实输入/点击/截图、verify 与门禁后，运行 `e2e/watch/hot-update/demo/uni-app-vite-tailwindcss-v4.test.ts` 的 Web-only 链路。`CI=1`、`--update=none`、重新构建、仅一次尝试，1 项测试在 30.33 秒内通过。
+
+活页面样式表包含本轮 UUID 的 inject/content 两种选择器，保留三个图标选择器，内容更新有效耗时 987ms。该用例的普通模板更新与回滚、标题颜色以及脚本绑定背景色也完成实际 DOM / 计算样式验证；Iconify 本身仍是样式表证据，不额外声称图标节点视觉验收。
+
+证据为 `e2e/.artifacts/uni-app-x-alpha/5e2a3e08-c1ad-44f6-8e28-30720ba00b85/iconify-verified-fixes/web-report.json` 及同目录 `run.log`、`cleanup.json`。这是普通 uni-app Vite H5，不能计作 HBuilderX Alpha 原生 Web 验收。后续微信 watch 的性能失败不改变该独立阶段的通过事实，也不能合并称作全流程通过。
+
 ## 适用边界
 
-这是工具契约回归，真实 Web 验收仍需新预检和实际浏览器证据。未修改 demo、持久样式输出或 static 基线；未调整性能阈值、超时和默认覆盖。
+工具契约已有单测及上述真实 Web 复验，其他框架的实际运行不由这一用例替代。未修改 demo、持久样式输出或 static 基线；未调整性能阈值、超时和默认覆盖。
 
 ## 规则评估
 

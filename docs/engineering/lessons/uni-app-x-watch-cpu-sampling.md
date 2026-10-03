@@ -73,6 +73,16 @@ profile 的时钟原点与 `process.hrtime` 不同，本轮没有记录跨时钟
 
 运行前 16 个逻辑 CPU、load 为 34.007/35.211/38.534。选定的 complex add 样本为 `generateCss.build=101ms`、`generateBundle=493ms`、其他 hooks 共 5ms；其中 `entries.plan=165ms`、`tasks.css=245ms` 仍是墙钟/等待时间。`cleanCacheHit` 仅表示缓存中存在记录，而非当前 CSS 已直接复用。旧 profile 没有足够的阶段与时钟对应证据来认定本次剩余 CPU 热点，也不能仅凭主机负载将失败归因于环境。若继续 CPU 诊断，应预先选定一次增量场景，校准 profile 与阶段时钟，并记录进程 CPU/上下文切换；不能拿诊断样本替代无 profiler 的验收。
 
+## Iconify 证据修复后的无采样复验
+
+代码 `886a43d98`、轮次 `5e2a3e08-c1ad-44f6-8e28-30720ba00b85` 在新预检与真实 computer use 后，串行执行普通 uni-app Vite Web 与 Alpha VDOM 微信 watch。Web 阶段通过；微信编译器的本轮 Iconify class 载体与稳定后撤销证据已通过，详见 [Iconify 阶段证据复盘](iconify-hmr-phase-evidence.md)。这轮不运行实际业务微信 IDE 页面，也不进入 Alpha 原生端。
+
+微信 watch 返回功能 metrics 后在 206.53 秒退出 1，仍是原性能门禁：`case-template-preferred:hot-update 685ms > 500ms`。原始第一批主插件增量共 29 个样本，中位数 876ms，范围 312–5796ms，27 个超过 500ms；排除初始构建、finalizer-only total 及错误日志重播。Iconify 更新的插件耗时 771ms，回滚 5796ms，同样未达到 500ms。
+
+运行前 16 逻辑 CPU 的 load 为 69.713/55.049/38.020；本轮验证目标是修复后的新证据契约，不能将该高负载结果直接与前轮作速度回归对比，也不能直接归零为环境失败。没有重试、放宽阈值或启动新的 profiler。固定性能比较基线仍为任务起始 `4488cabc9`。
+
+证据位于 `e2e/.artifacts/uni-app-x-alpha/5e2a3e08-c1ad-44f6-8e28-30720ba00b85/iconify-verified-fixes/`，包括两端报告、原始日志、首批样本、主机状态和收尾核对。四份相关源码与 HEAD 字节一致、工作区干净；记录的 53 个所属 PID 均退出，预检为 finished，临时标签为 0，微信现有服务登录仍为 true。
+
 ## 适用边界
 
 本轮没有完成 watch，也没有完成 Alpha 16 阶段或扩展 46 阶段。真实微信编译器的 CPU 诊断不能替代微信 IDE 页面验收，更不能证明 Android、iOS 或 Harmony 的严格 HMR 和停止协议已修复。
