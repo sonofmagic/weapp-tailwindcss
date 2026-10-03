@@ -1329,6 +1329,61 @@ importers:
         specifier: catalog:vitest
         version: 5.0.3(@types/node@26.6.4)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.6.4)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.105.1)(sass@1.105.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
+  apps/weapp-tailwindcss-promo-video:
+    dependencies:
+      '@fontsource-variable/jetbrains-mono':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource-variable/noto-sans-sc':
+        specifier: 5.3.0
+        version: 5.3.0
+      qrcode:
+        specifier: 1.5.4
+        version: 1.5.4
+      react:
+        specifier: catalog:react19
+        version: 19.2.8
+      react-dom:
+        specifier: catalog:react19
+        version: 19.2.8(react@19.2.8)
+      remotion:
+        specifier: 4.0.524
+        version: 4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+    devDependencies:
+      '@remotion/bundler':
+        specifier: 4.0.524
+        version: 4.0.524(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/helpers@0.5.23)(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(uglify-js@3.19.3)(webpack-cli@7.2.3)
+      '@remotion/cli':
+        specifier: 4.0.524
+        version: 4.0.524(@swc/core@1.16.2(@swc/helpers@0.5.23))(@swc/helpers@0.5.23)(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(typescript@5.9.3)(uglify-js@3.19.3)(webpack-cli@7.2.3)
+      '@remotion/renderer':
+        specifier: 4.0.524
+        version: 4.0.524(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.6.2
+      '@types/qrcode':
+        specifier: ^1.5.6
+        version: 1.5.6
+      '@types/react':
+        specifier: catalog:react19
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: catalog:react19
+        version: 19.2.5(@types/react@19.2.18)
+      execa:
+        specifier: ^9.6.1
+        version: 9.6.1
+      tsx:
+        specifier: catalog:tsx
+        version: 4.23.15
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+      vitest:
+        specifier: catalog:vitest
+        version: 5.0.2(@types/node@26.6.2)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.6.2)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.105.0)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+
   benchmark/app:
     dependencies:
       vue:
