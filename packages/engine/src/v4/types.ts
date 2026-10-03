@@ -149,6 +149,8 @@ export interface TailwindV4StyleGenerateResult extends TailwindV4GenerateResult 
 export interface TailwindV4DesignSystem {
   parseCandidate: (candidate: string) => unknown[]
   candidatesToCss: (candidates: string[]) => Array<string | null | undefined>
+  /** 当前候选集合的生成顺序；可选以兼容只提供校验能力的实现。 */
+  getClassOrder?: ((candidates: string[]) => Array<[string, bigint | null]>) | undefined
 }
 
 export interface TailwindV4Engine {

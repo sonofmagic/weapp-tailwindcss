@@ -5,6 +5,7 @@ import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
 import { collectCandidates, createTailwindV4SourceCacheKey, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates } from './incremental-cache'
+import { orderLocalUtilitySource } from './local-utility-order'
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
@@ -28,7 +29,12 @@ export async function generateRawArtifact(
   } = options
   const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
   const cssMacroSource = resolveCssMacroTailwindV4Source(generateSource)
-  const compatibleSource = createCompatibleSource(cssMacroSource, target)
+  const compatibleSource = await orderLocalUtilitySource(
+    createCompatibleSource(cssMacroSource, target),
+    target,
+    resolvedStyleOptions,
+    options.bareArbitraryValues,
+  )
   const compiledScan = options.scanMode === 'compiled'
   const resolvedScanSources = compiledScan ? undefined : await resolveScanSources(generateSource, scanSources)
   const filesystemCandidates = Array.isArray(resolvedScanSources)

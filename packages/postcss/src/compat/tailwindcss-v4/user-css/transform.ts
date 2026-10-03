@@ -3,6 +3,7 @@ import type { GeneratedThemeDeclarationResolver } from './generated-cleanup'
 import { applyConfiguredCssCalc } from '../../../plugins/applyConfiguredCssCalc'
 import { filterExistingCssRules } from '../../../vite-css-rules'
 import { removeUnsupportedMiniProgramAtRules } from '../../mini-program-css'
+import { removeLocalUtilityMarkers } from '../../uni-app-x/local-utility-order'
 import { removeTailwindApplyAtRules } from './at-rules'
 import { removeTailwindSourceDirectives } from './directives'
 import { removeTailwindV4GeneratedUserCssArtifacts } from './generated-cleanup'
@@ -22,11 +23,12 @@ export async function transformGeneratorUserCss(
     processed?: boolean | undefined
   },
 ) {
-  if (source.trim().length === 0) {
+  const userCss = removeLocalUtilityMarkers(source)
+  if (userCss.trim().length === 0) {
     return ''
   }
   if (options.processed) {
-    const compiledSource = await options.compileAuthorCssFunctions?.(source) ?? source
+    const compiledSource = await options.compileAuthorCssFunctions?.(userCss) ?? userCss
     const cleanedSource = options.generatorTarget === 'weapp'
       ? removeTailwindV4GeneratedUserCssArtifacts(
           unwrapMiniProgramCascadeLayers(
@@ -45,7 +47,7 @@ export async function transformGeneratorUserCss(
     )
   }
   const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
-    stripTailwindSourceMediaFragments(source),
+    stripTailwindSourceMediaFragments(userCss),
   )
   const cleanedSource = removeTailwindSourceDirectives(
     removeTailwindV4GeneratorAtRules(repairedSource),
