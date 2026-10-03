@@ -66,6 +66,19 @@ it('自行退出与后代停止同时失败时保留原退出错误和清理错�
   expect(failure.errors[1]).toBe(error)
 })
 
+it('exit 后 close 尚未到达时先失败的清理不会覆盖编译退出首因', async () => {
+  const task = watcher()
+  const result = waitForCompiler(task.child)
+  task.events.emit('exit', 9, null)
+  const error = new Error('descendant pipe remains open')
+  task.stopped.reject(error)
+  const failure = await result.catch(error => error)
+  expect(failure).toBeInstanceOf(AggregateError)
+  expect(failure.errors).toHaveLength(2)
+  expect(failure.errors[0].message).toContain('提前退出：9')
+  expect(failure.errors[1]).toBe(error)
+})
+
 it('停止失败且编译器未退出时仍返回首因并移除自己的监听器', async () => {
   const task = watcher()
   const existing = process.listeners('SIGTERM')

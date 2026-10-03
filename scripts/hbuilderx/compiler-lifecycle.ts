@@ -9,6 +9,8 @@ export async function waitForCompiler(watcher: SpawnedHBuilderXCommand) {
   })
   let stopping: Promise<void> | undefined
   let cancelled = false
+  let primaryExit: Error | undefined
+  const exitError = (code: number | null, signal: NodeJS.Signals | null) => new Error(`HBuilderX 独立微信编译器提前退出：${signal ?? code}；持续 watch 尚未完成。`)
   const stop = (signal: NodeJS.Signals = 'SIGTERM') => {
     stopping ??= watcher.stop(signal)
     void stopping.catch(rejectStop)
@@ -18,7 +20,12 @@ export async function waitForCompiler(watcher: SpawnedHBuilderXCommand) {
     stop(signal)
   }
   // exit 早于 close；此时受管进程组身份仍有效，必须立即领取清理句柄。
-  const onExit = () => stop()
+  const onExit = (code: number | null, signal: NodeJS.Signals | null) => {
+    if (!cancelled) {
+      primaryExit = exitError(code, signal)
+    }
+    stop()
+  }
   watcher.child.once('exit', onExit)
   const handlers = {
     SIGINT: () => onSignal('SIGINT'),
@@ -28,10 +35,12 @@ export async function waitForCompiler(watcher: SpawnedHBuilderXCommand) {
     process.on(signal, handlers[signal])
   }
   let failure: { error: unknown } | undefined
+  let cleanupFailure: { error: unknown } | undefined
   try {
     const exit = await Promise.race([watcher.closed, stopFailure])
     if (!cancelled) {
-      throw new Error(`HBuilderX 独立微信编译器提前退出：${exit.signal ?? exit.code}；持续 watch 尚未完成。`)
+      primaryExit ??= exitError(exit.code, exit.signal)
+      throw primaryExit
     }
   }
   catch (error) {
@@ -45,15 +54,21 @@ export async function waitForCompiler(watcher: SpawnedHBuilderXCommand) {
       await stopping
     }
     catch (error) {
-      failure = { error: failure && failure.error !== error
-        ? new AggregateError([failure.error, error], '微信编译器运行与进程停止均失败。', { cause: failure.error })
-        : error }
+      cleanupFailure = { error }
     }
     for (const signal of ['SIGINT', 'SIGTERM'] as const) {
       process.removeListener(signal, handlers[signal])
     }
   }
-  if (failure) {
-    throw failure.error
+  const errors = [...new Set([
+    ...(primaryExit ? [primaryExit] : []),
+    ...(failure ? [failure.error] : []),
+    ...(cleanupFailure ? [cleanupFailure.error] : []),
+  ])]
+  if (errors.length > 1) {
+    throw new AggregateError(errors, '微信编译器运行与进程停止均失败。', { cause: errors[0] })
+  }
+  if (errors.length) {
+    throw errors[0]
   }
 }
