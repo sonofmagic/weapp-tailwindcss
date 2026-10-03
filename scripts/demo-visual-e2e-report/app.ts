@@ -31,11 +31,9 @@ import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
   assertIosSimulatorToolchain,
-  collectProcessOutput,
   createLocalHBuilderXRunner,
   fileExists,
   hbuilderxAppTimeoutMs,
-  killProcessTree,
   pollIntervalMs,
   readUtf8,
   resolveHdcCommand,
@@ -43,8 +41,7 @@ import {
 } from '../../e2e/hbuilderx-local/process.ts'
 import { findForbiddenRuntimeLogs, findMissingRuntimeLogs, resolveAppRuntimeLogContract } from '../../e2e/hbuilderx-local/render-mode.ts'
 import { appendHmrSourceMutation, createHmrSourceRestore } from '../../e2e/hbuilderx-local/source-mutations.ts'
-import { createHBuilderXProjectAlias } from '../hbuilderx-project-alias.mjs'
-import { closeHBuilderXProjectAlias } from '../hbuilderx-project-lifecycle'
+import { createHBuilderXAppProject } from '../hbuilderx-app-project'
 import { cleanupHBuilderXResources } from '../hbuilderx-project-resources'
 import { countMarkerPixelChanges, locateMarkerColor } from './app-marker-visual.ts'
 import { analyzeHarmonyDomTextPairs, captureAndAnalyzeHarmonyLayout } from './harmony-layout.ts'
@@ -565,7 +562,6 @@ function createProcessExitTracker(child: ChildProcess) {
         throw new Error(`命令失败：HBuilderX app dev exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
       }
       if (!exit && Date.now() - startedAt > hbuilderxAppTimeoutMs) {
-        killProcessTree(child)
         throw new Error(`命令超时：HBuilderX app dev timeout=${hbuilderxAppTimeoutMs}ms\n${logs.join('')}`)
       }
     },
@@ -583,7 +579,7 @@ function startAppLaunch(
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const child = hbuilderx.spawn({
+  const command = hbuilderx.spawn({
     args: ['launch', item.platform, '--project', projectPath, ...launchArgs],
     cwd: projectRoot,
     env: {
@@ -591,35 +587,16 @@ function startAppLaunch(
       ...toolEnv,
       ...item.launchEnv,
     },
-  }).child
-  const logs = collectProcessOutput(child)
-  const tracker = createProcessExitTracker(child)
-  return { child, logs, tracker }
+  })
+  const tracker = createProcessExitTracker(command.child)
+  return { ...command, tracker }
 }
 
 async function stopAppLaunch(launch: ReturnType<typeof startAppLaunch> | undefined) {
   if (!launch) {
     return
   }
-  const child = launch.child
-  if (child.pid && child.exitCode == null) {
-    try {
-      if (process.platform === 'win32') {
-        child.kill('SIGINT')
-      }
-      else {
-        process.kill(-child.pid, 'SIGINT')
-      }
-    }
-    catch {
-      child.kill('SIGINT')
-    }
-    await Promise.race([launch.tracker.closed, wait(5000)])
-  }
-  if (child.exitCode == null) {
-    killProcessTree(child)
-    await Promise.race([launch.tracker.closed, wait(5000)])
-  }
+  await launch.stop('SIGINT')
 }
 
 async function runAppCaseVariant(
@@ -639,7 +616,7 @@ async function runAppCaseVariant(
   const screenshot = resolveScreenshotPath(context, name, platform, variant.key)
   const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, name, platform, 'before', variant.key)
   const hmrAfterScreenshot = resolveHmrScreenshotPath(context, name, platform, 'after', variant.key)
-  const projectRoot = path.resolve(context.repoRoot, item.projectDir)
+  let projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   const domProbe = item.platform === 'app-harmony' && item.renderMode === 'vapor' ? createHarmonyDomProbe() : undefined
   let domObserver: ReturnType<NonNullable<typeof domProbe>['observe']> | undefined
@@ -650,7 +627,7 @@ async function runAppCaseVariant(
   let launch: ReturnType<typeof startAppLaunch> | undefined
   let harmonyFailureEvidence: Parameters<typeof captureHarmonyRuntimeEvidence>[0] | undefined
   let hmrLifecycle: ReturnType<typeof observeHmrStep> | undefined
-  let projectAlias: Awaited<ReturnType<typeof createHBuilderXProjectAlias>> | undefined
+  let projectSession: Awaited<ReturnType<typeof createHBuilderXAppProject>> | undefined
   let hbuilderx = shared?.hbuilderx
   let caseResult: CaseResult | undefined
   let failure: { error: unknown } | undefined
@@ -674,8 +651,9 @@ async function runAppCaseVariant(
     }
 
     hbuilderx ??= await createLocalHBuilderXRunner(projectRoot, toolEnv)
-    projectAlias = await createHBuilderXProjectAlias(projectRoot)
-    activeSourceFile = path.resolve(projectAlias.projectPath, item.sourceFile)
+    projectSession = await createHBuilderXAppProject({ projectRoot, platform, runner: hbuilderx, timeoutMs: hbuilderxAppTimeoutMs, env: toolEnv })
+    projectRoot = projectSession.projectRoot
+    activeSourceFile = path.resolve(projectSession.projectPath, item.sourceFile)
     const originalSource = shared?.originalSource ?? removeLegacyAppMarkers(await readUtf8(sourceFile))
     const originalManifest = shared?.originalManifest ?? await readManifest(projectRoot).catch(() => undefined)
     const restoreVariantManifest = async () => {
@@ -703,16 +681,10 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: clean output\n`)
     await cleanAppOutput(item, projectRoot)
 
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: open project ${projectRoot}\n`)
-    await hbuilderx.run({
-      args: ['project', 'open', '--path', projectAlias.projectPath],
-      cwd: projectRoot,
-      timeoutMs: hbuilderxAppTimeoutMs,
-      env: toolEnv,
-    })
+    await projectSession.open()
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, projectAlias.projectPath, hbuilderx, toolEnv)
+    launch = startAppLaunch(item, projectRoot, projectSession.launchProject, hbuilderx, toolEnv)
     await fs.mkdir(path.dirname(hmrBeforeScreenshot), { recursive: true })
     nativeLog = captureNativeLog(launch.child, path.join(path.dirname(hmrBeforeScreenshot), 'hbuilderx.log'))
     domObserver = domProbe?.observe(launch.child)
@@ -939,18 +911,7 @@ async function runAppCaseVariant(
             await writeManifest(projectRoot, shared.originalManifest)
           }
         },
-        async () => {
-          if (projectAlias && hbuilderx) {
-            const activeAlias = projectAlias
-            await closeHBuilderXProjectAlias(activeAlias, () => hbuilderx!.run({
-              args: ['project', 'close', '--path', activeAlias.projectPath],
-              cwd: projectRoot,
-              timeoutMs: hbuilderxAppTimeoutMs,
-              allowFailure: false,
-              env: shared?.toolEnv,
-            }))
-          }
-        },
+        async () => { await projectSession?.cleanup() },
       ])
     }
     catch (error) {

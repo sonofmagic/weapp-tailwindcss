@@ -35,6 +35,7 @@ vi.mock('./hbuilderx-local/process', async importOriginal => ({
   ...await importOriginal<typeof import('./hbuilderx-local/process')>(),
   assertIosSimulatorToolchain: () => {},
   createLocalHBuilderXRunner: async () => ({
+    resolution: { channel: 'alpha', version: '5.14.2026070101-alpha' },
     run: state.run,
     spawn: state.spawn,
     openProject: (options: { cwd: string }) => state.run({ ...options, args: ['project', 'open', '--path', options.cwd] }),

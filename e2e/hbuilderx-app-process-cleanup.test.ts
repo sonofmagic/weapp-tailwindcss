@@ -3,15 +3,17 @@ import type { CommandExit, HBuilderXNativeCommandOptions } from '../packages/hbu
 import type { AppCase } from './hbuilderx-local/cases'
 import { EventEmitter } from 'node:events'
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { lstat, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, mkdtemp, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import process from 'node:process'
 import { PassThrough } from 'node:stream'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { verifyAppHmrWithHBuilderX } from './hbuilderx-local/runner'
 
 const state = vi.hoisted(() => ({
   aliasRoot: '',
+  version: '5.14.2026070101-alpha',
   alias: undefined as { projectPath: string, cleanup: () => Promise<void> } | undefined,
   captureError: undefined as Error | undefined,
   closeError: undefined as Error | undefined,
@@ -34,10 +36,11 @@ vi.mock('../scripts/hbuilderx-project-alias.mjs', async (importOriginal) => {
 vi.mock('./hbuilderx-local/process', async importOriginal => ({
   ...await importOriginal<typeof import('./hbuilderx-local/process')>(),
   assertIosSimulatorToolchain: () => {},
+  assertHarmonyToolchain: () => {},
   killProcessTree: state.kill,
   wait: async () => {},
   createLocalHBuilderXRunner: async () => ({
-    resolution: { channel: 'alpha' },
+    resolution: { channel: 'alpha', version: state.version },
     run: state.run,
     spawn: state.spawn,
   }),
@@ -87,6 +90,7 @@ beforeEach(async () => {
   source = path.join(projectRoot, 'App.uvue')
   await writeFile(source, originalSource)
   vi.stubEnv('E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT', path.join(root, 'evidence'))
+  state.version = '5.14.2026070101-alpha'
   state.aliasRoot = path.join(root, 'aliases')
   state.alias = undefined
   state.captureError = undefined
@@ -198,4 +202,30 @@ it('停止期间最后到达的 HMR 失败仍使验收失败并释放日志监�
   expect(projectCloseCalls()).toHaveLength(1)
   expect(child.stdout!.listenerCount('data')).toBe(0)
   expect(await readFile(source, 'utf8')).toBe(originalSource)
+})
+
+it.each(['absolute', 'relative'])('Alpha 5.31 Harmony 使用 %s 输入的真实根，不打开或关闭用户同名项目', async (input) => {
+  state.version = '5.31.2026093020-alpha'
+  const projectLink = path.join(root, '中文 worktree (link)')
+  await symlink(item.projectDir, projectLink, process.platform === 'win32' ? 'junction' : 'dir')
+  const canonicalRoot = await realpath(item.projectDir)
+  const sameNameProject = path.join(root, 'user', path.basename(item.projectDir))
+  await mkdir(sameNameProject, { recursive: true })
+  await writeFile(path.join(sameNameProject, 'App.uvue'), 'user source')
+  state.captureError = new Error('在启动后中断，不执行设备探针')
+  await expect(verifyAppHmrWithHBuilderX({
+    ...item,
+    platform: 'app-harmony',
+    projectDir: input === 'relative' ? path.relative(process.cwd(), projectLink) : projectLink,
+  })).rejects.toBe(state.captureError)
+  expect(state.spawn).toHaveBeenCalledWith(expect.objectContaining({
+    args: ['launch', 'app-harmony', '--project', canonicalRoot, '--cleanCache', 'true'],
+    cwd: canonicalRoot,
+  }))
+  expect(state.run).not.toHaveBeenCalled()
+  expect(state.alias).toBeUndefined()
+  expect(state.stop).toHaveBeenCalledExactlyOnceWith('SIGINT')
+  expect(await readFile(source, 'utf8')).toBe(originalSource)
+  expect(await readFile(path.join(sameNameProject, 'App.uvue'), 'utf8')).toBe('user source')
+  expect((await lstat(projectLink)).isSymbolicLink()).toBe(true)
 })
