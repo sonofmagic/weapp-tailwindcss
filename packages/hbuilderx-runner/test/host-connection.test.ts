@@ -230,3 +230,9 @@ it('中文未启动提示不能覆盖命令超时', async () => {
   await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
   expect(vi.mocked(runCommand).mock.calls.some(([options]) => options.args[0] === 'open')).toBe(false)
 })
+
+it('超时 CLI 即使在清理时以零退出码结束，也不能被接纳为有效 host 响应', async () => {
+  onCommand = () => ({ code: 0, kind: 'timeout', output: 'host-a' })
+  await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
+  expect(vi.mocked(runCommand).mock.calls.map(([options]) => options.args)).toEqual([['listhost']])
+})
