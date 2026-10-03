@@ -23,6 +23,7 @@ import { rawTailwindDirectiveRE, resolveAppHmrSteps } from './cases'
 import { createHarmonyDomProbe } from './harmony-dom-probe'
 import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from './harmony-runtime'
 import { observeHmrStep } from './hmr-lifecycle'
+import { waitForIosRuntimeEvidence } from './ios-runtime'
 import { captureNativeLog } from './native-log'
 import {
   assertAndroidToolchain,
@@ -659,6 +660,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         })
       : undefined
     let previousRuntimeScreenshot: string | undefined
+    let previousRuntimeMarkerClass = item.markerClass
     if (item.platform === 'app-android' && item.runtime) {
       const initialScreenshot = path.resolve(runtimeEvidenceRoot, 'initial.png')
       const evidence = await waitForAndroidRuntimeEvidence({
@@ -680,6 +682,17 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     else if (item.platform === 'app-android') {
       process.stdout.write(`[hbuilderx-app] ${item.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
+    }
+    else if (item.platform === 'app-ios') {
+      const evidence = await waitForIosRuntimeEvidence({
+        deviceId: readAppLaunchOption(launchArgs, '--deviceId'),
+        ensureRunning: ensureLaunchRunning,
+        markerClass: item.markerClass,
+        screenshot: path.resolve(runtimeEvidenceRoot, 'initial.png'),
+        timeoutMs: hbuilderxAppTimeoutMs,
+      })
+      previousRuntimeScreenshot = evidence.screenshot
+      process.stdout.write(`${JSON.stringify({ runtimeEvidence: evidence })}\n`)
     }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
@@ -716,7 +729,24 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `recentHBuilderXLogs=${formatRecentLogs(logs, 4000)}`,
         ].join('\n')
       }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
-      await hmrLifecycle?.waitForCompletion(hbuilderxAppTimeoutMs, ensureLaunchRunning)
+      const iosEvidence = await hmrLifecycle.waitForCompletion(hbuilderxAppTimeoutMs, ensureLaunchRunning, item.platform === 'app-ios'
+        ? remainingMs => waitForIosRuntimeEvidence({
+          deviceId: readAppLaunchOption(launchArgs, '--deviceId'),
+          ensureRunning: () => {
+            ensureLaunchRunning()
+            hmrLifecycle?.assertNoFallback()
+          },
+          markerClass: step.markerClass,
+          previous: { screenshot: previousRuntimeScreenshot!, markerClass: previousRuntimeMarkerClass },
+          screenshot: path.resolve(runtimeEvidenceRoot, `${step.name}.png`),
+          timeoutMs: remainingMs,
+        })
+        : undefined)
+      if (iosEvidence) {
+        previousRuntimeScreenshot = iosEvidence.screenshot
+        previousRuntimeMarkerClass = step.markerClass
+        process.stdout.write(`${JSON.stringify({ step: step.name, runtimeEvidence: iosEvidence })}\n`)
+      }
       if (initialHarmony) {
         const evidence = await waitForHarmonyRuntimeEvidence({
           ...domOptions,
@@ -763,7 +793,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       }
       hmrLifecycle?.assertNoFallback()
       process.stdout.write(`${JSON.stringify({ step: step.name, updateLifecycle: hmrLifecycle.snapshot() })}\n`)
-      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 产物与传输检查通过\n`)
+      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} ${item.platform === 'app-ios' ? '当轮编译、同步与可见样式标记检查通过（未验证节点文字）' : '产物与传输检查通过'}\n`)
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)

@@ -19,10 +19,17 @@ const state = vi.hoisted(() => ({
   logCloseError: false,
   launch: vi.fn(),
   screenshot: vi.fn(),
-  restart: 'mutation' as 'mutation' | 'screenshot' | 'none',
+  restart: 'mutation' as 'mutation' | 'screenshot' | 'stop' | 'none',
 }))
 vi.mock('node:child_process', async importOriginal => ({
   ...await importOriginal<typeof import('node:child_process')>(),
+  spawn: (_command: string, args: string[]) => {
+    const child = Object.assign(new TestChild(), { stdout: new PassThrough(), stderr: new PassThrough() })
+    state.screenshot(args)
+    state.capture(args.at(-1))
+    queueMicrotask(() => child.emit('close', 0, null))
+    return child
+  },
   spawnSync: (_command: string, args: string[]) => {
     if (args.includes('list')) {
       return { status: 0, stdout: JSON.stringify({ devices: { ios: [
@@ -60,7 +67,13 @@ vi.mock('./hbuilderx-local/process', () => ({
   }),
   fileExists: async () => true,
   hbuilderxAppTimeoutMs: 1000,
-  killProcessTree: () => {},
+  killProcessTree: () => {
+    if (state.restart === 'stop') {
+      state.child!.stdout!.emit('data', 'App Launch at App.uvue:6\n')
+      Object.assign(state.child!, { exitCode: 0 })
+      state.child!.emit('close', 0, null)
+    }
+  },
   pollIntervalMs: 1,
   readUtf8: (file: string) => readFile(file, 'utf8'),
   wait: async () => {},
@@ -79,16 +92,19 @@ vi.mock('./hbuilderx-local/app-output', () => ({ readExistingAppTransformedOutpu
 vi.mock('./hbuilderx-local/app-marker', () => ({
   removeLegacyAppMarkers: (source: string) => source,
   rewriteAppMarker: (_source: string, _anchors: string[], marker: { text: string }) => {
-    if (marker.text === 'changed' && state.restart === 'mutation') {
-      state.child!.stdout!.emit('data', '编译完成\n热更新传输完成\nApp Launch at App.uvue:6\n')
+    if (marker.text === 'changed') {
+      state.child!.stdout!.emit('data', '开始差量编译\n项目 fixture 编译成功。\n同步手机端程序文件成功\n')
+      if (state.restart === 'mutation') {
+        state.child!.stdout!.emit('data', 'App Launch at App.uvue:6\n')
+      }
     }
     return marker.text
   },
 }))
-vi.mock('./hbuilderx-local/android-runtime', () => ({
+vi.mock('./hbuilderx-local/android-runtime', async importOriginal => ({
+  ...await importOriginal<typeof import('./hbuilderx-local/android-runtime')>(),
   captureAndroidScreenshot: (file: string) => state.capture(file),
   resolveAdbCommand: () => 'adb',
-  parseHexColorFromClass: () => undefined,
   readAndroidUiHierarchy: async () => '<node text="current page" />',
   isAndroidDebugShell: () => false,
 }))
@@ -109,7 +125,7 @@ describe('App 视觉入口的原生 HMR 生命周期', () => {
   })
 
   it.each((['app-android', 'app-ios'] as const).flatMap(platform =>
-    (['mutation', 'screenshot', 'none'] as const).flatMap(restart =>
+    (['mutation', 'screenshot', 'stop', 'none'] as const).flatMap(restart =>
       (['none', 'close', 'log-close'] as const).map(cleanup => ({ platform, restart, cleanup }))),
   ))('$platform 视觉入口检查 $restart 与 $cleanup 收尾', async ({ platform, restart, cleanup }) => {
     state.restart = restart
@@ -125,12 +141,18 @@ describe('App 视觉入口的原生 HMR 生命周期', () => {
     directories.push(directory)
     const sourceFile = join(directory, 'App.uvue')
     await writeFile(sourceFile, 'original source')
-    state.child = Object.assign(new TestChild(), { stdout: new PassThrough(), stderr: new PassThrough(), exitCode: 0 })
+    state.child = Object.assign(new TestChild(), { stdout: new PassThrough(), stderr: new PassThrough(), exitCode: restart === 'stop' ? null : 0 })
     const image = new PNG({ width: 20, height: 20 })
     image.data.fill(100)
     // 测试夹具只模拟截图传输成功；生产截图入口没有替代图兜底。
     const { writeFileSync } = await import('node:fs')
     state.capture.mockImplementation((file: string) => {
+      if (platform === 'app-ios') {
+        const color = state.capture.mock.calls.length === 1 ? [16, 41, 56] : [59, 7, 100]
+        for (let pixel = 0; pixel < image.width * image.height; pixel++) {
+          image.data.set([...color, 255], pixel * 4)
+        }
+      }
       writeFileSync(file, PNG.sync.write(image))
       if (restart === 'screenshot' && state.capture.mock.calls.length === 2) {
         state.child!.stderr!.emit('data', 'App Launch at App.uvue:6\n')
@@ -143,9 +165,9 @@ describe('App 视觉入口的原生 HMR 生命周期', () => {
       outputDir: 'dist',
       sourceFile: 'App.uvue',
       markerAnchor: 'original source',
-      markerClass: '',
+      markerClass: platform === 'app-ios' ? 'w-[20px] h-[20px] bg-[#102938]' : '',
       markerText: 'initial',
-      hmrMarkerClass: '',
+      hmrMarkerClass: platform === 'app-ios' ? 'w-[20px] h-[20px] bg-[#3b0764]' : '',
       hmrMarkerText: 'changed',
       requiredFiles: [],
       transformedContains: ['compiled'],

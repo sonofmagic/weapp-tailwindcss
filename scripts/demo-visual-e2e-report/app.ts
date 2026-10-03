@@ -25,6 +25,7 @@ import { resolveAppHmrSteps } from '../../e2e/hbuilderx-local/cases.ts'
 import { createHarmonyDomProbe } from '../../e2e/hbuilderx-local/harmony-dom-probe.ts'
 import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from '../../e2e/hbuilderx-local/harmony-runtime.ts'
 import { observeHmrStep } from '../../e2e/hbuilderx-local/hmr-lifecycle.ts'
+import { captureIosScreenshot, waitForIosRuntimeEvidence } from '../../e2e/hbuilderx-local/ios-runtime.ts'
 import { captureNativeLog } from '../../e2e/hbuilderx-local/native-log.ts'
 import {
   assertAndroidToolchain,
@@ -281,10 +282,6 @@ function createAndroidAdbArgs(deviceId?: string) {
   ]
 }
 
-function resolveIosScreenshotTarget(item: AppCase) {
-  return readAppLaunchOption(item.launchArgs ?? [], '--deviceId')!
-}
-
 function resolveAndroidScreenshotDeviceId(item: AppCase) {
   return readAppLaunchOption(item.launchArgs ?? [], '--deviceId')!
 }
@@ -297,20 +294,6 @@ function createHdcArgs(deviceId?: string) {
   return [
     ...(deviceId ? ['-t', deviceId] : []),
   ]
-}
-
-async function captureIosScreenshot(screenshot: string, item: AppCase) {
-  await fs.mkdir(path.dirname(screenshot), { recursive: true })
-  const target = resolveIosScreenshotTarget(item)
-  const result = spawnSync('xcrun', ['simctl', 'io', target, 'screenshot', screenshot], {
-    encoding: 'utf8',
-    killSignal: 'SIGTERM',
-    timeout: iosScreenshotTimeoutMs,
-  })
-  if (result.status !== 0) {
-    const timeoutMessage = result.error?.message ? ` error=${result.error.message}` : ''
-    throw new Error(`iOS 截图失败：${result.stderr || result.stdout || `exit=${result.status} signal=${result.signal ?? 'none'}${timeoutMessage}`}`)
-  }
 }
 
 async function captureHarmonyScreenshot(screenshot: string, item: AppCase) {
@@ -364,7 +347,7 @@ async function captureAppScreenshot(item: AppCase, screenshot: string, env: Reco
     await captureHarmonyScreenshot(screenshot, item)
     return
   }
-  await captureIosScreenshot(screenshot, item)
+  await captureIosScreenshot(screenshot, readAppLaunchOption(item.launchArgs ?? [], '--deviceId'), iosScreenshotTimeoutMs)
 }
 
 async function analyzeAppScreenshot(screenshot: string) {
@@ -534,17 +517,32 @@ async function waitForAppScreenshotReady(
   expectedMarkerClass?: string,
   expectedMarkerTextClass?: string,
   expectedBackgroundColor?: string,
+  previous?: { screenshot: string, markerClass: string },
+  timeoutMs = appReadyTimeoutMs,
 ) {
   const startedAt = Date.now()
   let latest: Record<string, unknown> | undefined
-  while (Date.now() - startedAt < appReadyTimeoutMs) {
+  while (Date.now() - startedAt < timeoutMs) {
     ensureRunning()
-    await captureAppScreenshot(item, screenshot, env)
+    const iosRuntime = item.platform === 'app-ios'
+      ? await waitForIosRuntimeEvidence({
+          deviceId: readAppLaunchOption(item.launchArgs ?? [], '--deviceId'),
+          ensureRunning,
+          markerClass: expectedMarkerClass ?? '',
+          screenshot,
+          screenshotTimeoutMs: iosScreenshotTimeoutMs,
+          timeoutMs: Math.max(1, timeoutMs - (Date.now() - startedAt)),
+          ...(previous ? { previous } : {}),
+        })
+      : undefined
+    if (!iosRuntime) {
+      await captureAppScreenshot(item, screenshot, env)
+    }
     ensureRunning()
     const evidence = await collectAppScreenshotEvidence(item, screenshot, env, expectedMarkerClass, expectedMarkerTextClass, expectedBackgroundColor)
     latest = evidence
     if (evidence.ready) {
-      return evidence
+      return { ...evidence, ...iosRuntime }
     }
     await wait(2000)
   }
@@ -796,8 +794,16 @@ async function runAppCaseVariant(
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${step.name} ${hmrOutputRoot}\n`)
       await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after ${step.name}\n`)
-      const evidence = await waitForAppScreenshotReady(item, stepAfterScreenshot, toolEnv, `${item.name} HMR ${step.name} 后`, ensureHmrRunning, step.markerClass, step.markerTextClass, step.runtime?.backgroundColor)
-      await hmrLifecycle?.waitForCompletion(appOutputTimeoutMs, ensureHmrRunning)
+      const captureEvidence = (timeoutMs = appReadyTimeoutMs) => waitForAppScreenshotReady(item, stepAfterScreenshot, toolEnv, `${item.name} HMR ${step.name} 后`, ensureHmrRunning, step.markerClass, step.markerTextClass, step.runtime?.backgroundColor, { screenshot: stepBeforeScreenshot, markerClass: previousMarkerClass }, timeoutMs)
+      const evidence = item.platform === 'app-ios'
+        ? await hmrLifecycle.waitForCompletion(appOutputTimeoutMs, ensureHmrRunning, captureEvidence)
+        : await captureEvidence()
+      if (!evidence) {
+        throw new Error(`${item.name} HMR ${step.name} 缺少设备截图证据`)
+      }
+      if (item.platform !== 'app-ios') {
+        await hmrLifecycle.waitForCompletion(appOutputTimeoutMs, ensureHmrRunning)
+      }
       const harmonyRuntime = initialHarmony
         ? await waitForHarmonyRuntimeEvidence({
             ...domOptions,
@@ -894,6 +900,7 @@ async function runAppCaseVariant(
     }
 
     await stopAppLaunch(launch)
+    hmrLifecycle?.assertNoFallback()
     launch = undefined
   }
   catch (error) {
@@ -907,8 +914,13 @@ async function runAppCaseVariant(
   finally {
     try {
       await cleanupHBuilderXResources([
-        () => hmrLifecycle?.dispose(),
         async () => { await stopAppLaunch(launch) },
+        () => {
+          if (!failure) {
+            hmrLifecycle?.assertNoFallback()
+          }
+        },
+        () => hmrLifecycle?.dispose(),
         () => domObserver?.dispose(),
         async () => { await nativeLog?.close() },
         async () => { await restoreMutations?.() },

@@ -46,6 +46,20 @@ vi.mock('./hbuilderx-local/app-target', () => ({
   bindAppTarget: (item: unknown) => item,
   readAppLaunchOption: () => undefined,
 }))
+vi.mock('./hbuilderx-local/ios-runtime', () => ({
+  waitForIosRuntimeEvidence: async ({ screenshot }: { screenshot: string }) => ({ screenshot }),
+}))
+vi.mock('./hbuilderx-local/hmr-lifecycle', async (importOriginal) => {
+  const original = await importOriginal<typeof import('./hbuilderx-local/hmr-lifecycle')>()
+  return {
+    ...original,
+    observeHmrStep: (...args: Parameters<typeof original.observeHmrStep>) => {
+      const observer = original.observeHmrStep(...args)
+      args[0].stdout!.emit('data', '开始差量编译\n项目 fixture 编译成功。\n同步手机端程序文件成功\n')
+      return observer
+    },
+  }
+})
 vi.mock('./hbuilderx-local/native-log', async (importOriginal) => {
   const original = await importOriginal<typeof import('./hbuilderx-local/native-log')>()
   return {
