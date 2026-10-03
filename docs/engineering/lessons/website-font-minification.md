@@ -27,7 +27,7 @@ Docusaurus 3.10.2 默认依次执行 CSSNano 和 clean-css 5.3.3。后者 `font`
 - `pnpm exec eslint website/scripts/homepage-css.test.ts`：通过。
 - `pnpm exec cross-env CI=1 pnpm --filter @weapp-tailwindcss/website build`：完整依赖构建及英文、中文网站构建通过。重新生成 `website/build` 与 `website/build/zh-cn` 的静态产物；两份最终 CSS 都保留字号、行高、完整字体族与 `font-weight:650`，构建日志中不再出现 `Missing font size` 或 Css Minimizer 警告。
 - `pnpm agents:check`、`git diff --check`：通过。
-- 扩展检查 `pnpm exec cross-env CI=1 pnpm --filter @weapp-tailwindcss/website typecheck` 发现既有文件的 14 条类型诊断，涉及 API 文档生成、Docusaurus 类型入口和 Playwright 用例；本次新增回归文件没有诊断。首次输出保存为 `.tmp/website-typecheck-first.log`，这组问题在字体修复之后单独处理。
+- 扩展检查 `pnpm exec cross-env CI=1 pnpm --filter @weapp-tailwindcss/website typecheck` 发现既有文件的 14 条类型诊断，涉及 API 文档生成、Docusaurus 类型入口和 Playwright 用例；本次新增回归文件没有诊断。首次输出保存为 `.tmp/website-typecheck-first.log`，后续通过[内容元数据契约修复](website-content-metadata-contracts.md)单独解决。
 
 持久回归直接编译实际首页 SCSS，再从网站安装的 Docusaurus core 解析 bundler，复用 `getMinimizers` 的选项和 CssMinimizer 生产执行入口。断言压缩错误与警告为空、实际产物保留完整字体族/字号/行高、后置 650 字重不被简写重置，以及窄屏仍仅覆盖字号。使用 PostCSS AST 兼容压缩器合并选择器，不依赖文本搜索或 jsdom 对字体重置的不完整模拟。
 
