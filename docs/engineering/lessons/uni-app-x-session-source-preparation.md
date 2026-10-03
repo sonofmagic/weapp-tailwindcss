@@ -51,6 +51,8 @@ engine 提供可选的非语义 `prepareSource` 回调，只返回 CSS 字符串
 
 3 个正式样本的初始/新增/删除中位数由 22.966/13.891/15.465 ms 变为 17.543/12.852/14.928 ms，整轮中位数为 53.872 → 49.388 ms。包含预热的 12 份 CSS 逐一比较 SHA-256，全部相同。基线使用主任务 `b749e46d2f03c8a2eba7ef14e9cbc8d97e1813d9` 的现成构建，已核对 engine 和 v4-generator 源码相对本记录 baseline 无差异；当前版使用本次构建。脚本及完整哈希保存于本任务忽略目录 `.tmp/local-source-preparation-bench.mjs` 和 `.tmp/local-source-preparation-bench.json`，通过 `node .tmp/local-source-preparation-bench.mjs <基线checkout> <当前checkout>` 运行。
 
+主任务整合到 `26d7c72a3` 后重新构建 engine 与主包，构建及仓库正式 `pnpm typecheck` 通过。限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 和 `issue-1144-static` 三个 static 入口，以当前 Alpha 只编译路径重新生成 24 份快照，Git 内容无变化；随后 `CI=1`、`E2E_SKIP_OPEN_AUTOMATOR=1`、`--update=none` 复验 3 文件、4 项通过（35.10 秒）。原始日志为 `.tmp/uni-session-preparation-build.log`、`.tmp/typecheck-session-preparation.log`、`.tmp/uni-session-static-update.log` 和 `.tmp/uni-session-static-verify.log`。真实 watch 仍需新预检后验证。
+
 ## 适用边界
 
 确定性的加载/准备次数回归证明了重复工作减少；这组 3 样本微基准仅测定向生成，不能证明真实 watch 的 500 ms 门槛已经通过。未启动真实 watch、IDE、设备或浏览器；对应 uni-app x demo 的 static 基线、最终进程性能及全端验收由主任务在整合提交后继续，不能把 558 项定向测试记作全仓通过。局部排序仍仅遵守当前 design system 的候选首节点排名，不扩张为任意多节点交错层叠等价的保证。
