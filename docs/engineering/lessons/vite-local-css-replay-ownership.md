@@ -28,7 +28,8 @@ uni-app x Alpha 的微信 IDE 热更新首次修改模板后，根 `main.wxss` �
 - 修复后，微信 `wxss` 与支付宝 `acss` 后缀均连续通过初始、替换、恢复三轮；局部导入关系、当前规则、框架导入壳及根规则保持正确。路径用例覆盖 POSIX、Windows 反斜杠、盘符、根路径、相对路径和查询参数。
 - `CI=1 pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/vite-local-css-replay-ownership.test.ts test/bundlers/vite-processed-css-assets.unit.test.ts test/bundlers/vite-remembered-css-replay.unit.test.ts test/bundlers/vite-remembered-css-replay-root-shell.unit.test.ts test/bundlers/vite-processed-css-replay-order.test.ts test/bundlers/vite-plugin.bundle.unit.test.ts --update=none`：6 文件、279 项通过，包含显式框架根目标及缓存重放的正向保护。
 - `pnpm --filter weapp-tailwindcss build`、`pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.typecheck.json --pretty false` 及源码和新增测试的显式 ESLint 检查通过。构建保留既有 mixed exports 提示。
-- 对应 demo 的 static 基线和真实 IDE/watch 复测由主任务整合修复后执行；定向 bundle 回归不替代真实设备证据。
+- 主任务整合后重新构建，限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 和 `issue-1144-static` 三个 static 入口执行 `--update=all`，审查确认基线内容无变化，再执行 `--update=none`：3 文件、4 项通过。命令保持 `CI=1 HBUILDERX_CHANNEL=alpha E2E_SKIP_OPEN_AUTOMATOR=1`，使用实际 Alpha CLI；编译验收不操作微信账号。实际 CLI/host 路径由本机环境传入。
+- 真实 IDE/watch 复测仍需在最终提交重新预检后执行；定向 bundle 与 static 回归不替代实际运行证据。
 
 ## 适用边界
 
