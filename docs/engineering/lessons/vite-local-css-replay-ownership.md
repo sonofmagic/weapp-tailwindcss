@@ -29,7 +29,8 @@ uni-app x Alpha 的微信 IDE 热更新首次修改模板后，根 `main.wxss` �
 - `CI=1 pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/vite-local-css-replay-ownership.test.ts test/bundlers/vite-processed-css-assets.unit.test.ts test/bundlers/vite-remembered-css-replay.unit.test.ts test/bundlers/vite-remembered-css-replay-root-shell.unit.test.ts test/bundlers/vite-processed-css-replay-order.test.ts test/bundlers/vite-plugin.bundle.unit.test.ts --update=none`：6 文件、279 项通过，包含显式框架根目标及缓存重放的正向保护。
 - `pnpm --filter weapp-tailwindcss build`、`pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.typecheck.json --pretty false` 及源码和新增测试的显式 ESLint 检查通过。构建保留既有 mixed exports 提示。
 - 主任务整合后重新构建，限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4` 和 `issue-1144-static` 三个 static 入口执行 `--update=all`，审查确认基线内容无变化，再执行 `--update=none`：3 文件、4 项通过。命令保持 `CI=1 HBUILDERX_CHANNEL=alpha E2E_SKIP_OPEN_AUTOMATOR=1`，使用实际 Alpha CLI；编译验收不操作微信账号。实际 CLI/host 路径由本机环境传入。
-- 真实 IDE/watch 复测仍需在最终提交重新预检后执行；定向 bundle 与 static 回归不替代实际运行证据。
+- 在 `43d546478` 完成新一轮 prepare、真实后台 computer use 输入/点击/截图与 verify，轮次 `3f1640ae-5082-41ef-a990-cf22201b0f4c` 的微信 IDE 连接、模板类与脚本类更新共 3 项通过。实际 `main.wxss` 不再包含被搬入的 `../../uvue.wxss` 和 `/app.wxss`。该用例保留既有 `devtoolsVisible=artifact` 边界，不计为完整可视 HMR。
+- 同轮 watch 在第一次 `space-y-2.5` 新增时失败并停止后续阶段，首次产物保存在 `watch-first-add/`。WXML 已消费 safe class，页面 CSS 也存在完整规则；其 `8rpx` 与全局参考规则的 `var(--spacing)` 被现有签名判为不同。根变量实际声明为 `--spacing:8rpx`，因此该失败与本节的局部导入归属缺陷分别处理，不通过修改生成产物或删除断言消除失败。完整 watch 及后续阶段仍待修复断言后重新预检验收。
 
 ## 适用边界
 
