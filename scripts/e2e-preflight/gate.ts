@@ -2,6 +2,7 @@ import type { ProbeId } from './types'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { formatWorkflowError } from './cleanup'
 import { readReport, request } from './client'
 import { collectIdentity } from './io'
 import { iosSimulatorDestination } from './targets'
@@ -77,10 +78,16 @@ export function bindingEnvironment(bindings: Record<string, Record<string, strin
 
 async function recordBlock(root: string, error: unknown, stage?: string) {
   const dir = path.join(root, 'e2e', '.artifacts', 'preflight', `blocked-${Date.now()}-${process.pid}`)
-  await mkdir(dir, { recursive: true })
-  const reason = String(error)
-  await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'blocked', reason, testsStarted: Boolean(stage), stage }, null, 2))
-  await writeFile(path.join(dir, 'report.md'), `# 全面测试已阻断\n\n${reason}\n\n${stage ? `未启动阶段 ${stage}，停止后续调度。` : '未启动测试子进程。'}请重新执行 prepare、当前会话 computer use 和 verify。\n`)
+  const reason = formatWorkflowError(error)
+  const stopped = stage ? `未启动阶段 ${stage}，停止后续调度。` : '未启动测试子进程。'
+  try {
+    await mkdir(dir, { recursive: true })
+    await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'blocked', reason, testsStarted: Boolean(stage), stage }, null, 2))
+    await writeFile(path.join(dir, 'report.md'), `# 全面测试已阻断\n\n${reason}\n\n${stopped}请重新执行 prepare、当前会话 computer use 和 verify。\n`)
+  }
+  catch (reportError) {
+    throw new AggregateError([error, reportError], `全面测试已阻断；${stopped}阻断报告写入失败：${dir}`, { cause: error })
+  }
   return dir
 }
 
@@ -101,7 +108,7 @@ export async function enterFullTestGate(file?: string, root = process.cwd(), ext
         }
         catch (error) {
           const dir = await recordBlock(root, error, stage)
-          throw new Error(`全面测试已阻断，停止后续调度：${String(error)}；报告：${dir}；预检：${file}`)
+          throw new Error(`全面测试已阻断，停止后续调度：${String(error)}；报告：${dir}；预检：${file}`, { cause: error })
         }
       },
       async close() {
@@ -111,6 +118,6 @@ export async function enterFullTestGate(file?: string, root = process.cwd(), ext
   }
   catch (error) {
     const dir = await recordBlock(root, error)
-    throw new Error(`全面测试已阻断；未启动测试子进程。${String(error)}\n报告：${dir}`)
+    throw new Error(`全面测试已阻断；未启动测试子进程。${String(error)}\n报告：${dir}`, { cause: error })
   }
 }

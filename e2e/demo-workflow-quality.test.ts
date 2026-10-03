@@ -173,4 +173,68 @@ describe('本地质量验证的全面测试门禁', () => {
     expect(mocks.spawn).toHaveBeenCalledTimes(7)
     expect(mocks.spawn.mock.calls[0]?.[1]).toEqual(['exec', 'vitest', 'run', '-c', './e2e/vitest.e2e.config.ts', 'e2e/e2e-matrix.test.ts'])
   })
+
+  it('阶段复查和清理同时失败时保留两处原始错误', async () => {
+    const primary = new Error('quality lint 已阻断；报告：blocked/report.md')
+    const cleanup = new TypeError('finish fetch failed')
+    gate.check.mockRejectedValueOnce(primary)
+    gate.close.mockRejectedValueOnce(cleanup)
+    const error = await runDemoE2eWorkflow(['--local', '--quality']).catch(error => error)
+    expect(error).toBeInstanceOf(AggregateError)
+    expect(error.errors).toEqual([primary, cleanup])
+    expect(error.cause).toBe(primary)
+    expect(mocks.spawn).not.toHaveBeenCalled()
+    expect(gate.close).toHaveBeenCalledOnce()
+  })
+
+  it('子进程和清理同时失败时保留失败报告并停止后续阶段', async () => {
+    mocks.spawn.mockImplementationOnce(() => {
+      const child = new EventEmitter()
+      queueMicrotask(() => child.emit('close', 2))
+      return child
+    })
+    const cleanup = new Error('finish unavailable')
+    gate.close.mockRejectedValueOnce(cleanup)
+    const error = await runDemoE2eWorkflow(['--local', '--quality']).catch(error => error)
+    expect(error).toBeInstanceOf(AggregateError)
+    expect(error.errors[0].message).toContain('quality root build failed with exit=2')
+    expect(error.errors[1]).toBe(cleanup)
+    expect(mocks.spawn).toHaveBeenCalledOnce()
+    expect(mocks.writeReport.mock.calls.at(-1)?.[0].report.exitCode).toBe(1)
+    expect(gate.close).toHaveBeenCalledOnce()
+  })
+
+  it('仅清理失败时拒绝完成且不提前输出成功', async () => {
+    const cleanup = new Error('finish unavailable')
+    gate.close.mockRejectedValueOnce(cleanup)
+    await expect(runDemoE2eWorkflow(['--local', '--quality'])).rejects.toBe(cleanup)
+    expect(vi.mocked(process.stdout.write).mock.calls.flat().join('')).not.toContain('workflow passed')
+    expect(gate.close).toHaveBeenCalledOnce()
+  })
+
+  it('失败报告写入异常也保留原始阶段错误', async () => {
+    const primary = new Error('quality lint blocked')
+    const reportError = new Error('report write failed')
+    gate.check.mockRejectedValueOnce(primary)
+    mocks.writeReport.mockRejectedValueOnce(reportError)
+    const error = await runDemoE2eWorkflow(['--local', '--quality']).catch(error => error)
+    expect(error.errors).toEqual([primary, reportError])
+    expect(error.cause).toBe(primary)
+    expect(gate.close).toHaveBeenCalledOnce()
+    expect(mocks.spawn).not.toHaveBeenCalled()
+  })
+
+  it.each([new Error('阶段失败'), undefined, null, 0])('清理成功后原样保留主错误 %s', async (primary) => {
+    gate.check.mockRejectedValueOnce(primary)
+    await expect(runDemoE2eWorkflow(['--local', '--quality'])).rejects.toBe(primary)
+    expect(gate.close).toHaveBeenCalledOnce()
+  })
+
+  it('成功消息仅在清理成功后输出', async () => {
+    await runDemoE2eWorkflow(['--local', '--quality'])
+    const stdout = vi.mocked(process.stdout.write)
+    const success = stdout.mock.calls.findIndex(([message]) => String(message).includes('workflow passed'))
+    expect(success).toBeGreaterThanOrEqual(0)
+    expect(stdout.mock.invocationCallOrder[success]).toBeGreaterThan(gate.close.mock.invocationCallOrder[0]!)
+  })
 })

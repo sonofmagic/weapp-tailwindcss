@@ -15,6 +15,7 @@ import { verifyBaseline } from './demo-e2e-workflow/baseline'
 import { extendedEnvironment } from './demo-e2e-workflow/extended-environment'
 import { extendedBaseline, extendedFrameworkSteps, extendedQualitySteps, extendedRuntimeSteps } from './demo-e2e-workflow/extended-steps'
 import { createQualityWorkflowSteps } from './demo-e2e-workflow/quality-steps'
+import { formatWorkflowError, runWithCleanup } from './e2e-preflight/cleanup'
 import { enterFullTestGate } from './e2e-preflight/gate'
 
 function formatStep(step: WorkflowStep, index: number, total: number) {
@@ -202,7 +203,7 @@ export async function runDemoE2eWorkflow(argv = process.argv.slice(2)) {
   }
   const reportIndex = argv.indexOf('--preflight-report')
   const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : argv[reportIndex + 1], process.cwd(), Boolean(baseline)) : undefined
-  try {
+  await runWithCleanup(async () => {
     const verifiedBaseline = baseline ? await verifyBaseline(baseline) : undefined
     const steps = createWorkflowSteps(includeLocal, includeQuality, verifiedBaseline)
     const workflowEnv = baseline ? extendedEnvironment(process.env) : process.env
@@ -225,25 +226,27 @@ export async function runDemoE2eWorkflow(argv = process.argv.slice(2)) {
         await writeReport()
       }
       catch (error) {
-        const stepReport = (error as { stepReport?: DemoE2eMemoryStepReport }).stepReport
+        const stepReport = error && typeof error === 'object' ? (error as { stepReport?: DemoE2eMemoryStepReport }).stepReport : undefined
         if (stepReport) {
           stepReports.push(stepReport)
         }
         exitCode = 1
-        await writeReport()
+        try {
+          await writeReport()
+        }
+        catch (reportError) {
+          throw new AggregateError([error, reportError], '阶段失败且无法写入内存报告。', { cause: error })
+        }
         throw error
       }
     }
-    process.stdout.write('[demo-e2e] workflow passed\n')
-  }
-  finally {
-    await gate?.close()
-  }
+  }, () => gate?.close())
+  process.stdout.write('[demo-e2e] workflow passed\n')
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   runDemoE2eWorkflow().catch((error) => {
-    process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`)
+    process.stderr.write(`${formatWorkflowError(error)}\n`)
     process.exitCode = 1
   })
 }
