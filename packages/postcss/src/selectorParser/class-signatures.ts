@@ -1,26 +1,19 @@
 import type { ChildNode } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
-import valueParser from 'postcss-value-parser'
 import { postcss } from '../postcss-runtime'
+import { getCssCustomPropertyName } from '../utils/css-custom-property'
+import { createCssValueSignature, valueSignature } from './class-signatures/values'
 
-function valueSignature(value: string): unknown[] {
-  return valueParser(value).nodes.filter(node => node.type !== 'space' && node.type !== 'comment').map(function serialize(node): unknown {
-    if (node.type === 'function') {
-      return [node.type, node.value, node.nodes.filter(child => child.type !== 'space' && child.type !== 'comment').map(serialize)]
-    }
-    return [node.type, node.value, node.type === 'string' ? node.quote : undefined]
-  })
-}
-
-function contentSignature(nodes: ChildNode[]): unknown[] {
+function contentSignature(nodes: ChildNode[], declarationValueSignature: (value: string) => unknown[]): unknown[] {
   return nodes.filter(node => node.type !== 'comment').map((node): unknown => {
     if (node.type === 'decl') {
-      return ['decl', node.prop, valueSignature(node.value), Boolean(node.important)]
+      const signature = getCssCustomPropertyName(node.prop) ? valueSignature : declarationValueSignature
+      return ['decl', node.prop, signature(node.value), Boolean(node.important)]
     }
     if (node.type === 'atrule') {
-      return ['atrule', node.name, valueSignature(node.params), contentSignature(node.nodes ?? [])]
+      return ['atrule', node.name, valueSignature(node.params), contentSignature(node.nodes ?? [], declarationValueSignature)]
     }
-    return ['rule', selectorParser().processSync(node.selector, { lossless: false }), contentSignature(node.nodes)]
+    return ['rule', selectorParser().processSync(node.selector, { lossless: false }), contentSignature(node.nodes, declarationValueSignature)]
   })
 }
 
@@ -45,6 +38,7 @@ function hasClassInSameCompound(node: selectorParser.Node, className: string) {
 /** 对同一份 CSS 建立严格的类规则索引；调用方显式提供实际消费的 scope 类。 */
 export function createCssClassSignatureReader(css: string) {
   const root = postcss.parse(css)
+  const declarationValueSignature = createCssValueSignature(root)
   const records = new Map<string, Array<{ selector: selectorParser.Selector, ancestors: unknown[], content: unknown[], order: number }>>()
   const cache = new Map<string, string[]>()
   let order = 0
@@ -64,7 +58,7 @@ export function createCssClassSignatureReader(css: string) {
         : ['rule', selectorParser().processSync(parent.selector, { lossless: false })])
       parent = parent.parent
     }
-    const content = contentSignature(rule.nodes)
+    const content = contentSignature(rule.nodes, declarationValueSignature)
     order += 1
     for (const selector of selectorParser().astSync(rule.selector).nodes) {
       const classes = new Set<string>()
