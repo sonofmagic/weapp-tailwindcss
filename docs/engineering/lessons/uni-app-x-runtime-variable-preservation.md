@@ -35,6 +35,10 @@ uni-app x preset 对小程序、WebView 也配置了 `custom-properties: { prese
 - `pnpm --filter @weapp-tailwindcss/postcss build`、`pnpm --filter weapp-tailwindcss build` 通过；定向 strict、exactOptionalPropertyTypes、noUncheckedIndexedAccess 类型检查、8 个 TypeScript 文件的 ESLint（关闭 Prettier 规则）通过。
 - `pnpm architecture:check`、`pnpm agents:check`、`git diff --check` 通过；`pnpm release status` 确认两包中文 patch intent 已纳入发布计划。完整集成验证与对应 static 基线由主任务在整合后执行。
 
+主任务在 `f6163e0a9` 整合字号证明、宏幂等性和两项重复工作优化后，PostCSS 13 文件 248 项、主包 44 文件 762 项均通过；两包构建、根 `pnpm typecheck`、架构与规则检查通过。使用 Alpha 5.31 限定 `uni-app-vite-vue3-hbuilderx-tailwindcss-v4`、`uni-app-x-vdom-tailwindcss-v4`、`issue-1144-static` 三个 static 入口重生成 24 份快照，再以 `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 --update=none` 复验 3 文件 4 项通过。Git 差异仅 VDOM 的 `app.wxss` 与 `main.wxss` 各新增 5 行，恢复 `.transform` 的动态 rotate/skew 链和 `.drop-shadow-md` 的动态 filter 链；其他基线内容不变。
+
+原始日志为 `.tmp/runtime-preservation-{postcss-build,main-build,main-tests,typecheck,static-update,static-verify}.log`。static 更新用时 40.01 秒，禁止更新复验用时 152.41 秒；后者执行期间机器 load average 只读样本为 98.54/92.43/79.14。该环境观察不改变通过结果，也不作为后续性能失败的免责或调宽阈值依据。
+
 ## 适用边界
 
 本次未运行真实 watch、微信 IDE、浏览器或设备，不证明 500 ms 性能预算或全面矩阵已通过。保留动态表达式也不证明页面上的最终计算值；真实运行仍需当前轮次环境门禁和消费者证据。
