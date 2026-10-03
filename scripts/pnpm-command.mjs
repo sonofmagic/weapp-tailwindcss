@@ -1,16 +1,26 @@
-import { readFileSync } from 'node:fs'
+import { Buffer } from 'node:buffer'
+import { closeSync, openSync, readSync } from 'node:fs'
+import path from 'node:path'
 import process from 'node:process'
 
 function isNodeScript(file) {
-  if (!file) {
-    return false
+  if (/\.(?:c|m)?js$/i.test(file)) {
+    return true
   }
+  let descriptor
   try {
-    const header = readFileSync(file, { encoding: 'utf8', flag: 'r' }).slice(0, 256)
-    return header.startsWith('#!') || /\.(?:c|m)?js$/i.test(file)
+    descriptor = openSync(file, 'r')
+    const buffer = Buffer.alloc(256)
+    const length = readSync(descriptor, buffer, 0, buffer.length, 0)
+    return /^#![^\r\n]*\bnode(?:\s|$)/.test(buffer.toString('utf8', 0, length))
   }
   catch {
-    return /\.(?:c|m)?js$/i.test(file)
+    return false
+  }
+  finally {
+    if (descriptor !== undefined) {
+      closeSync(descriptor)
+    }
   }
 }
 
@@ -24,10 +34,15 @@ export function createPnpmCommand(
     ? options.npmExecPath
     : process.env.npm_execpath
 
-  if (npmExecPath && isNodeScript(npmExecPath)) {
+  const paths = platform === 'win32' ? path.win32 : path.posix
+  const activeCli = npmExecPath && /^(?:pnpm(?:-native)?(?:\.exe)?|pnpm\.(?:c|m)?js)$/i.test(paths.basename(npmExecPath))
+    ? paths.resolve(npmExecPath)
+    : undefined
+  if (activeCli) {
+    const script = isNodeScript(activeCli)
     return {
-      command: execPath,
-      args: [npmExecPath, ...args],
+      command: script ? execPath : activeCli,
+      args: script ? [activeCli, ...args] : args,
       shell: false,
     }
   }
