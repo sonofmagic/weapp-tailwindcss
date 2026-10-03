@@ -36,9 +36,15 @@ regressions:
 - 两个源文件按 PostCSS 项目配置关闭 `noCheck`，通过 TypeScript API 逐文件获取 strict 语法和语义诊断，均为零；此结果不代表全包类型检查。
 - 三个 TypeScript 文件执行 `eslint --no-ignore`；提交前执行 `pnpm agents:check`、`git diff --check`，保留正常提交 hook。
 
+主流程将修复整合为 `d0f3d5b3b` 后，完成新预检、当前会话后台 computer use 的真实输入/点击/截图、verify 与领取复查。轮次 `004ca84c-cf6c-4c69-a312-decedb1f7e63` 的微信 IDE 3 项通过；完整 watch 的模板、脚本基础任意值/复杂集合/HEX 增删，以及新增类阶段继续推进，但在同类名字面量 setup 时触发原有 420 秒总超时并退出 1，尚未执行后续 `text-xs` 替换，不将保存产物的证明通过改写为真实 watch 通过。
+
+运行前主机为 16 个逻辑 CPU，load average 为 80.292/81.304/70.798。保留的首批非初始 plugin total 共 18 项，中位数 4141ms、范围 2104–12114ms，18/18 超过原有 500ms；未改变预算或自动重跑。高负载与超时同时发生，不能仅据此排除代码性能问题，也不能把本轮耗时直接用于证明修复的速度变化。
+
+日志、进度报告、原始性能样本和 92 份取消时产物保存在该轮 `wechat-followup/`；`first-plugin-samples.json` 只提取原始 `[watch] [weapp-tailwindcss:hmr]` 行，排除初始构建和错误尾重播。`timeout-artifacts/manifest.json` 记录文件哈希与取消边界。退出后源码已恢复、prepare 与 consumer 已结束、本任务进程和临时浏览器页均为零，已有微信 HTTP 19355 的只读登录检查仍为 true。完整 Alpha 16 阶段与扩展 46 阶段均未验收通过。
+
 ## 适用边界
 
-完整保存产物的静态证据通过不代表真实 watch 或设备已验收。本次未操作设备、IDE、浏览器，没有启动新全面测试；主流程仍需在新预检后复验。
+完整保存产物的静态证据通过不代表真实 watch 或设备已验收。独立实现阶段未操作设备、IDE、浏览器；主流程随后执行了上述新预检与复验，仍保留超时和未执行范围。
 
 中文变更意图：补充嵌套变量中已证明永不使用的数值 fallback 等价证明，保留外层运行时变量和全部规则内容。签名模块仅供工程 watch 读取器按源码路径消费，未在公开包入口导出，因此不增加公开包 change intent 或版本提升。
 
