@@ -75,7 +75,7 @@ export function spawnCommand(options: HBuilderXCommandOptions): SpawnedHBuilderX
     env: {
       ...process.env,
       ...options.env,
-      NODE_OPTIONS: options.env?.NODE_OPTIONS ?? process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
+      NODE_OPTIONS: options.env?.['NODE_OPTIONS'] ?? process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
     },
   })
   const logs = options.stdio === 'inherit' ? [] : collectProcessOutput(child)
