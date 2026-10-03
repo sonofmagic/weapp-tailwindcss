@@ -51,7 +51,13 @@ const disabled = [
 
 /** 扩展验收清除局部调试配置，同时保留工具链、设备和超时配置。 */
 export function extendedEnvironment(source: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
-  const env: NodeJS.ProcessEnv = { ...source, CI: '1', E2E_IDE_HOT_UPDATE: '1' }
+  const env: NodeJS.ProcessEnv = {
+    ...source,
+    CI: '1',
+    E2E_IDE_HOT_UPDATE: '1',
+    // 完整验收保留首次功能失败；性能异常仍由专门的有界确认流程处理。
+    E2E_WATCH_MAX_ATTEMPTS: '1',
+  }
   for (const key of filters) {
     delete env[key]
   }

@@ -9,6 +9,15 @@ afterEach(() => {
 })
 
 describe('扩展环境恢复实际消费者的完整验收范围', () => {
+  it.each([undefined, '2', '10'])('覆盖 watch 重试配置 %s，保留首次功能失败', (attempts) => {
+    const source = { E2E_WATCH_MAX_ATTEMPTS: attempts, E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET: '1' }
+    const env = extendedEnvironment(source)
+
+    expect(env.E2E_WATCH_MAX_ATTEMPTS).toBe('1')
+    expect(env.E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET).toBe('1')
+    expect(source.E2E_WATCH_MAX_ATTEMPTS).toBe(attempts)
+  })
+
   it.each(['style-isolation-default', 'style-isolation-v2'])('清除 %s 筛选后执行两种样式隔离模式', (variant) => {
     vi.stubEnv('DEMO_VISUAL_STYLE_ISOLATION_VARIANT', variant)
     expect(resolveStyleIsolationVariants('uni-app-x-tailwindcss-v4')).toHaveLength(1)
