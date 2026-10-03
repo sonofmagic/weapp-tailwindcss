@@ -15,7 +15,7 @@ type ResolveVariable = (name: string) => ResolvedSignature | undefined
 
 const maxSignatureSize = 65_536
 
-function serializeNodes(nodes: valueParser.Node[], resolveVariable?: ResolveVariable): unknown[] {
+function serializeNodes(nodes: valueParser.Node[], resolveVariable?: ResolveVariable, allowCalcFallback = false): unknown[] {
   return nodes.filter(node => node.type !== 'space' && node.type !== 'comment').flatMap((node): unknown[] => {
     if (node.type === 'function') {
       let children = node.nodes
@@ -23,11 +23,11 @@ function serializeNodes(nodes: valueParser.Node[], resolveVariable?: ResolveVari
         const comma = children.findIndex(child => child.type === 'div' && child.value === ',')
         const name = readValidVariableName(node)
         // 只删除无依赖且永不选中的静态 fallback，不内联自定义属性或改变依赖图。
-        if (comma >= 0 && name && isStaticNumericFallback(children.slice(comma + 1)) && resolveVariable(name)) {
+        if (comma >= 0 && name && isStaticNumericFallback(children.slice(comma + 1), allowCalcFallback) && resolveVariable(name)) {
           children = children.slice(0, comma)
         }
       }
-      return [[node.type, node.value, serializeNodes(children, resolveVariable)]]
+      return [[node.type, node.value, serializeNodes(children, resolveVariable, allowCalcFallback)]]
     }
     return [[node.type, node.value, node.type === 'string' ? node.quote : undefined]]
   })
@@ -43,7 +43,9 @@ function resolveNodes(nodes: valueParser.Node[], resolveVariable: ResolveVariabl
     if (node.type === 'function' && isCssVarFunction(node.value)) {
       const name = readValidVariableName(node)
       const resolved = name && !node.unclosed ? resolveVariable(name) : undefined
-      const raw = resolved ? [] : serializeNodes([node])
+      // 未解析的外层 var 保持原位；仅移除内层已证明根绑定永不选中的静态 fallback。
+      // 外层语法无效时不递归规范化，避免掩盖非法 var 参数。
+      const raw = resolved ? [] : serializeNodes([node], name ? resolveVariable : undefined, true)
       fragment = resolved ?? { nodes: raw, size: JSON.stringify(raw).length, unresolved: true }
     }
     else if (node.type === 'function') {

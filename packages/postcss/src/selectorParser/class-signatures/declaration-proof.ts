@@ -36,9 +36,19 @@ function significantNodes(nodes: valueParser.Node[]) {
   return nodes.filter(node => node.type !== 'space' && node.type !== 'comment')
 }
 
-export function isStaticNumericFallback(nodes: valueParser.Node[]) {
+export function isStaticNumericFallback(nodes: valueParser.Node[], allowCalc = false) {
   const significant = significantNodes(nodes)
-  return significant.length === 1 && Boolean(numericType(significant[0]!))
+  const node = significant[0]
+  if (significant.length !== 1 || !node) {
+    return false
+  }
+  if (numericType(node)) {
+    return true
+  }
+  // 未选中 fallback 的 calc 只证明有限纯数值，不允许变量依赖或长度运算。
+  return allowCalc && node.type === 'function' && !node.unclosed
+    && decodeCssIdentifier(node.value)?.toLowerCase() === 'calc'
+    && mathType(node.nodes, () => undefined, 0)?.kind === 'number'
 }
 
 function getBinding(node: valueParser.FunctionNode, bindingNodes: BindingNodes) {
