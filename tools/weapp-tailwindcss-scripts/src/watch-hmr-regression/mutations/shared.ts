@@ -14,6 +14,7 @@ import type {
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { replaceWxml } from '../../core/replace-wxml'
+import { collectImportedStyleFiles } from '../artifacts/imports'
 import { getBaseWatchCaseName } from '../cases'
 import { formatPath } from '../cli'
 import { getMtime, readFileIfExists, waitFor } from '../text'
@@ -794,7 +795,7 @@ export async function resolveOutputFiles(
 }
 
 export async function readJoinedOutputFiles(files: string[]) {
-  const resolvedFiles = await expandOutputFileEntries(files)
+  const resolvedFiles = await collectImportedStyleFiles(await expandOutputFileEntries(files))
   const parts = await Promise.all(resolvedFiles.map(file => readFileIfExists(file)))
   return parts.filter((item): item is string => item != null).join('\n')
 }
