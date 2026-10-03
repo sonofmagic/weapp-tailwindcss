@@ -4,9 +4,11 @@ import { createLocalUtilityOrderPlan, UNI_APP_X_LOCAL_UTILITY_MARKER } from '../
 import { postcss } from '../src/postcss-runtime'
 
 const marked = (name: string) => `/*${UNI_APP_X_LOCAL_UTILITY_MARKER} */ .${name}{@apply ${name};}`
-const selectors = (css: string) => {
+function selectors(css: string) {
   const result: string[] = []
-  postcss.parse(css).walkRules(rule => { result.push(rule.selector) })
+  postcss.parse(css).walkRules((rule) => {
+    result.push(rule.selector)
+  })
   return result
 }
 
@@ -24,6 +26,27 @@ describe('local utility source ordering', () => {
       expect(output).not.toContain(UNI_APP_X_LOCAL_UTILITY_MARKER)
       expect(output).toContain('/*! author */')
       expect(output).toContain('.author{color:red}')
+    }
+  })
+
+  it.each([false, true])('repairs framework source fragments before marker parsing (processed=%s)', async (processed) => {
+    for (const [source, expected] of [
+      [`/*${UNI_APP_X_LOCAL_UTILITY_MARKER} */\n.author{color:red}\n}`, '.author{color:red}'],
+      // 已处理来源的 source-media 块由既有生成指令清理整段移除。
+      [`@media source(none){\n/*${UNI_APP_X_LOCAL_UTILITY_MARKER} */\n.author{color:red}`, processed ? '' : '.author{color:red}'],
+    ] as const) {
+      for (const generatorTarget of ['weapp', 'web']) {
+        const output = await transformGeneratorUserCss(source, {
+          processed,
+          generatorTarget,
+          generatorStyleOptions: {},
+          cssUserHandlerOptions: {},
+          styleHandler: async css => ({ css }),
+          importFallback: false,
+        })
+        expect(output).not.toContain(UNI_APP_X_LOCAL_UTILITY_MARKER)
+        expect(output.trim()).toBe(expected)
+      }
     }
   })
 

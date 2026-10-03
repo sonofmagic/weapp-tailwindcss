@@ -23,12 +23,11 @@ export async function transformGeneratorUserCss(
     processed?: boolean | undefined
   },
 ) {
-  const userCss = removeLocalUtilityMarkers(source)
-  if (userCss.trim().length === 0) {
+  if (source.trim().length === 0) {
     return ''
   }
   if (options.processed) {
-    const compiledSource = await options.compileAuthorCssFunctions?.(userCss) ?? userCss
+    const compiledSource = await options.compileAuthorCssFunctions?.(source) ?? source
     const cleanedSource = options.generatorTarget === 'weapp'
       ? removeTailwindV4GeneratedUserCssArtifacts(
           unwrapMiniProgramCascadeLayers(
@@ -40,20 +39,24 @@ export async function transformGeneratorUserCss(
           options.generatedSource,
         )
       : compiledSource
-    return stripUnmatchedTailwindSourceMediaCloseFragments(
-      stripTailwindSourceMediaFragments(
-        removeTailwindV4GeneratorAtRules(cleanedSource),
+    return removeLocalUtilityMarkers(
+      stripUnmatchedTailwindSourceMediaCloseFragments(
+        stripTailwindSourceMediaFragments(
+          removeTailwindV4GeneratorAtRules(cleanedSource),
+        ),
       ),
     )
   }
   const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
-    stripTailwindSourceMediaFragments(userCss),
+    stripTailwindSourceMediaFragments(source),
   )
-  const cleanedSource = removeTailwindSourceDirectives(
-    removeTailwindV4GeneratorAtRules(repairedSource),
-    {
-      importFallback: options.importFallback,
-    },
+  const cleanedSource = removeLocalUtilityMarkers(
+    removeTailwindSourceDirectives(
+      removeTailwindV4GeneratorAtRules(repairedSource),
+      {
+        importFallback: options.importFallback,
+      },
+    ),
   )
   if (cleanedSource.trim().length === 0) {
     return ''

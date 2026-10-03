@@ -74,7 +74,9 @@ async function createFixture(target: 'weapp' | 'web') {
       const localCss = extractSfcStyleBlocks(sfc.code).map(style => style.source).join('\n')
       const aliases = new Map<string, string>()
       postcss.parse(localCss).walkRules((rule) => {
-        rule.walkAtRules('apply', apply => { aliases.set(apply.params, rule.selector.match(/wtu-[\w-]+/)![0]) })
+        rule.walkAtRules('apply', (apply) => {
+          aliases.set(apply.params, rule.selector.match(/wtu-[\w-]+/)![0])
+        })
       })
       const generated = await transform(cssPlugin, localCss, `${id}?vue&type=style&index=0&lang.css`)
       const reference = await generator.generate({ target, candidates, scanSources: false })

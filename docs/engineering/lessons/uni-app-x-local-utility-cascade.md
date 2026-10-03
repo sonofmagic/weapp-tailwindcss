@@ -24,7 +24,7 @@ regressions:
 
 PostCSS 包拥有 AST 排序：只在同一父节点、连续且已标记的规则之间移动；作者规则、作者注释、层级及未知排名都是稳定边界。`0n` 是有效排名，同排名维持原始先后，缺失排名不补零。内部标记即使遇到未知排名也被消费；无标记来源保持原对象，不触发额外 design system 加载。编译错误继续抛出，不用未排序 CSS 掩盖失败。
 
-完整 `generateTailwindV4Css` 回归还揭示另一条路径：作者 CSS 重放会去掉原始 `@apply`，却把内部注释再次附加到结果。由 PostCSS 作者样式转换边界统一清理准确匹配的标记，同时保留其他作者注释，覆盖已处理及未处理作者样式。
+完整 `generateTailwindV4Css` 回归还揭示另一条路径：作者 CSS 重放会去掉原始 `@apply`，却把内部注释再次附加到结果。由 PostCSS 作者样式转换边界统一清理准确匹配的标记，同时保留其他作者注释，覆盖已处理及未处理作者样式。清理必须位于各分支原有的 source-media 片段修复之后，不能提前解析中间残片。
 
 ## 验证
 
@@ -34,6 +34,7 @@ PostCSS 包拥有 AST 排序：只在同一父节点、连续且已标记的规�
 - `CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/local-utility-order.test.ts test/tailwind-v4-user-css.test.ts test/uni-app-x-author-apply.test.ts test/rpx-candidate-compat.test.ts --update=none`：4 文件、36 项通过，覆盖父层级、作者边界、缺失与未知排名、零排名和稳定同排名。
 - `pnpm --filter @weapp-tailwindcss/engine build`、`pnpm --filter @weapp-tailwindcss/postcss build`、`pnpm --filter weapp-tailwindcss build` 和 `pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.typecheck.json --pretty false` 均通过。
 - `pnpm architecture:check`、受影响源码 ESLint、`git diff --check`、`pnpm agents:check` 均通过，`pnpm release status` 确认中文 intent 覆盖 engine、PostCSS 和主包。ESLint 按仓库配置忽略 test 目录，测试通过由上述 Vitest 命令确认。
+- 最终审查补出标记清理早于 source-media 残片修复的 2 项真实失败，并调整到各分支既有修复之后；PostCSS 定向 13 项、主包局部排序/完整管线 15 项均通过。新增 3 个测试文件显式执行 `eslint --no-ignore` 通过。
 - 对应 uni-app x VDOM/Vapor demo 的 static 基线与真实 watch 由主任务整合后更新。本次没有启动浏览器或设备，不把同一插件实例的连续生成回归当作真实 HMR 或全端验收。
 
 ## 适用边界

@@ -62,7 +62,6 @@ describe('local cascade generation source ownership', () => {
   })
 })
 
-
 describe.each(['legacy', 'graph'].flatMap(compiler => [false, true].map(deferred => ({ compiler, deferred }))))('local cascade complete generation: $compiler deferred=$deferred', ({ compiler, deferred }) => {
   it.each(['web', 'weapp'] as const)('consumes owned markers after %s author CSS composition', async (target) => {
     vi.stubEnv('WEAPP_TAILWINDCSS_COMPILER', compiler)
