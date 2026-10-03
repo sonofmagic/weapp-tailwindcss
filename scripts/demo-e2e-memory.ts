@@ -31,6 +31,10 @@ export interface DemoE2eMemorySummary {
 }
 
 export interface DemoE2eMemoryStepReport {
+  cancelled?: 'SIGINT' | 'SIGTERM'
+  cleanupScope?: string
+  sourceRestoration?: 'unverified'
+  error?: string
   name: string
   command: string[]
   exitCode: number
@@ -42,6 +46,7 @@ export interface DemoE2eMemoryStepReport {
 }
 
 export interface DemoE2eMemoryReport {
+  error?: string
   generatedAt: string
   repositoryRoot: string
   includeLocal: boolean
@@ -300,9 +305,11 @@ export function createDemoE2eMemoryReport(options: {
   includeLocal: boolean
   exitCode: number
   generatedAt?: string
+  error?: string
   steps: DemoE2eMemoryStepReport[]
 }): DemoE2eMemoryReport {
   return {
+    ...(options.error ? { error: options.error } : {}),
     generatedAt: options.generatedAt ?? new Date().toISOString(),
     repositoryRoot: options.repositoryRoot,
     includeLocal: options.includeLocal,
@@ -353,6 +360,9 @@ export function renderDemoE2eMemoryMarkdown(report: DemoE2eMemoryReport) {
     ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'))
   }
 
+  if (report.error) {
+    lines.push('', '## 失败与取消', '', '```text', report.error, '```')
+  }
   lines.push('')
   lines.push('## 峰值进程')
   lines.push('')
