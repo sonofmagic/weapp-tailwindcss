@@ -58,7 +58,20 @@ profile 的时钟原点与 `process.hrtime` 不同，本轮没有记录跨时钟
 
 `extractProjectCandidatesWithPositions` 的 210.459ms 权重只有 34 个样本，其中 9 个大间隔贡献 169.876ms；`path.relative` 的主要 45.082ms 中，一次间隔就占 43.583ms。不能据这些长间隔声称路径计算或 Babel 解析就是已证明的性能根因。
 
-较稳定的仓库线索是 `getCombinedSourceCandidatesForEntries`：102.583ms 权重、75 个样本、最大间隔 4.5ms，其中来源匹配有 97.708ms、72 个样本。对应 `bundle-markup-candidates.ts` 的 `valuesForEntries` 会为每次范围查询遍历同一候选集合并解析文件/来源路径。下一步应先复现相同查询的重复工作，再评估集合生命周期内的复用；需要保护包含/排除条件、文件替换与删除、符号链接和返回 Set 的修改隔离。此处记录的是可验证线索，不是优化完成或速度收益结论。
+较稳定的仓库线索是 `getCombinedSourceCandidatesForEntries`：102.583ms 权重、75 个样本、最大间隔 4.5ms，其中来源匹配有 97.708ms、72 个样本。对应 `bundle-markup-candidates.ts` 的 `valuesForEntries` 为每次范围查询遍历同一候选集合并解析文件/来源路径。后续已用真实 fixture 复现重复匹配，在 collection 生命周期内复用查询，并保护包含/排除条件、文件替换与删除、符号链接和返回 Set 的修改隔离，见[模板候选查询复盘](vite-bundle-markup-query-reuse.md)。这项修复不能独立证明整个插件满足性能门槛。
+
+## 修复后的无采样复验
+
+代码 `b5b52baff54ec28c0b2dfd67ba8b24a1fad9c8df`、轮次 `9db759f2-6983-4d1a-ae04-d1c9a94a6f8f` 重新完成预检、当前会话真实交互、verify 和领取。保留原预算、最大尝试次数 1、重新构建，不加载 profiler。
+
+- 微信 IDE 的 3 项测试通过，其中 2 项为矩阵契约、1 项为真实 VDOM 用例；后者的模板/脚本更新均保持 runtime clean，未再发生 WXSS 路径错误。页面可见性仍受既有 case-level relaxed visibility 限制，不能称为完整可视 HMR。
+- watch 在 147.321 秒内返回功能 metrics，随后原性能断言报 `case-template-preferred:hot-update 599ms > 500ms`，退出 1。模板与脚本的各轮新增/删除、同名类字面量、`text-xs → text-[29px] → text-xs` 和主样式切换已完成；style mutation 被该 case 显式跳过，content mutation 与分包没有配置。
+- Iconify metrics 的 4ms 命中不能计为有效通过：固定图标与 before/after 内容已由 `@source inline` 生成，原校验只查 CSS，未证明本轮页面消费；当时 `semanticAccepted=true`、`updatedFiles=[]`。这是后续独立修复的测试证据缺口。
+- 首批日志去除初始构建、finalizer-only total 和错误尾重播后共有 29 个主插件样本，中位数 513ms，范围 265–1550ms，17 个超过 500ms。全部样本保留，不丢弃首次失败或重复执行取绿。
+
+本轮证据在 `e2e/.artifacts/uni-app-x-alpha/9db759f2-6983-4d1a-ae04-d1c9a94a6f8f/wechat-verified-fixes/`：`run.log`、`watch-report.json`、`first-plugin-samples.json` 与 `cleanup.json`。三份源码与 HEAD 字节一致、工作树干净；采样记录中的 32 个所属 PID 均退出，prepare 为 finished，临时浏览器标签为 0，微信已有服务只读登录检查仍为 true。
+
+运行前 16 个逻辑 CPU、load 为 34.007/35.211/38.534。选定的 complex add 样本为 `generateCss.build=101ms`、`generateBundle=493ms`、其他 hooks 共 5ms；其中 `entries.plan=165ms`、`tasks.css=245ms` 仍是墙钟/等待时间。`cleanCacheHit` 仅表示缓存中存在记录，而非当前 CSS 已直接复用。旧 profile 没有足够的阶段与时钟对应证据来认定本次剩余 CPU 热点，也不能仅凭主机负载将失败归因于环境。若继续 CPU 诊断，应预先选定一次增量场景，校准 profile 与阶段时钟，并记录进程 CPU/上下文切换；不能拿诊断样本替代无 profiler 的验收。
 
 ## 适用边界
 
