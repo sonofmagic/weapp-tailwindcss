@@ -55,7 +55,9 @@ engine 提供可选的非语义 `prepareSource` 回调，只返回 CSS 字符串
 
 ## 适用边界
 
-确定性的加载/准备次数回归证明了重复工作减少；这组 3 样本微基准仅测定向生成，不能证明真实 watch 的 500 ms 门槛已经通过。未启动真实 watch、IDE、设备或浏览器；对应 uni-app x demo 的 static 基线、最终进程性能及全端验收由主任务在整合提交后继续，不能把 558 项定向测试记作全仓通过。局部排序仍仅遵守当前 design system 的候选首节点排名，不扩张为任意多节点交错层叠等价的保证。
+确定性的加载/准备次数回归证明了重复工作减少；这组 3 样本微基准仅测定向生成，不能证明真实 watch 的 500 ms 门槛已经通过。子任务未操作设备或浏览器；主任务整合后的 static 验证已完成，不能把 558 项定向测试记作全仓通过。局部排序仍仅遵守当前 design system 的候选首节点排名，不扩张为任意多节点交错层叠等价的保证。
+
+主任务在 `bbb5c5973` 的新预检轮次 `efbec914-eb36-474e-9c79-52d6f22bfb56` 完成微信 IDE 3 项及上述模板/脚本 watch 场景后，在独立 `text-xs` 基线证据失败处停止。以原始日志中带 `[watch] [weapp-tailwindcss:hmr]` 前缀的数据取样、排除 initial 与错误尾部的日志重放，21 次非初始 plugin total 中位数为 970 ms，范围 453–3426 ms，20 次超过 500 ms；generateBundle 中位数 609 ms，其中 entries.plan 为 212.3 ms、tasks.css 为 336.5 ms。首次样本保存在该轮 `wechat-followup/first-performance-samples.json`，预算未调整。该结果证明本次复用尚不足以通过实际性能门禁，不能把单个尖峰直接归因于 design system。
 
 ## 规则评估
 

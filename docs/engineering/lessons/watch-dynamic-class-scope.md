@@ -40,11 +40,15 @@ uni-app x alpha 微信 watch 在 `mutation=script round=baseline-arbitrary phase
 - 新增解析与关联模块通过定向 `pnpm exec tsc --ignoreConfig --noEmit --strict --exactOptionalPropertyTypes --noUncheckedIndexedAccess --module ESNext --moduleResolution Bundler --target ESNext --esModuleInterop --skipLibCheck` 检查。首次命令缺少当前 TypeScript 所需的 `--ignoreConfig`，报 TS5112 后补齐参数通过；不将参数错误当成源码错误。
 - `pnpm agents:check` 与 `git diff --check` 通过。
 
+主任务在 `bbb5c597300c0d9da6a2c42cedd5cf0f3b07b730` 完成新预检 `efbec914-eb36-474e-9c79-52d6f22bfb56`，包含当前会话后台 computer use 的实际输入、点击、截图和 verify。真实微信 IDE 3 项通过；随后 watch 的模板/脚本基础任意值、复杂集合、HEX 三轮新增与删除、已有节点 added-class 和 same-class-literal 场景完成。此前脚本首轮缺少 scope 的失败没有重现。
+
+该轮在后续独立用户回归 `index text-xs to text-[29px]` 的基线 class/CSS 证据失败后自然退出 1，未自动重跑，不能记为整轮 watch 通过。`text-xs` 的根规则保留主题变量与动态行高，页面 alias 是静态值，需另外定位生成与证据边界；本次动态 scope 修复不放宽它。原始日志及首次剩余产物保存在 `e2e/.artifacts/uni-app-x-alpha/efbec914-eb36-474e-9c79-52d6f22bfb56/wechat-followup/`，后者注明源码已由 runner 恢复。最终主工作树组合回归为 12 文件、379 项通过（与上面集合重叠，不累计）。
+
 ## 适用边界
 
 本次只修复私有 watch 工具的静态证据判断。它识别已观察到的 uni-app 编译绑定形态，不实现通用 JS 求值、跨函数数据流或任意动态 WXML 求值；不能证明运行时渲染、HMR 时限或页面状态保留。现有 JS 字符串自身携带 scope 的证据仍受原有静态候选边界约束。
 
-真实 watch、IDE、设备和浏览器没有在本子任务中重跑，最终运行链路由主任务重新预检后验证，因此记录为 partial。没有修改 demo、输出样式或 static 预期，不更新 static 基线；没有公开包行为变更，不新增 change intent。性能预算是独立验收，不能用本次静态回放结果宣布其通过。
+子任务的静态回放与主任务后续真实 watch 证据分别如上；完整 watch 因另一个基线证明问题仍失败，因此记录为 partial。没有修改 demo、输出样式或 static 预期，不更新 static 基线；没有公开包行为变更，不新增 change intent。性能预算是独立验收，不能用动态 class 场景通过宣布其通过。
 
 ## 规则评估
 
