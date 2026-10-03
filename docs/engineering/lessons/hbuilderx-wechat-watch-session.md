@@ -3,6 +3,7 @@ status: partial
 issue: https://github.com/weapp-tailwindcss/weapp-tailwindcss/pull/1269
 baseline: 6d2eb5064f9ffb35429e551a7b57309bd05bc5e4
 regressions:
+  - e2e/uni-app-vite-vue3-hbuilderx-tailwindcss-v4.test.ts
   - e2e/hbuilderx-alias-consumers.test.ts
   - e2e/wechat-session-boundary.test.ts
   - e2e/hbuilderx-compiler-watch.test.ts
@@ -53,6 +54,10 @@ regressions:
 - 增加真实 POSIX 子进程回归：编译器根进程主动退出 1、同组后代仍存活时，受管停止会回收后代并保留原退出错误。此进程组用例在 Windows 不适用；Windows 取消仍复用既有 `taskkill` 归属边界，本轮未做真实 Windows 进程验收。
 
 ## 适用边界
+
+主工作树集成后补齐普通 HBuilderX Vue3 demo 的常规 static 入口。该项目此前虽然登记在 `projectEntries`，却没有 `defineProjectTest` 入口；CLI 多平台检查消费另一份 `dist/build` 产物，不能代替 Alpha 的 `unpackage/dist/dev` 基线。新增入口按已有项目测试框架保存 7 份 CSS/类名/源码候选基线，不与 `demo-matrix` 报告或其他项目目录重复。
+
+限定该 demo、uni-app x VDOM、issue1144 三个入口执行 `-u` 后，审查确认只有新增项目的 7 份基线，现有项目基线字节未变；再使用 `CI=1`、`E2E_SKIP_OPEN_AUTOMATOR=1` 和 `--update=none`，3 文件 4 项全部通过、无跳过，34.38 秒。两个 HBuilderX 项目真实使用 Alpha 5.31.2026093020-alpha 的只编译路径；issue1144 是 npm Web 生产构建。日志为 `.tmp/alpha-spacing-static-{update-9ab8b2e86,verified-7f828fad9}.log`。此项未连接微信项目，不代表持续 watch 或设备 HMR 已验收。
 
 本次修改普通 HBuilderX demo 的插件选择入口，但未运行真实 vendor 编译、设备、浏览器或 IDE 测试。主流程需限定重新生成该 demo 的 static 基线，审查后以 `--update=none` 验证；接着验证同一真实编译进程的首次产物与多轮源码增量、实际 IDE 截图和微信 CLI 零调用，才可继续完整 watch 阶段。隔离进程回归不得记录为真实 demo watch 或全面验收通过。
 
