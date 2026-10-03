@@ -95,12 +95,14 @@ export async function writeFilePreserveEol(
     retries?: number
     retryDelayMs?: number
     writeMode?: 'atomic-replace' | 'in-place'
+    /** 恢复已保存的原文时关闭换行归一化，保留混合换行。 */
+    normalizeEol?: boolean
   } = {},
 ) {
   const retries = options.retries ?? 12
   const retryDelayMs = options.retryDelayMs ?? 100
   const writeMode = options.writeMode ?? 'atomic-replace'
-  const alignedContent = alignContentEol(content, source)
+  const alignedContent = options.normalizeEol === false ? content : alignContentEol(content, source)
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     const temporaryFile = path.join(
