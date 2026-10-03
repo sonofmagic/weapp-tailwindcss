@@ -2,7 +2,7 @@ import type { Declaration, Root } from 'postcss'
 import valueParser from 'postcss-value-parser'
 import { MINI_PROGRAM_THEME_SCOPE_SELECTORS } from '../../compat/mini-program-css/selectors'
 import { decodeCssIdentifier, getCssAtRulePrelude, getCssCalcVariableReferences, getCssCustomPropertyName, isCssVarFunction } from '../../utils/css-custom-property'
-import { canInlineMarginValue, isStaticNumericFallback } from './declaration-proof'
+import { canInlineFontSizeValue, canInlineMarginValue, isStaticNumericFallback } from './declaration-proof'
 import { readValidVariableName } from './variable-name'
 
 interface ResolvedSignature {
@@ -177,6 +177,9 @@ export function createCssValueSignature(root: Root) {
     if (resolved && !resolved.unresolved && canInlineMarginValue(property, nodes, bindingNodes)) {
       // 合法性必须参加两侧签名，避免无效 calc 丢弃空白后碰巧与合法展开结果相同。
       return [['valid-margin-value', resolved.nodes]]
+    }
+    if (resolved && !resolved.unresolved && canInlineFontSizeValue(property, nodes, bindingNodes)) {
+      return [['valid-font-size-value', resolved.nodes]]
     }
     return resolved?.unresolved ? resolved.nodes : serializeNodes(nodes)
   }

@@ -150,3 +150,35 @@ export function canInlineMarginValue(property: string, nodes: valueParser.Node[]
   return marginLonghands.has(decodeCssIdentifier(property)?.toLowerCase() ?? property)
     && marginType(nodes, bindingNodes)
 }
+
+function fontSizeType(nodes: valueParser.Node[], bindingNodes: BindingNodes, depth = 0): boolean {
+  const items = significantNodes(nodes)
+  const node = items[0]
+  if (depth >= 64 || items.length !== 1 || !node) {
+    return false
+  }
+  if (node.type === 'function' && !node.unclosed && isCssVarFunction(node.value)) {
+    const binding = getBinding(node, bindingNodes)
+    return Boolean(binding && fontSizeType(binding, bindingNodes, depth + 1))
+  }
+  if (node.type !== 'word') {
+    return false
+  }
+  const tokens = tokenize({ css: node.value }).filter(token => token[0] !== TokenType.EOF)
+  const token = tokens[0]
+  if (tokens.length !== 1 || !token) {
+    return false
+  }
+  if (token[0] === TokenType.Number) {
+    return token[4].value === 0
+  }
+  // 字号要求非负，不能复用 margin 算术中取绝对值的长度上界。
+  return (token[0] === TokenType.Percentage || (token[0] === TokenType.Dimension && lengthUnits.has(token[4].unit.toLowerCase())))
+    && Number.isFinite(token[4].value) && token[4].value >= 0
+}
+
+/** 只证明 font-size 的非负长度、百分比或裸零；不求值函数和关键字。 */
+export function canInlineFontSizeValue(property: string, nodes: valueParser.Node[], bindingNodes: BindingNodes) {
+  return decodeCssIdentifier(property)?.toLowerCase() === 'font-size'
+    && fontSizeType(nodes, bindingNodes)
+}
