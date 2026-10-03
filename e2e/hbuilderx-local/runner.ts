@@ -1,4 +1,4 @@
-import type { ChildProcess } from 'node:child_process'
+import type { CommandExit, SpawnedHBuilderXCommand } from '../../packages/hbuilderx-runner/src'
 import type { AppCase, MiniProgramCase, WebCase } from './cases'
 import type { AttachedWebServer } from './web/attached'
 
@@ -29,13 +29,11 @@ import {
   assertHarmonyToolchain,
   assertIosSimulatorToolchain,
   classifyHBuilderXOutput,
-  collectProcessOutput,
   createLocalHBuilderXRunner,
   fileExists,
   formatRecentLogs,
   hbuilderxAppTimeoutMs,
   hbuilderxTimeoutMs,
-  killProcessTree,
   pollIntervalMs,
   readUtf8,
   wait,
@@ -123,17 +121,6 @@ function formatHBuilderXIssueDetails(output: string) {
     `issue=${issue.kind}: ${issue.message}`,
     issue.hint ? `hint=${issue.hint}` : '',
   ].filter(Boolean).join('\n')
-}
-
-async function stopAppLaunch(child: ChildProcess, closed: Promise<void>) {
-  if (child.exitCode == null && child.signalCode == null) {
-    killProcessTree(child, 'SIGINT')
-    await Promise.race([closed, wait(5_000)])
-  }
-  if (child.exitCode == null && child.signalCode == null) {
-    killProcessTree(child)
-    await Promise.race([closed, wait(5_000)])
-  }
 }
 
 async function waitForFile(file: string, timeoutMs: number) {
@@ -576,7 +563,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   let restore: (() => Promise<void>) | undefined
   let harmonyFailureEvidence: Parameters<typeof captureHarmonyRuntimeEvidence>[0] | undefined
   let hmrLifecycle: ReturnType<typeof observeHmrStep> | undefined
-  let child: ChildProcess | undefined
+  let launch: SpawnedHBuilderXCommand | undefined
   let failure: { error: unknown } | undefined
   try {
     restore = await createHmrSourceRestore([
@@ -602,7 +589,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       timeoutMs: hbuilderxAppTimeoutMs,
       env: androidEnv,
     })
-    child = hbuilderx.spawn({
+    launch = hbuilderx.spawn({
       args: ['launch', item.platform, '--project', resolveHBuilderXLaunchProject(item.platform, projectIdentity), '--cleanCache', 'true', ...launchArgs],
       cwd: projectRoot,
       env: {
@@ -610,16 +597,14 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         ...androidEnv,
         ...item.launchEnv,
       },
-    }).child
+    })
+    const { child } = launch
     nativeLog = captureNativeLog(child, path.resolve(runtimeEvidenceRoot, 'hbuilderx.log'))
     domObserver = domProbe?.observe(child)
-    logs = collectProcessOutput(child)
-    let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
-    const closed = new Promise<void>((resolve) => {
-      child?.on('close', (code, signal) => {
-        exit = { code, signal }
-        resolve()
-      })
+    logs = launch.logs
+    let exit: CommandExit | undefined
+    void launch.closed.then((result) => {
+      exit = result
     })
 
     const startedAt = Date.now()
@@ -783,10 +768,6 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
     expectNoContent(logs.join(''), resolveAppRuntimeLogContract(item).notContains, `${item.name} HBuilderX 渲染模式日志`)
-
-    await stopAppLaunch(child, closed)
-    child = undefined
-    hmrLifecycle?.assertNoFallback()
   }
   catch (error) {
     if (harmonyFailureEvidence) {
@@ -799,15 +780,13 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   finally {
     try {
       await cleanupHBuilderXResources([
-        () => hmrLifecycle?.dispose(),
+        async () => { await launch?.stop('SIGINT') },
         async () => {
-          if (child) {
-            const closed = new Promise<void>((resolve) => {
-              child?.once('close', () => resolve())
-            })
-            await stopAppLaunch(child, closed)
+          if (!failure) {
+            hmrLifecycle?.assertNoFallback()
           }
         },
+        () => hmrLifecycle?.dispose(),
         async () => { await restore?.() },
         async () => {
           if (projectAlias && cleanupProjectAlias) {
