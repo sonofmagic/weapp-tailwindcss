@@ -6,6 +6,7 @@ regressions:
   - packages/postcss/test/handler-gradient-fallback.test.ts
   - packages/postcss/test/post-declaration-dedupe.test.ts
   - packages/weapp-tailwindcss/test/bundlers/framework-css-composition.test.ts
+  - packages/weapp-tailwindcss/test/postcss/style.test.ts
   - e2e/taro-vite-react-tailwindcss-v4.test.ts
   - e2e/taro-vite-vue3-tailwindcss-v4.test.ts
   - e2e/apps-generator-mode-compare.test.ts
@@ -56,6 +57,8 @@ pnpm exec vitest run --config e2e/vitest.e2e.config.ts e2e/taro-vite-react-tailw
 随后使用同一项目过滤与同一命令，将 `-u` 换成 `--update=none` 再验证，3 个文件、19 项全部通过。`pnpm --filter @weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v4 build:alipay` 也通过；遍历真实 `.acss` 文件集合解析 NutUI 标准渐变，确认保留 `rgba(...,0.01961)` 而非透明十六进制颜色。`git diff --check` 与 `pnpm agents:check` 均通过。
 
 首次全仓失败、最小回归失败、更新前的真实构建差异与后续验证日志保存在本任务忽略的 `.tmp-taro-*.log`；持久证据为上述测试及精确的产物 diff。
+
+后续 PR head `6d2eb5064` 的单测分片发现主包旧快照遗漏上述保守去重的输出变化：Taro 输入与默认 preflight 都含 `box-sizing:border-box`，两者之间有 `margin`、`padding` 等普通属性。新去重边界保留后一个声明，计算值不变；不能为消除一个重复声明恢复跨任意属性去重。本地 `test/postcss/style.test.ts --update=none` 同样复现 1 项失败、70 项通过。仅以 `-t 'main chunk build error' -u` 更新该用例，审查 diff 为单个 `box-sizing` 声明；随后主包 style、defaults、framework composition 共 83 项，以及 PostCSS 去重 3 项以 `--update=none` 通过，无跳过。本次只补漏掉的单测基线，不改产品源码或 demo 基线。
 
 ## 适用边界
 
